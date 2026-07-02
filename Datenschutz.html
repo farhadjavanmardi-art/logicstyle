@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="de">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>
+   Logic Style | Datenschutzerklärung
+  </title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&amp;family=DM+Sans:wght@300;400;500;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   :root{
+  --bg:#000000;--card:#000000;--card2:#000000;
+  --text:#e8edf5;--muted:#64748b;--silver:#c8d4e0;
+  --pink:#e879a0;--pink2:#f0a0bc;
+  --pink-dim:rgba(232,121,160,0.08);--pink-border:rgba(232,121,160,0.2);
+  --blue-dim:rgba(96,165,250,0.06);--blue-border:rgba(96,165,250,0.22);
+  --border:rgba(255,255,255,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100svh}
+body::before{display:none}
+nav{position:sticky;top:0;z-index:100;background:#000000;backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:900px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:12px;justify-content:center}
+.nav-logo{height:80px;width:auto;object-fit:contain;display:block}
+.back-btn{margin-left:auto;padding:7px 16px;border-radius:20px;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:600;text-decoration:none;transition:.2s;white-space:nowrap}
+.back-btn:hover{border-color:var(--pink-border);color:var(--pink)}
+.wrap{max-width:900px;margin:0 auto;padding:40px 20px 80px;position:relative;z-index:1}
+.page-header{margin-bottom:34px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.page-badge{display:inline-flex;align-items:center;gap:8px;background:var(--pink-dim);border:1px solid var(--pink-border);border-radius:30px;padding:5px 14px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--pink);text-transform:uppercase;margin-bottom:14px}
+.page-header h1{font-family:'Rajdhani',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:10px;letter-spacing:.5px}
+.page-header p{color:var(--muted);font-size:13px;line-height:1.75;max-width:760px}
+.last-updated{display:inline-block;margin-top:12px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:5px 12px}
+.quick-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.quick-links a{padding:8px 13px;border-radius:999px;background:rgba(255,255,255,0.035);border:1px solid var(--border);color:#94a3b8;text-decoration:none;font-size:12px;font-weight:700;transition:.2s}
+.quick-links a:hover{color:var(--pink);border-color:var(--pink-border);background:var(--pink-dim)}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px 24px;margin-bottom:36px}
+.toc-title{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.toc-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 18px}
+.toc-list li a{color:#60a5fa;text-decoration:none;font-size:13px;transition:.2s;display:flex;align-items:center;gap:8px;line-height:1.4}
+.toc-list li a:hover{color:var(--pink)}
+.toc-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:24px}
+.section{margin-bottom:38px;scroll-margin-top:90px}
+.section-title{font-family:'Rajdhani',sans-serif;font-size:1.36rem;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;letter-spacing:.3px}
+.section-num{font-family:'Space Mono',monospace;font-size:11px;color:var(--pink);font-weight:700}
+.section p{font-size:14px;color:#94a3b8;line-height:1.9;margin-bottom:12px}
+.section p:last-child{margin-bottom:0}
+.section strong{color:var(--text)}
+.section a{color:#60a5fa;text-decoration:none}
+.section a:hover{text-decoration:underline}
+.info-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.info-card p{margin-bottom:0}
+.info-card.pink{border-color:var(--pink-border);background:var(--pink-dim)}
+.info-card.blue{border-color:var(--blue-border);background:var(--blue-dim)}
+.info-card.warn{border-color:rgba(250,204,21,.22);background:rgba(250,204,21,.06)}
+.tag-row{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 4px}
+.tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.7px;border:1px solid var(--border);background:rgba(255,255,255,.035);padding:5px 9px;border-radius:999px;color:#94a3b8}
+.data-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+.data-table th{background:rgba(255,255,255,0.04);color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:10px 14px;text-align:left;border:1px solid var(--border);font-weight:700}
+.data-table td{padding:10px 14px;border:1px solid var(--border);color:#94a3b8;vertical-align:top;line-height:1.6}
+.data-table td strong{color:var(--text)}
+.data-table tr:hover td{background:rgba(232,121,160,0.04)}
+.rights-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.right-item{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.right-icon{font-size:20px;margin-bottom:6px}
+.right-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.right-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.contact-box{background:var(--card);border:1px solid var(--pink-border);border-radius:16px;padding:22px;margin-top:28px}
+.contact-box-title{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--pink);margin-bottom:14px}
+.contact-line{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#94a3b8;margin-bottom:9px;line-height:1.6}
+.contact-line strong{color:var(--text)}
+.contact-line a{color:#60a5fa;text-decoration:none}
+.footer{text-align:center;padding:26px 20px;font-size:11px;color:var(--muted);line-height:1.8;border-top:1px solid var(--border);margin-top:40px}
+.footer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 16px;margin:8px 0}
+.footer a{color:var(--pink);text-decoration:none}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(232,121,160,0.2);border-radius:4px}
+@media(max-width:680px){
+  .nav-inner{justify-content:flex-start;padding:10px 14px}.nav-logo{height:64px}.back-btn{padding:7px 12px;font-size:11px}
+  .wrap{padding:28px 16px 70px}.toc-list{grid-template-columns:1fr}.rights-grid{grid-template-columns:1fr}
+  .data-table{font-size:12px}.data-table th,.data-table td{padding:9px 10px}
+}
+  </style>
+ </head>
+ <body>
+  <nav>
+   <div class="nav-inner">
+    <img alt="Logic Style" class="nav-logo" onerror="this.style.display='none'" src="logo.png"/>
+    <a class="back-btn" href="index.html">
+     ← Zurück
+    </a>
+   </div>
+  </nav>
+  <div class="wrap">
+   <div class="page-header">
+    <div class="page-badge">
+     ⚖️ Rechtliches
+    </div>
+    <h1>
+     Datenschutzerklärung
+    </h1>
+    <p>
+     Diese Datenschutzerklärung informiert über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten auf unserer Website, in unseren Testzugängen und in der Logic Style Software für Haare, Farbe, Bart, Keratin und Perm.
+    </p>
+    <div class="last-updated">
+     Stand: Mai 2026
+    </div>
+    <div class="quick-links">
+     <a href="index.html">
+      Startseite
+     </a>
+     <a href="models.html">
+      Beispiele ansehen
+     </a>
+     <a href="wahrheit.html">
+      Warum Logic Style?
+     </a>
+     <a href="model.html">
+      Fotomodell werden
+     </a>
+     <a href="Impressum.html">
+      Impressum
+     </a>
+    </div>
+   </div>
+   <div class="info-card warn">
+    <p>
+     <strong>
+      Hinweis zur Testversion:
+     </strong>
+     Logic Style befindet sich derzeit in einer Testphase. Über diese Website findet keine Online-Zahlung statt. Registrierungen dienen der manuellen Prüfung und Freischaltung von Testzugängen für Salons, Friseure, Barber und Beauty-Studios.
+    </p>
+   </div>
+   <div class="info-card blue">
+    <p>
+     <strong>
+      Hinweis zu KI-Simulationen:
+     </strong>
+     Alle Simulationen sind digitale Vorschauen zur Beratung. Sie ersetzen keine fachliche Beratung und garantieren kein tatsächliches Ergebnis bei Haarschnitt, Farbe, Bartpflege, Keratin- und Perm-Services.
+    </p>
+   </div>
+   <div class="toc">
+    <div class="toc-title">
+     Inhaltsverzeichnis
+    </div>
+    <ul class="toc-list">
+     <li>
+      <a href="#s1">
+       <span class="toc-num">
+        1.
+       </span>
+       Verantwortlicher
+      </a>
+     </li>
+     <li>
+      <a href="#s2">
+       <span class="toc-num">
+        2.
+       </span>
+       Welche Daten wir erheben
+      </a>
+     </li>
+     <li>
+      <a href="#s3">
+       <span class="toc-num">
+        3.
+       </span>
+       Zweck der Datenverarbeitung
+      </a>
+     </li>
+     <li>
+      <a href="#s4">
+       <span class="toc-num">
+        4.
+       </span>
+       Rechtsgrundlagen
+      </a>
+     </li>
+     <li>
+      <a href="#s5">
+       <span class="toc-num">
+        5.
+       </span>
+       Speicherdauer
+      </a>
+     </li>
+     <li>
+      <a href="#s6">
+       <span class="toc-num">
+        6.
+       </span>
+       Weitergabe an Dritte
+      </a>
+     </li>
+     <li>
+      <a href="#s7">
+       <span class="toc-num">
+        7.
+       </span>
+       Externe Dienste &amp; Drittanbieter
+      </a>
+     </li>
+     <li>
+      <a href="#s8">
+       <span class="toc-num">
+        8.
+       </span>
+       Fotos, Bildrechte &amp; Modell-Galerie
+      </a>
+     </li>
+     <li>
+      <a href="#s9">
+       <span class="toc-num">
+        9.
+       </span>
+       Ihre Rechte
+      </a>
+     </li>
+     <li>
+      <a href="#s10">
+       <span class="toc-num">
+        10.
+       </span>
+       Datensicherheit
+      </a>
+     </li>
+     <li>
+      <a href="#s11">
+       <span class="toc-num">
+        11.
+       </span>
+       Cookies &amp; lokale Speicherung
+      </a>
+     </li>
+     <li>
+      <a href="#s12">
+       <span class="toc-num">
+        12.
+       </span>
+       Änderungen
+      </a>
+     </li>
+     <li>
+      <a href="#s13">
+       <span class="toc-num">
+        13.
+       </span>
+       Kontakt &amp; Aufsichtsbehörde
+      </a>
+     </li>
+    </ul>
+   </div>
+   <div class="section" id="s1">
+    <div class="section-title">
+     <span class="section-num">
+      1.
+     </span>
+     Verantwortlicher
+    </div>
+    <p>
+     Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) für die Verarbeitung personenbezogener Daten auf dieser Website und in der angebotenen digitalen Software ist:
+    </p>
+    <div class="info-card">
+     <p>
+      <strong>
+       Logic Style
+      </strong>
+      <br/>
+      Farhad Javanmardi
+      <br/>
+      Karlsruhe, Deutschland
+      <br/>
+      <br/>
+      E-Mail:
+      <a href="mailto:info@logicstyle-salon.de">
+       info@logicstyle-salon.de
+      </a>
+      <br/>
+      Telefon / Nachricht:
+      <a href="https://wa.me/491794286020">
+       +49 179 428 6020
+      </a>
+      <br/>
+      Instagram:
+      <a href="https://www.instagram.com/logic_style" rel="noopener" target="_blank">
+       @logic_style
+      </a>
+     </p>
+    </div>
+   </div>
+   <div class="section" id="s2">
+    <div class="section-title">
+     <span class="section-num">
+      2.
+     </span>
+     Welche Daten wir erheben
+    </div>
+    <p>
+     Je nach Nutzung unserer Website, Testzugänge, Simulations-Software und Modell-Galerie verarbeiten wir folgende Kategorien personenbezogener Daten:
+    </p>
+    <table class="data-table">
+     <thead>
+      <tr>
+       <th>
+        Datenkategorie
+       </th>
+       <th>
+        Konkrete Daten
+       </th>
+       <th>
+        Wo erhoben
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        <strong>
+         Zugangsdaten
+        </strong>
+       </td>
+       <td>
+        Name, E-Mail-Adresse, Benutzername, technisch geschütztes Passwort, Status des Testzugangs
+       </td>
+       <td>
+        Registrierungsformular / Testzugang
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Kontaktdaten
+        </strong>
+       </td>
+       <td>
+        Telefonnummer, E-Mail-Kommunikation
+       </td>
+       <td>
+        Registrierung, Kontakt, Fotomodell-Anfrage
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Salon-Daten
+        </strong>
+       </td>
+       <td>
+        Salonname, Adresse, PLZ, Stadt, gewünschter Testzugang, Art des Betriebs
+       </td>
+       <td>
+        Registrierungsformular
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Nutzungsdaten
+        </strong>
+       </td>
+       <td>
+        Anzahl Simulationen, verwendete Modelle, gewählte Kategorie, Zeitstempel, gespeicherte Beispiele
+       </td>
+       <td>
+        Software-Nutzung
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Bilddaten
+        </strong>
+       </td>
+       <td>
+        Hochgeladene Kundenfotos, Vorher-/Nachher-Bilder, KI-generierte Ergebnisse
+       </td>
+       <td>
+        Simulations-Software und Modell-Galerie
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Fotomodell-Daten
+        </strong>
+       </td>
+       <td>
+        Name, Geburtsdatum, E-Mail, Telefon, Interessenkategorie, Haar-/Bartangaben, Foto, Einwilligungsbestätigung
+       </td>
+       <td>
+        Fotomodell-Formular / E-Mail-Anfrage
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Technische Daten
+        </strong>
+       </td>
+       <td>
+        IP-Adresse bei Registrierung, Webclient-/Geräteinformationen, lokale Session-Daten
+       </td>
+       <td>
+        Automatisch bei Nutzung
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <div class="info-card blue">
+     <p>
+      <strong>
+       Hinweis zu Kundenfotos:
+      </strong>
+      Fotos, die über unsere Software hochgeladen werden, dienen der KI-Simulation und Beratung. Sie werden nicht dauerhaft als öffentliche Beispiele gespeichert, außer wenn ein Nutzer oder Administrator das Ergebnis aktiv in der Modell-Galerie speichert und die hierfür erforderliche Einwilligung bzw. Berechtigung vorliegt.
+     </p>
+    </div>
+   </div>
+   <div class="section" id="s3">
+    <div class="section-title">
+     <span class="section-num">
+      3.
+     </span>
+     Zweck der Datenverarbeitung
+    </div>
+    <p>
+     Wir verarbeiten personenbezogene Daten nur für klar definierte Zwecke:
+    </p>
+    <table class="data-table">
+     <thead>
+      <tr>
+       <th>
+        Zweck
+       </th>
+       <th>
+        Beschreibung
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        <strong>
+         Testzugang &amp; Freischaltung
+        </strong>
+       </td>
+       <td>
+        Prüfung von Salon-Anfragen, manuelle Freischaltung und Kommunikation zum Logic Style Testzugang.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         KI-Simulation
+        </strong>
+       </td>
+       <td>
+        Verarbeitung hochgeladener Fotos zur Erstellung realistischer digitaler Vorschauen für Haare, Farbe, Bart, Keratin und Perm.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Authentifizierung
+        </strong>
+       </td>
+       <td>
+        Sicherstellung, dass nur berechtigte Nutzer Zugriff auf die Logic Style Software erhalten.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Modell-Galerie
+        </strong>
+       </td>
+       <td>
+        Anzeige von freigegebenen Vorher-/Nachher-Beispielen und KI-Simulationen zur Demonstration der Technologie.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Fotomodell-Anfragen
+        </strong>
+       </td>
+       <td>
+        Bearbeitung freiwilliger Anfragen von Personen, die als Fotomodell für die Logic Style Simulations-Galerie teilnehmen möchten.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Kommunikation &amp; Support
+        </strong>
+       </td>
+       <td>
+        Beantwortung von Anfragen, Versand von Informationen, Support und technische Rückfragen.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Sicherheit
+        </strong>
+       </td>
+       <td>
+        Erkennung von Missbrauch, technische Fehleranalyse und Schutz der Plattform.
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <div class="tag-row">
+     <span class="tag">
+      Haare
+     </span>
+     <span class="tag">
+      Farbe
+     </span>
+     <span class="tag">
+      Bart
+     </span>
+     <span class="tag">
+      Keratin
+     </span>
+     <span class="tag">
+      Perm
+     </span>
+    </div>
+   </div>
+   <div class="section" id="s4">
+    <div class="section-title">
+     <span class="section-num">
+      4.
+     </span>
+     Rechtsgrundlagen
+    </div>
+    <p>
+     Die Verarbeitung personenbezogener Daten erfolgt auf Basis der folgenden Rechtsgrundlagen:
+    </p>
+    <table class="data-table">
+     <thead>
+      <tr>
+       <th>
+        Rechtsgrundlage
+       </th>
+       <th>
+        Anwendungsfall
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        <strong>
+         Art. 6 Abs. 1 lit. b DSGVO
+        </strong>
+        <br/>
+        <small>
+         Vertrag / vorvertragliche Maßnahmen
+        </small>
+       </td>
+       <td>
+        Registrierung, Testzugang, Nutzung der Logic Style Software und Kommunikation zur Freischaltung.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Art. 6 Abs. 1 lit. a DSGVO
+        </strong>
+        <br/>
+        <small>
+         Einwilligung
+        </small>
+       </td>
+       <td>
+        Veröffentlichung von Personenfotos in der Modell-Galerie, optionale Social-Media-Nutzung, freiwillige Fotomodell-Anfragen.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Art. 6 Abs. 1 lit. f DSGVO
+        </strong>
+        <br/>
+        <small>
+         Berechtigte Interessen
+        </small>
+       </td>
+       <td>
+        Sicherheit der Plattform, Missbrauchsvermeidung, technische Stabilität und Nachvollziehbarkeit administrativer Vorgänge.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Art. 6 Abs. 1 lit. c DSGVO
+        </strong>
+        <br/>
+        <small>
+         Rechtliche Verpflichtung
+        </small>
+       </td>
+       <td>
+        Erfüllung gesetzlicher Nachweis-, Auskunfts- und Aufbewahrungspflichten, soweit einschlägig.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         § 22 KUG
+        </strong>
+        <br/>
+        <small>
+         Bildnisveröffentlichung
+        </small>
+       </td>
+       <td>
+        Veröffentlichung von Personenfotos ergänzend zur DSGVO-Einwilligung, soweit anwendbar.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         § 25 TDDDG
+        </strong>
+        <br/>
+        <small>
+         Technisch notwendige Speicherung
+        </small>
+       </td>
+       <td>
+        Technisch notwendige lokale Speicherung, soweit sie für Login, Session und Funktion der Software erforderlich ist.
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+   <div class="section" id="s5">
+    <div class="section-title">
+     <span class="section-num">
+      5.
+     </span>
+     Speicherdauer
+    </div>
+    <p>
+     Wir speichern personenbezogene Daten nur so lange, wie es für den jeweiligen Zweck erforderlich ist oder gesetzliche Pflichten bestehen.
+    </p>
+    <table class="data-table">
+     <thead>
+      <tr>
+       <th>
+        Datenkategorie
+       </th>
+       <th>
+        Speicherdauer
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        <strong>
+         Nutzer-Accounts / Salon-Testzugänge
+        </strong>
+       </td>
+       <td>
+        Für die Dauer des Test- oder Vertragsverhältnisses und danach nur, soweit gesetzliche Pflichten oder berechtigte Interessen bestehen.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Simulations-Ergebnisse
+        </strong>
+       </td>
+       <td>
+        Bis zur aktiven Löschung durch den Nutzer oder Administrator, sofern sie gespeichert wurden; nicht gespeicherte Session-Inhalte werden nicht als öffentliche Beispiele übernommen.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Hochgeladene Kundenfotos
+        </strong>
+       </td>
+       <td>
+        Session-basiert bzw. zweckgebunden für die Simulation; dauerhafte Speicherung nur bei aktiver Speicherung in der Galerie und entsprechender Berechtigung/Einwilligung.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Modell-Galerie Fotos
+        </strong>
+       </td>
+       <td>
+        Bis zum Widerruf der Einwilligung oder bis zur Entfernung durch Logic Style; nach Widerruf erfolgt Löschung aus eigenen Systemen grundsätzlich binnen 14 Tagen.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Session-Daten
+        </strong>
+       </td>
+       <td>
+        Automatische Abmeldung bzw. Löschung lokaler Session-Zustände nach Inaktivität oder durch Logout, soweit technisch vorgesehen.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Einwilligungsnachweise
+        </strong>
+       </td>
+       <td>
+        Solange erforderlich, um die Rechtmäßigkeit der Verarbeitung und Veröffentlichung nachweisen zu können.
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Kontakt- und E-Mail-Anfragen
+        </strong>
+       </td>
+       <td>
+        Solange die Bearbeitung erforderlich ist; danach Löschung oder Archivierung nach gesetzlichen Vorgaben.
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+   <div class="section" id="s6">
+    <div class="section-title">
+     <span class="section-num">
+      6.
+     </span>
+     Weitergabe an Dritte
+    </div>
+    <p>
+     Eine Weitergabe personenbezogener Daten an Dritte erfolgt nicht zu Werbe- oder Verkaufszwecken. Eine Verarbeitung durch Dritte kann jedoch in folgenden Fällen erforderlich sein:
+    </p>
+    <div class="info-card">
+     <p>
+      •
+      <strong>
+       Technische Dienstleister:
+      </strong>
+      Datenbank, Hosting, Datei-Speicherung und KI-Bildgenerierung im Rahmen der Bereitstellung der Logic Style Software.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Auftragsverarbeitung:
+      </strong>
+      Soweit erforderlich, erfolgt die Verarbeitung auf Grundlage geeigneter Verträge zur Auftragsverarbeitung oder vergleichbarer Datenschutzvereinbarungen.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Gesetzliche Verpflichtungen:
+      </strong>
+      Weitergabe nur, wenn wir rechtlich dazu verpflichtet sind, etwa durch Behörden, Gerichte oder gesetzliche Pflichten.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Keine kommerzielle Weitergabe:
+      </strong>
+      Personenbezogene Daten werden nicht verkauft und nicht für fremde Werbenetzwerke genutzt.
+     </p>
+    </div>
+   </div>
+   <div class="section" id="s7">
+    <div class="section-title">
+     <span class="section-num">
+      7.
+     </span>
+     Externe Dienste &amp; Drittanbieter
+    </div>
+    <p>
+     Zur Bereitstellung der Website und der Simulationsdienste nutzen wir externe Dienste. Dabei können personenbezogene Daten verarbeitet werden.
+    </p>
+    <table class="data-table">
+     <thead>
+      <tr>
+       <th>
+        Dienst
+       </th>
+       <th>
+        Anbieter
+       </th>
+       <th>
+        Zweck
+       </th>
+       <th>
+        Datenschutz
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>
+        <strong>
+         Supabase
+        </strong>
+       </td>
+       <td>
+        Supabase Inc., USA / technische Infrastruktur je nach Projektkonfiguration
+       </td>
+       <td>
+        Datenbank, Authentifizierung, Speicherung von Galerie- und Nutzungsdaten
+       </td>
+       <td>
+        <a href="https://supabase.com/privacy" rel="noopener" target="_blank">
+         Datenschutzrichtlinie
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Google AI Services / Gemini API
+        </strong>
+       </td>
+       <td>
+        Google LLC, USA bzw. verbundene Google-Unternehmen
+       </td>
+       <td>
+        KI-Bildverarbeitung und Bildgenerierung für digitale Vorschauen
+       </td>
+       <td>
+        <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">
+         Datenschutzrichtlinie
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <strong>
+         Google Fonts
+        </strong>
+       </td>
+       <td>
+        Google LLC, USA
+       </td>
+       <td>
+        Bereitstellung von Schriftarten für das Design der Website
+       </td>
+       <td>
+        <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">
+         Datenschutzrichtlinie
+        </a>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <div class="info-card blue">
+     <p>
+      <strong>
+       Hinweis zu Drittlandübermittlungen:
+      </strong>
+      Einige Anbieter können Daten außerhalb der EU/des EWR verarbeiten. Soweit erforderlich, stützen wir solche Übermittlungen auf geeignete Garantien, insbesondere EU-Standardvertragsklauseln, Angemessenheitsbeschlüsse oder vergleichbare Mechanismen nach Art. 44 ff. DSGVO.
+     </p>
+    </div>
+    <div class="info-card warn">
+     <p>
+      <strong>
+       Hinweis zu Google Fonts:
+      </strong>
+      Die Website verwendet derzeit Google Fonts. Für eine spätere kommerzielle Dauerveröffentlichung ist eine lokale Einbindung der Schriftarten datenschutzfreundlicher und sollte technisch bevorzugt werden. Ja, sogar Schriftarten können juristisch Drama machen. Willkommen im Web.
+     </p>
+    </div>
+   </div>
+   <div class="section" id="s8">
+    <div class="section-title">
+     <span class="section-num">
+      8.
+     </span>
+     Fotos, Bildrechte &amp; Modell-Galerie
+    </div>
+    <p>
+     Fotos und KI-generierte Bilder sind besonders sensible Inhalte, weil Personen erkennbar sein können. Deshalb gelten für die Modell-Galerie besondere Regeln.
+    </p>
+    <div class="info-card pink">
+     <p>
+      <strong>
+       Einwilligungspflicht:
+      </strong>
+      Personenfotos werden nur veröffentlicht, wenn hierfür eine ausdrückliche Einwilligung bzw. eine ausreichende Berechtigung vorliegt.
+      <br/>
+      <br/>
+      <strong>
+       Umfang der Galerie:
+      </strong>
+      Die Modell-Galerie kann Vorher-/Nachher-Fotos und KI-generierte Simulationen aus den Bereichen Haare, Farbe, Bart, Keratin und Perm zeigen.
+      <br/>
+      <br/>
+      <strong>
+       Keine automatische Veröffentlichung:
+      </strong>
+      Ein in der Software erzeugtes Bild wird nicht automatisch öffentlich. Eine Veröffentlichung in der Galerie erfolgt nur durch aktive Speicherung und entsprechende Freigabe.
+      <br/>
+      <br/>
+      <strong>
+       Social Media:
+      </strong>
+      Eine Nutzung auf Social-Media-Kanälen erfolgt nur, wenn hierfür eine gesonderte Einwilligung vorliegt.
+      <br/>
+      <br/>
+      <strong>
+       Widerruf:
+      </strong>
+      Einwilligungen können jederzeit per E-Mail an
+      <a href="mailto:info@logicstyle-salon.de">
+       info@logicstyle-salon.de
+      </a>
+      widerrufen werden. Nach Widerruf entfernen wir die Inhalte aus unseren eigenen Systemen grundsätzlich binnen 14 Tagen.
+      <br/>
+      <br/>
+      <strong>
+       Technische Grenzen:
+      </strong>
+      Eine vollständige Entfernung aus externen Caches, Suchmaschinen-Zwischenspeichern oder bereits geteilten Inhalten kann technisch nicht vollständig garantiert werden.
+     </p>
+    </div>
+    <p>
+     Rechtsgrundlage für Veröffentlichungen ist regelmäßig Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit der jeweiligen Einwilligung und, soweit anwendbar, § 22 KUG.
+    </p>
+   </div>
+   <div class="section" id="s9">
+    <div class="section-title">
+     <span class="section-num">
+      9.
+     </span>
+     Ihre Rechte
+    </div>
+    <p>
+     Sie haben als betroffene Person folgende Rechte gemäß DSGVO:
+    </p>
+    <div class="rights-grid">
+     <div class="right-item">
+      <div class="right-icon">
+       📋
+      </div>
+      <div class="right-title">
+       Auskunftsrecht (Art. 15)
+      </div>
+      <div class="right-desc">
+       Sie können Auskunft über die bei uns verarbeiteten personenbezogenen Daten verlangen.
+      </div>
+     </div>
+     <div class="right-item">
+      <div class="right-icon">
+       ✏️
+      </div>
+      <div class="right-title">
+       Berichtigungsrecht (Art. 16)
+      </div>
+      <div class="right-desc">
+       Sie können die Berichtigung unrichtiger oder Vervollständigung unvollständiger Daten verlangen.
+      </div>
+     </div>
+     <div class="right-item">
+      <div class="right-icon">
+       🗑️
+      </div>
+      <div class="right-title">
+       Löschungsrecht (Art. 17)
+      </div>
+      <div class="right-desc">
+       Sie können die Löschung Ihrer Daten verlangen, soweit keine gesetzlichen Pflichten entgegenstehen.
+      </div>
+     </div>
+     <div class="right-item">
+      <div class="right-icon">
+       ⏸️
+      </div>
+      <div class="right-title">
+       Einschränkungsrecht (Art. 18)
+      </div>
+      <div class="right-desc">
+       Sie können die Einschränkung der Verarbeitung unter bestimmten Voraussetzungen verlangen.
+      </div>
+     </div>
+     <div class="right-item">
+      <div class="right-icon">
+       📦
+      </div>
+      <div class="right-title">
+       Datenübertragbarkeit (Art. 20)
+      </div>
+      <div class="right-desc">
+       Sie können Daten in einem gängigen, maschinenlesbaren Format erhalten.
+      </div>
+     </div>
+     <div class="right-item">
+      <div class="right-icon">
+       🚫
+      </div>
+      <div class="right-title">
+       Widerspruchsrecht (Art. 21)
+      </div>
+      <div class="right-desc">
+       Sie können Verarbeitungen auf Basis berechtigter Interessen widersprechen.
+      </div>
+     </div>
+     <div class="right-item">
+      <div class="right-icon">
+       ↩️
+      </div>
+      <div class="right-title">
+       Widerruf der Einwilligung
+      </div>
+      <div class="right-desc">
+       Einwilligungen können jederzeit mit Wirkung für die Zukunft widerrufen werden.
+      </div>
+     </div>
+     <div class="right-item">
+      <div class="right-icon">
+       ⚖️
+      </div>
+      <div class="right-title">
+       Beschwerderecht (Art. 77)
+      </div>
+      <div class="right-desc">
+       Sie können Beschwerde bei einer Datenschutzaufsichtsbehörde einlegen.
+      </div>
+     </div>
+    </div>
+    <p style="margin-top:16px">
+     Zur Ausübung Ihrer Rechte wenden Sie sich bitte an:
+     <a href="mailto:info@logicstyle-salon.de">
+      info@logicstyle-salon.de
+     </a>
+    </p>
+   </div>
+   <div class="section" id="s10">
+    <div class="section-title">
+     <span class="section-num">
+      10.
+     </span>
+     Datensicherheit
+    </div>
+    <p>
+     Wir setzen technische und organisatorische Maßnahmen ein, um personenbezogene Daten zu schützen.
+    </p>
+    <div class="info-card">
+     <p>
+      •
+      <strong>
+       Verschlüsselte Übertragung:
+      </strong>
+      Die Datenübertragung erfolgt über HTTPS/TLS.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Passwortschutz:
+      </strong>
+      Passwörter werden nicht im Klartext gespeichert, sondern technisch geschützt verarbeitet.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Zugangskontrolle:
+      </strong>
+      Zugriff auf geschützte Bereiche nur mit gültigen Zugangsdaten und sessionbasierter Authentifizierung.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Datenbank-Schutz:
+      </strong>
+      Die Datenbankstruktur ist auf rollenbasierte Zugriffsbeschränkungen und getrennte Datenbereiche ausgelegt, soweit technisch eingerichtet.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Minimierung:
+      </strong>
+      Wir verarbeiten nur Daten, die für Website, Testzugang, Software, Galerie oder Kommunikation erforderlich sind.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Serverstandort:
+      </strong>
+      Soweit technisch konfiguriert, erfolgt die Speicherung auf Servern innerhalb der EU; bei externen Anbietern gelten die jeweiligen Datenschutzbedingungen und Garantien.
+     </p>
+    </div>
+   </div>
+   <div class="section" id="s11">
+    <div class="section-title">
+     <span class="section-num">
+      11.
+     </span>
+     Cookies &amp; lokale Speicherung
+    </div>
+    <p>
+     Unsere Website und Software verwenden keine Tracking-Cookies und kein Webanalyse-Tool wie Google Analytics.
+    </p>
+    <p>
+     Wir verwenden ausschließlich technisch notwendige Funktionen:
+    </p>
+    <div class="info-card">
+     <p>
+      •
+      <strong>
+       localStorage / sessionStorage:
+      </strong>
+      Zur Speicherung von Session-IDs, Anmeldezustand, Cookie-Hinweis und technischen Software-Zuständen im Webclient.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Technisch notwendige Speicherung:
+      </strong>
+      Diese Funktionen sind für Login, Session, Software-Bedienung und Darstellung erforderlich. Ohne diese Speicherung kann die Nutzung eingeschränkt oder unmöglich sein.
+      <br/>
+      <br/>
+      •
+      <strong>
+       Keine Werbeprofile:
+      </strong>
+      Es werden keine Tracking-Profile erstellt und keine Analyse-Cookies gesetzt.
+     </p>
+    </div>
+   </div>
+   <div class="section" id="s12">
+    <div class="section-title">
+     <span class="section-num">
+      12.
+     </span>
+     Änderungen dieser Erklärung
+    </div>
+    <p>
+     Wir behalten uns vor, diese Datenschutzerklärung zu aktualisieren, um technische Änderungen, neue Funktionen, neue Dienste oder gesetzliche Anforderungen abzubilden. Die aktuelle Version ist auf dieser Seite abrufbar.
+    </p>
+    <p>
+     Bei wesentlichen Änderungen informieren wir registrierte Nutzer, soweit dies erforderlich und technisch möglich ist.
+    </p>
+   </div>
+   <div class="section" id="s13">
+    <div class="section-title">
+     <span class="section-num">
+      13.
+     </span>
+     Kontakt &amp; Aufsichtsbehörde
+    </div>
+    <p>
+     Für Fragen zum Datenschutz oder zur Ausübung Ihrer Rechte wenden Sie sich bitte an:
+    </p>
+    <div class="contact-box">
+     <div class="contact-box-title">
+      Kontakt
+     </div>
+     <div class="contact-line">
+      📧
+      <div>
+       <strong>
+        E-Mail:
+       </strong>
+       <a href="mailto:info@logicstyle-salon.de">
+        info@logicstyle-salon.de
+       </a>
+      </div>
+     </div>
+     <div class="contact-line">
+      💬
+      <div>
+       <strong>
+        Telefon / Nachricht:
+       </strong>
+       <a href="https://wa.me/491794286020">
+        +49 179 428 6020
+       </a>
+      </div>
+     </div>
+     <div class="contact-line">
+      📍
+      <div>
+       <strong>
+        Anschrift:
+       </strong>
+       Logic Style · Farhad Javanmardi · Karlsruhe, Deutschland
+      </div>
+     </div>
+    </div>
+    <p style="margin-top:20px">
+     Wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer Daten gegen Datenschutzrecht verstößt, haben Sie das Recht, sich bei der zuständigen Datenschutzaufsichtsbehörde zu beschweren:
+    </p>
+    <div class="info-card" style="margin-top:12px">
+     <p>
+      <strong>
+       Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg (LfDI BW)
+      </strong>
+      <br/>
+      <br/>
+      Hausanschrift: Heilbronner Straße 35 · 70191 Stuttgart
+      <br/>
+      Postanschrift: Postfach 10 29 32 · 70025 Stuttgart
+      <br/>
+      Telefon: +49 711 / 61 55 41 - 0
+      <br/>
+      E-Mail:
+      <a href="mailto:poststelle@lfdi.bwl.de">
+       poststelle@lfdi.bwl.de
+      </a>
+      <br/>
+      Website:
+      <a href="https://www.baden-wuerttemberg.datenschutz.de" rel="noopener" target="_blank">
+       www.baden-wuerttemberg.datenschutz.de
+      </a>
+     </p>
+    </div>
+   </div>
+  </div>
+  <div class="footer">
+   Logic Style · Karlsruhe · Deutschland ·
+   <a href="index.html">
+    logicstyle-salon.de
+   </a>
+   <div class="footer-links">
+    <a href="index.html">
+     Startseite
+    </a>
+    <a href="models.html">
+     Beispiele
+    </a>
+    <a href="wahrheit.html">
+     Warum Logic Style?
+    </a>
+    <a href="model.html">
+     Fotomodell werden
+    </a>
+    <a href="Impressum.html">
+     Impressum
+    </a>
+    <a href="Datenschutz.html">
+     Datenschutz
+    </a>
+   </div>
+   Stand: Mai 2026
+  </div>
+  <style>
+   #ls-consent{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#000000;border-top:1px solid rgba(232,121,160,0.25);padding:12px 16px;display:none;font-family:'DM Sans',sans-serif}
+#ls-consent.show{display:block}
+.lsci{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lsct{flex:1;min-width:220px;font-size:12px;color:#94a3b8;line-height:1.5}
+.lsct strong{color:#e8edf5}.lsct a{color:#60a5fa;text-decoration:none}
+.lscbtns{display:flex;gap:8px;flex-shrink:0}
+.lsca{padding:8px 18px;background:#e879a0;color:#000;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.lscd{padding:8px 18px;background:transparent;color:#64748b;border:1px solid rgba(255,255,255,0.08);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.ls-lf{text-align:center;padding:10px;font-size:11px;color:#475569;font-family:'DM Sans',sans-serif}
+.ls-lf a{color:#64748b;text-decoration:none;margin:0 7px}.ls-lf a:hover{color:#e879a0}
+  </style>
+  <div id="ls-consent">
+   <div class="lsci">
+    <div class="lsct">
+     <strong>
+      Cookies
+     </strong>
+     — Nur technisch notwendige Speicherung für Funktion und Session.
+     <a href="Datenschutz.html">
+      Datenschutz
+     </a>
+     ·
+     <a href="Impressum.html">
+      Impressum
+     </a>
+    </div>
+    <div class="lscbtns">
+     <button class="lscd" onclick="lsCon('decline')">
+      Ablehnen
+     </button>
+     <button class="lsca" onclick="lsCon('accept')">
+      Akzeptieren ✓
+     </button>
+    </div>
+   </div>
+  </div>
+  <div class="ls-lf">
+   Logic Style ·
+   <a href="Datenschutz.html">
+    Datenschutz
+   </a>
+   <a href="Impressum.html">
+    Impressum
+   </a>
+   <a href="model.html">
+    Fotomodell werden
+   </a>
+  </div>
+  <script>
+   (function(){if(!localStorage.getItem('ls_consent'))document.getElementById('ls-consent').classList.add('show');})();
+function lsCon(c){localStorage.setItem('ls_consent',c);document.getElementById('ls-consent').classList.remove('show');}
+  </script>
+ </body>
+</html>

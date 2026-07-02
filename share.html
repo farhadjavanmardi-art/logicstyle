@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Logic Style | Simulation</title>
+<meta property="og:title" content="Logic Style KI-Simulation">
+<meta property="og:description" content="Haar-, Bart- und Farbsimulation powered by Logic Style">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000000;color:#e2e8f0;font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;text-decoration:none}
+.logo-shield{width:38px;height:38px;background:linear-gradient(135deg,#c2185b,#e879a0);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;color:#000;box-shadow:0 0 20px rgba(232,121,160,0.4)}
+.logo-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.4rem;letter-spacing:1px}
+.logo-name .l{color:#e879a0}
+.logo-name .s{color:#c8d4e0}
+.card{background:#000000;border:1px solid rgba(232,121,160,0.35);border-radius:20px;padding:20px;max-width:500px;width:100%;box-shadow:0 0 0 1px rgba(232,121,160,.06),0 22px 60px rgba(0,0,0,.62)}
+.result-img{width:100%;border-radius:12px;display:block;border:1px solid rgba(255,255,255,0.06)}
+.meta{margin-top:14px;padding:12px 14px;background:rgba(232,121,160,0.06);border:1px solid rgba(232,121,160,0.15);border-radius:12px}
+.meta-style{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:4px}
+.meta-detail{font-size:12px;color:#64748b;line-height:1.8}
+.meta-salon{font-size:11px;color:#e879a0;margin-top:4px;font-weight:700;letter-spacing:0.5px}
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn-dl{flex:1;min-width:130px;padding:12px;background:#e879a0;color:#000;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s}
+.btn-dl:hover{background:#f0a0bc}
+.btn-software{flex:1;min-width:130px;padding:12px;background:rgba(255,255,255,0.04);color:#e2e8f0;border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-weight:700;font-size:13px;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s}
+.btn-software:hover{border-color:rgba(232,121,160,0.3);color:#e879a0}
+.loading{text-align:center;padding:60px 20px;color:#64748b}
+.spinner{width:36px;height:36px;border:3px solid rgba(232,121,160,0.2);border-top-color:#e879a0;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err{color:#f87171;text-align:center;padding:40px;font-size:14px}
+.disclaimer{margin-top:14px;font-size:11px;color:#475569;text-align:center;line-height:1.6;font-style:italic}
+</style>
+</head>
+<body>
+<a class="logo" href="/">
+  <img src="logo.png" alt="Logic Style" style="height:80px;width:auto;object-fit:contain;display:block">
+  <div class="logo-name"><span class="l">Logic</span> <span class="s">Style</span></div>
+</a>
+
+<div class="card" id="card">
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Simulation wird geladen…</p>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://owgfhhkmlkdpjqlwavsx.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93Z2ZoaGttbGtkcGpxbHdhdnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MTUyNDgsImV4cCI6MjA5MDA5MTI0OH0.arQzSmczsZX6re-mfC6EcvAs9p3Uf1LdG3AfjjgsZvM';
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+const token = new URLSearchParams(location.search).get('t');
+
+if (!token) {
+  document.getElementById('card').innerHTML = '<div class="err">Ungültiger Link — kein Token gefunden.</div>';
+} else {
+  sb.from('simulations').select('*').eq('share_token', token).single()
+    .then(({ data, error }) => {
+      if (error || !data) {
+        document.getElementById('card').innerHTML = '<div class="err">Simulation nicht gefunden oder abgelaufen.</div>';
+        return;
+      }
+
+      const modeLabel = { male:'Herren', female:'Damen', beard:'Bart', color:'Farbe · Keratin & Perm' }[data.style_mode] || data.style_mode || '';
+      const date = data.created_at ? new Date(data.created_at).toLocaleDateString('de-DE') : '';
+
+      document.getElementById('card').innerHTML = `
+        <img class="result-img" src="${data.result_url}" alt="KI-Simulation ${data.style_name || ''}">
+        <div class="meta">
+          <div class="meta-style">${data.style_name || 'Simulation'}</div>
+          <div class="meta-detail">
+            ${modeLabel}${data.view_label ? ' · ' + data.view_label : ''}${date ? ' · ' + date : ''}
+          </div>
+          ${data.salon_name ? `<div class="meta-salon">Salon: ${data.salon_name}</div>` : ''}
+        </div>
+        <div class="actions">
+          <a class="btn-dl" href="${data.result_url}" download="logic-style-simulation.png">⬇ Bild speichern</a>
+          <a class="btn-software" href="Logic_Haare_Farbe_Bart.html">Eigene Simulation starten →</a>
+        </div>
+        <div class="disclaimer">KI-Simulationen sind visuelle Vorschläge — kein Garant für das Ergebnis beim Friseur.</div>
+      `;
+    });
+}
+</script>
+<!-- ═══════════════════════════════════════════════
+     LOGIC STYLE — Cookie / Datenschutz Banner
+     In alle HTML-Dateien vor </body> einfügen
+     ═══════════════════════════════════════════════ -->
+
+<style>
+/* ── CONSENT BANNER ── */
+#ls-consent{
+  position:fixed;bottom:0;left:0;right:0;z-index:99999;
+  background:#000000;border-top:1px solid rgba(232,121,160,0.25);
+  padding:16px 20px;
+  display:none;
+  font-family:'DM Sans',sans-serif;
+}
+#ls-consent.show{display:block}
+.ls-consent-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.ls-consent-text{
+  flex:1;min-width:240px;font-size:13px;color:#94a3b8;line-height:1.6;
+}
+.ls-consent-text strong{color:#e8edf5}
+.ls-consent-text a{color:#60a5fa;text-decoration:none}
+.ls-consent-text a:hover{text-decoration:underline}
+.ls-consent-btns{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.ls-consent-accept{
+  padding:9px 20px;background:#e879a0;color:#000;
+  border:none;border-radius:10px;font-weight:700;font-size:13px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;white-space:nowrap;
+}
+.ls-consent-accept:hover{background:#f0a0bc}
+.ls-consent-decline{
+  padding:9px 20px;background:transparent;color:#64748b;
+  border:1px solid rgba(255,255,255,0.08);border-radius:10px;
+  font-weight:700;font-size:13px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:.2s;white-space:nowrap;
+}
+.ls-consent-decline:hover{border-color:rgba(255,255,255,0.2);color:#94a3b8}
+
+/* ── FOOTER LEGAL LINKS ── */
+.ls-legal-footer{
+  text-align:center;padding:14px 20px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  font-size:11px;color:#475569;
+  font-family:'DM Sans',sans-serif;
+}
+.ls-legal-footer a{
+  color:#64748b;text-decoration:none;margin:0 8px;
+  transition:.2s;
+}
+.ls-legal-footer a:hover{color:#e879a0}
+</style>
+
+<!-- BANNER HTML -->
+<div id="ls-consent">
+  <div class="ls-consent-inner">
+    <div class="ls-consent-text">
+      <strong>Datenschutz & Cookies</strong> — Wir verwenden technisch notwendige Cookies und speichern Session-Daten zur Bereitstellung unserer Software. Keine Tracking-Cookies, kein Google Analytics.
+      <a href="https://logicstyle-salon.de/Datenschutz.html">Datenschutzerklärung</a> ·
+      <a href="https://logicstyle-salon.de/Impressum.html">Impressum</a>
+    </div>
+    <div class="ls-consent-btns">
+      <button class="ls-consent-decline" onclick="lsConsent('decline')">Ablehnen</button>
+      <button class="ls-consent-accept" onclick="lsConsent('accept')">Akzeptieren ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEGAL FOOTER -->
+<div class="ls-legal-footer">
+  Logic Style · Karlsruhe · Deutschland &nbsp;·&nbsp;
+  <a href="https://logicstyle-salon.de/Datenschutz.html">Datenschutz</a>
+  <a href="https://logicstyle-salon.de/Impressum.html">Impressum</a>
+  <a href="https://logicstyle-salon.de/model.html">Model werden</a>
+</div>
+
+<script>
+(function(){
+  // Show banner if no consent stored
+  if(!localStorage.getItem('ls_consent')){
+    document.getElementById('ls-consent').classList.add('show');
+  }
+})();
+
+function lsConsent(choice){
+  localStorage.setItem('ls_consent', choice);
+  localStorage.setItem('ls_consent_date', new Date().toISOString());
+  document.getElementById('ls-consent').classList.remove('show');
+}
+</script>
+
+</body>
+</html>
