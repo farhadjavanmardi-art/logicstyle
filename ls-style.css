@@ -310,7 +310,8 @@ body{touch-action:manipulation;overscroll-behavior:none;text-align:center;}
 .before-placeholder .bp-icon{font-size:40px;opacity:.5}
 .before-placeholder .bp-lbl{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
 .cam-mini{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-.cam-mini-btn{background:#000;border:1.5px solid var(--pink);border-radius:12px;padding:14px 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;transition:.15s;width:100%}
+.cam-mini-btn{background:#000;border:1.5px solid var(--pink);border-radius:12px;padding:12px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;transition:.15s;width:100%;line-height:1.2}
+.cam-mini-btn .cam-ico{font-size:26px}
 .cam-mini-btn:active{background:var(--pink);color:#000;transform:scale(0.97)}
 .cam-mini-btn:hover{background:rgba(232,121,160,0.15)}
 .result-placeholder{text-align:center;color:var(--muted);font-size:11px;padding:16px 8px;opacity:.5}
