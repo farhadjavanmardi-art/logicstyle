@@ -8,8 +8,6 @@
 /* ===== پروژه‌های Supabase ===== */
 const SB_MAIN_URL = "https://owgfhhkmlkdpjqlwavsx.supabase.co";   // Logicstyle + Salon + CRM
 const SB_MAIN_KEY = "sb_publishable_xGeaZikMQI8MclH3CnClBg_INoBJ7F-";
-const SB_VILLA_URL = "https://ajkmagdcoxpqhfknmmmk.supabase.co";   // ویلا
-const SB_VILLA_KEY = "sb_publishable_WQVbekgoKZFSkB7Fw1rfOw_pPaDzd2G";
 const ADMIN_EMAIL = "farhadjavanmardi@icloud.com";
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -119,7 +117,6 @@ label{font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:var
     <div class="tools">
       <input class="grow" id="custSearch" placeholder="جستجو: نام، تلفن، ایمیل…" oninput="renderCust()">
       <span class="chip on" data-f="all" onclick="setCF('all',this)">همه</span>
-      <span class="chip" data-f="villa" onclick="setCF('villa',this)">کلبه نارنجی</span>
       <span class="chip" data-f="salon" onclick="setCF('salon',this)">سالن</span>
     </div>
     <div style="overflow-x:auto">
@@ -147,7 +144,6 @@ label{font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:var
         <div><label>مخاطبین</label>
           <select id="c_target">
             <option value="all">همه مشتریان</option>
-            <option value="villa">فقط کلبه نارنجی</option>
             <option value="salon">فقط سالن</option>
           </select>
         </div>
@@ -159,7 +155,6 @@ label{font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:var
             <button type="button" class="ch-btn" data-ch="whatsapp" onclick="toggleCh(this)">📱 واتساپ</button>
           </div>
         </div>
-        <div class="full"><label>پیام فارسی (کلبه نارنجی)</label><textarea id="c_fa" placeholder="سلام {نام}! خبر خوب داریم…"></textarea></div>
         <div class="full"><label>پیام آلمانی (سالن)</label><textarea id="c_de" placeholder="Hallo {Name}! Wir haben eine tolle Neuigkeit…"></textarea></div>
         <div class="full"><label>پیام انگلیسی (بک‌آپ)</label><textarea id="c_en" placeholder="Hi {name}! We have great news…"></textarea></div>
       </div>
@@ -204,12 +199,11 @@ label{font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:var
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ===== Supabase clients ===== */
-let sbMain=null, sbVilla=null;
+let sbMain=null;
 let customers=[], campaigns=[], cFilter="all";
 
 function initClients(){
   sbMain = window.supabase.createClient(SB_MAIN_URL, SB_MAIN_KEY);
-  sbVilla= window.supabase.createClient(SB_VILLA_URL, SB_VILLA_KEY);
 }
 
 /* ===== Auth ===== */
@@ -225,17 +219,13 @@ function showDash(){document.getElementById("loginView").hidden=true;document.ge
 document.getElementById("loginBtn").addEventListener("click",async()=>{
   const e=document.getElementById("loginErr");e.textContent="";
   const em=document.getElementById("em").value.trim(),pw=document.getElementById("pw").value;
-  // هر دو پروژه
-  const[r1,r2]=await Promise.all([
-    sbMain.auth.signInWithPassword({email:em,password:pw}),
-    sbVilla.auth.signInWithPassword({email:em,password:pw})
-  ]);
-  if(r1.error&&r2.error){e.textContent="ایمیل یا رمز عبور اشتباه است.";return;}
+  const r1=await sbMain.auth.signInWithPassword({email:em,password:pw});
+  if(r1.error){e.textContent="ایمیل یا رمز عبور اشتباه است.";return;}
   showDash();
 });
 document.getElementById("pw").addEventListener("keydown",ev=>{if(ev.key==="Enter")document.getElementById("loginBtn").click();});
 document.getElementById("logoutBtn").addEventListener("click",async()=>{
-  await Promise.all([sbMain.auth.signOut(),sbVilla.auth.signOut()]);
+  await sbMain.auth.signOut();
   showLogin();
 });
 
@@ -244,17 +234,12 @@ document.getElementById("syncBtn").addEventListener("click", syncAll);
 async function syncAll(){
   document.getElementById("syncBtn").textContent="⏳ در حال همگام‌سازی…";
   try{
-    // مشتریان ویلا
-    const{data:villa,error:ve}=await sbVilla.from("reservations")
-      .select("id,first_name,last_name,phone,telegram,email,locale")
-      .in("status",["confirmed","pending"]);
-    // مشتریان سالن (از sbMain چون همان پروژه)
+    // مشتریان سالن
     const{data:salon,error:se}=await sbMain.from("salon_appointments")
       .select("id,first_name,last_name,phone,telegram,locale")
       .eq("status","confirmed");
 
     const toImport=[
-      ...(villa||[]).map(r=>({source:"villa",source_id:r.id,first_name:r.first_name,last_name:r.last_name,phone:r.phone,telegram:r.telegram,email:r.email,locale:r.locale||"fa"})),
       ...(salon||[]).map(r=>({source:"salon",source_id:r.id,first_name:r.first_name,last_name:r.last_name,phone:r.phone,telegram:r.telegram,locale:r.locale||"de"}))
     ];
     if(toImport.length){
@@ -296,11 +281,9 @@ function renderCust(){
   const q=(document.getElementById("custSearch").value||"").trim().toLowerCase();
   let rows=customers.filter(c=>cFilter==="all"||c.source===cFilter);
   if(q)rows=rows.filter(c=>((c.first_name||"")+" "+(c.last_name||"")+" "+(c.phone||"")+" "+(c.email||"")).toLowerCase().includes(q));
-  const villa=customers.filter(c=>c.source==="villa").length;
   const salon=customers.filter(c=>c.source==="salon").length;
   document.getElementById("custKpis").innerHTML=
     `<div class="kpi"><b>${customers.length}</b><span>کل مشتریان</span></div>`+
-    `<div class="kpi"><b>${villa}</b><span>کلبه نارنجی</span></div>`+
     `<div class="kpi"><b>${salon}</b><span>سالن</span></div>`+
     `<div class="kpi"><b>${customers.filter(c=>!c.opt_out).length}</b><span>فعال</span></div>`;
   const tb=document.getElementById("custTbl");
@@ -310,7 +293,7 @@ function renderCust(){
     <td dir="ltr">${esc(c.phone||"—")}</td>
     <td dir="ltr" style="font-size:.8rem">${esc(c.email||"—")}</td>
     <td>${esc(c.telegram||"—")}</td>
-    <td><span class="badge ${c.source}">${c.source==="villa"?"کلبه نارنجی":"سالن"}</span></td>
+    <td><span class="badge salon">سالن</span></td>
     <td><button class="btn ghost sm" onclick="toggleOptOut('${c.id}',${c.opt_out})">${c.opt_out?"فعال‌سازی":"opt-out"}</button></td>
   </tr>`).join("");
 }
@@ -329,7 +312,7 @@ function renderCampaigns(){
       <div>
         <b>${esc(c.title)}</b>
         <div style="color:var(--muted);font-size:.8rem;margin-top:4px">
-          ${c.target==="all"?"همه":c.target==="villa"?"کلبه نارنجی":"سالن"} · 
+          ${c.target==="all"?"همه":"سالن"} · 
           ${(c.channels||[]).join(" · ")} ·
           وضعیت: <b>${c.status==="done"?"✅ ارسال شد":c.status==="sending"?"⏳ در حال ارسال":c.status==="draft"?"📝 پیش‌نویس":"❌ خطا"}</b>
         </div>
@@ -350,7 +333,7 @@ function toggleCh(el){
 async function sendCampaign(){
   const res=document.getElementById("sendResult");res.className="send-result";
   const title=document.getElementById("c_title").value.trim();
-  const fa=document.getElementById("c_fa").value.trim();
+  const fa="";
   const de=document.getElementById("c_de").value.trim();
   const en=document.getElementById("c_en").value.trim();
   const target=document.getElementById("c_target").value;
@@ -372,7 +355,7 @@ async function saveDraft(){
   if(!title){alert("عنوان را وارد کن.");return;}
   await sbMain.from("crm_campaigns").insert({
     title,
-    message_fa:document.getElementById("c_fa").value||null,
+    message_fa:null,
     message_de:document.getElementById("c_de").value||null,
     message_en:document.getElementById("c_en").value||null,
     channels:selChannels,target:document.getElementById("c_target").value,status:"draft"
