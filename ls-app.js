@@ -838,8 +838,8 @@ function getModelIdForSave(){
 }
 
 async function saveToModels(){
-  const page=(location.pathname||'').split('/').pop();
-  const isAdminPage=page==='Admin_Software.html'||page==='Admin_Gallery.html';
+  const page=(location.pathname||'').split('/').pop().replace(/\.html$/i,'');
+  const isAdminPage=page==='Admin_Software'||page==='Admin_Gallery';
   if(!isAdminPage)throw new Error('Gallery save is admin-only');
   const{data:{session}}=await getSB().auth.getSession();
   const adminUid='d2e06720-0d33-4c52-b6c2-91e1499ba226';
