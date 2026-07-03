@@ -322,8 +322,7 @@ function getAnglesForMode(mode, serviceVal=''){
   return [
     {v:'FRONT VIEW',label:'Vorne',icon:'👤',hint:'Direkt zur Kamera, Haaransatz sichtbar'},
     {v:'BACK VIEW',label:'Hinten',icon:'🔙',hint:'Kopfhöhe, Nacken und Längen sichtbar'},
-    {v:'45 DEGREE LEFT VIEW',label:'45° links',icon:'↖️',hint:'45 Grad links'},
-    {v:'45 DEGREE RIGHT VIEW',label:'45° rechts',icon:'↗️',hint:'45 Grad rechts'}
+    {v:'LEFT SIDE PROFILE',label:'Links',icon:'⬅️',hint:'Linke Seite, Profil und Kontur sichtbar'}
   ];
 }
 function openSim(modelId,event){
@@ -489,7 +488,7 @@ function getAdvancedOptionDefs(){
   if(isBobModel()) defs.push(optionDef('bangs','Pony / Bangs',ADVANCED_OPTION_GROUPS.bangs,'auto'));
  }
  if(currentMode==='male'){
-  defs.push(optionDef('hairFade','Fade / Taper',ADVANCED_OPTION_GROUPS.hairFade,'model_default'));
+  /* Fade/Taper-Auswahl entfernt — jedes Modell definiert sein eigenes Fade-Verhalten (Referenzbild + Spec) */
  }
  if(currentMode==='beard'){
   defs.push(optionDef('beardAction','Bart-Aktion',ADVANCED_OPTION_GROUPS.beardAction,'shape_existing'));
