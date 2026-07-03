@@ -116,12 +116,10 @@ label{font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:var
     <div class="kpis" id="custKpis"></div>
     <div class="tools">
       <input class="grow" id="custSearch" placeholder="جستجو: نام، تلفن، ایمیل…" oninput="renderCust()">
-      <span class="chip on" data-f="all" onclick="setCF('all',this)">همه</span>
-      <span class="chip" data-f="salon" onclick="setCF('salon',this)">سالن</span>
     </div>
     <div style="overflow-x:auto">
     <table class="tbl"><thead><tr>
-      <th>نام</th><th>تلفن</th><th>ایمیل</th><th>تلگرام</th><th>منبع</th><th>opt-out</th>
+      <th>نام</th><th>تلفن</th><th>ایمیل</th><th>تلگرام</th><th>opt-out</th><th>حذف</th>
     </tr></thead><tbody id="custTbl"></tbody></table>
     </div>
   </div>
@@ -276,7 +274,7 @@ function setTab(t){
 }
 
 /* ===== Customers ===== */
-function setCF(f,el){cFilter=f;document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));el.classList.add("on");renderCust();}
+function setCF(f,el){cFilter=f;renderCust();}
 function renderCust(){
   const q=(document.getElementById("custSearch").value||"").trim().toLowerCase();
   let rows=customers.filter(c=>cFilter==="all"||c.source===cFilter);
@@ -293,9 +291,18 @@ function renderCust(){
     <td dir="ltr">${esc(c.phone||"—")}</td>
     <td dir="ltr" style="font-size:.8rem">${esc(c.email||"—")}</td>
     <td>${esc(c.telegram||"—")}</td>
-    <td><span class="badge salon">سالن</span></td>
     <td><button class="btn ghost sm" onclick="toggleOptOut('${c.id}',${c.opt_out})">${c.opt_out?"فعال‌سازی":"opt-out"}</button></td>
+    <td><button class="btn ghost sm" style="border-color:rgba(248,113,113,.4);color:#f87171" onclick="deleteCustomer('${c.id}')">🗑️ حذف</button></td>
   </tr>`).join("");
+}
+async function deleteCustomer(id){
+  const c=customers.find(x=>x.id===id);
+  const name=c?((c.first_name||"")+" "+(c.last_name||"")).trim():"";
+  if(!confirm("مشتری «"+name+"» کاملاً حذف شود؟ این کار قابل بازگشت نیست."))return;
+  const{error}=await sbMain.from("crm_customers").delete().eq("id",id);
+  if(error){alert("خطا در حذف: "+error.message);return;}
+  customers=customers.filter(x=>x.id!==id);
+  renderCust();
 }
 async function toggleOptOut(id,cur){
   await sbMain.from("crm_customers").update({opt_out:!cur}).eq("id",id);
