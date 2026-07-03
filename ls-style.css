@@ -307,11 +307,12 @@ body{touch-action:manipulation;overscroll-behavior:none;text-align:center;}
 .sim-col-result{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;border-radius:10px;border:1px solid rgba(232,121,160,0.15);background:#000;position:relative;overflow:hidden}
 .before-thumb{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;display:none;cursor:pointer}
 .before-placeholder{width:100%;aspect-ratio:3/4;border-radius:8px;border:1px dashed rgba(232,121,160,0.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.before-placeholder .bp-icon{font-size:20px;opacity:.4}
-.before-placeholder .bp-lbl{font-size:8px;color:var(--muted);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
-.cam-mini{display:flex;flex-direction:column;gap:4px}
-.cam-mini-btn{background:#000;border:1px solid var(--border);border-radius:8px;padding:5px 4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:700;transition:.15s;width:100%}
-.cam-mini-btn:active{border-color:var(--pink);color:var(--pink)}
+.before-placeholder .bp-icon{font-size:40px;opacity:.5}
+.before-placeholder .bp-lbl{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+.cam-mini{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.cam-mini-btn{background:#000;border:1.5px solid var(--pink);border-radius:12px;padding:14px 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;transition:.15s;width:100%}
+.cam-mini-btn:active{background:var(--pink);color:#000;transform:scale(0.97)}
+.cam-mini-btn:hover{background:rgba(232,121,160,0.15)}
 .result-placeholder{text-align:center;color:var(--muted);font-size:11px;padding:16px 8px;opacity:.5}
 .result-placeholder .rp-icon{font-size:2rem;margin-bottom:6px}
 .result-img{width:100%;height:100%;object-fit:cover;display:none;cursor:pointer;border-radius:9px}
