@@ -891,23 +891,23 @@ async function submitReg(){
   const dupl=await checkDuplicate(f3,f4,f6,f5,clientIP,true);
 
   if(dupl.ip){
-    showErr('❌ Von dieser IP-Adresse wurde bereits ein kostenloser Test gestartet. Für weitere Simulationen bitte ein kostenpflichtiges Paket wählen oder uns kontaktieren: info@logicstyle-salon.de;
+    showErr('❌ Von dieser IP-Adresse wurde bereits ein kostenloser Test gestartet. Für weitere Simulationen bitte ein kostenpflichtiges Paket wählen oder uns kontaktieren: info@logicstyle-salon.de');
     btn.disabled=false;btn.textContent='🚀 Kostenlos anmelden';return;
   }
   if(dupl.email){
-    showErr('❌ Diese E-Mail-Adresse ist bereits registriert. Support: info@logicstyle-salon.de;
+    showErr('❌ Diese E-Mail-Adresse ist bereits registriert. Support: info@logicstyle-salon.de');
     btn.disabled=false;btn.textContent='🚀 Kostenlos anmelden';return;
   }
   if(dupl.phone){
-    showErr('❌ Diese Telefonnummer ist bereits registriert. Pro Salon ist nur ein kostenloser Test möglich. Support: info@logicstyle-salon.de
+    showErr('❌ Diese Telefonnummer ist bereits registriert. Pro Salon ist nur ein kostenloser Test möglich. Support: info@logicstyle-salon.de');
     btn.disabled=false;btn.textContent='🚀 Kostenlos anmelden';return;
   }
   if(dupl.address){
-    showErr('❌ Für diese Salonadresse wurde bereits ein kostenloser Test gestartet. Bitte ein kostenpflichtiges Paket wählen oder uns kontaktieren: info@logicstyle-salon.de);
+    showErr('❌ Für diese Salonadresse wurde bereits ein kostenloser Test gestartet. Bitte ein kostenpflichtiges Paket wählen oder uns kontaktieren: info@logicstyle-salon.de');
     btn.disabled=false;btn.textContent='🚀 Kostenlos anmelden';return;
   }
   if(dupl.salon){
-    showErr('❌ Für diesen Salon-Namen wurde bereits ein kostenloser Test gestartet. Bitte ein kostenpflichtiges Paket wählen oder uns kontaktieren: info@logicstyle-salon.de);
+    showErr('❌ Für diesen Salon-Namen wurde bereits ein kostenloser Test gestartet. Bitte ein kostenpflichtiges Paket wählen oder uns kontaktieren: info@logicstyle-salon.de');
     btn.disabled=false;btn.textContent='🚀 Kostenlos anmelden';return;
   }
 
@@ -938,7 +938,7 @@ async function submitReg(){
       </div>`;
   }catch(e){
     const msg=String(e.message||'');
-    if(/duplicate|unique|already|bereits/i.test(msg)){showErr('❌ Diese E-Mail-Adresse ist bereits registriert. Bitte wende dich an: info@logicstyle-salon.de)}
+    if(/duplicate|unique|already|bereits/i.test(msg)){showErr('❌ Diese E-Mail-Adresse ist bereits registriert. Bitte wende dich an: info@logicstyle-salon.de')}
     else{showErr('❌ Fehler: '+(msg||'Unbekannter Fehler'))}
     btn.disabled=false;btn.textContent='🚀 Kostenlos anmelden';
   }
