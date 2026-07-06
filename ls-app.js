@@ -883,20 +883,22 @@ function getModelIdForSave(){
 }
 
 async function saveToModels(){
-  const page=(location.pathname||'').split('/').pop().replace(/\.html$/i,'');
-  const isAdminPage=page==='Admin_Software'||page==='Admin_Gallery';
-  if(!isAdminPage)throw new Error('Gallery save is admin-only');
-  const{data:{session}}=await getSB().auth.getSession();
-  const adminUid='d2e06720-0d33-4c52-b6c2-91e1499ba226';
-  if(!session?.user?.id||session.user.id!==adminUid)throw new Error('Gallery save requires admin login');
   const btn=document.getElementById('btnSaveModels');
   const statusEl=document.getElementById('saveModelsStatus');
+  const showErr=(msg)=>{
+    if(statusEl){statusEl.style.display='block';statusEl.style.background='rgba(248,113,113,0.08)';statusEl.style.color='#f87171';statusEl.style.border='1px solid rgba(248,113,113,0.3)';statusEl.style.borderRadius='10px';statusEl.textContent='❌ '+msg;}
+    if(btn){btn.disabled=false;btn.textContent='📁 In Galerie';}
+  };
+  const page=(location.pathname||'').split('/').pop().replace(/\.html$/i,'');
+  const isAdminPage=page==='Admin_Software'||page==='Admin_Gallery';
+  if(!isAdminPage){showErr('Nur auf Admin-Seite verfügbar (Seite: '+page+')');return;}
+  const{data:{session}}=await getSB().auth.getSession();
+  const adminUid='d2e06720-0d33-4c52-b6c2-91e1499ba226';
+  if(!session?.user?.id){showErr('Bitte zuerst als Admin einloggen');return;}
+  if(session.user.id!==adminUid){showErr('Nur der Haupt-Admin kann in die Galerie speichern');return;}
   const beforeSrc=simulationResults.at(-1)?.before||capturedPhoto;
   const afterSrc=currentResultBase64||simulationResults.at(-1)?.after||document.getElementById('imgAfter')?.src;
-  if(!beforeSrc||!afterSrc){
-    if(statusEl){statusEl.style.display='block';statusEl.style.background='rgba(248,113,113,0.08)';statusEl.style.color='#f87171';statusEl.textContent='❌ Kein Bild vorhanden';}
-    return;
-  }
+  if(!beforeSrc||!afterSrc){showErr('Kein Bild vorhanden');return;}
   if(btn){btn.disabled=true;btn.textContent='⏳ Speichern…';}
   if(statusEl)statusEl.style.display='none';
   try{
