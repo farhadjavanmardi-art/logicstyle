@@ -56,14 +56,11 @@
         <button class="btn-top" onclick="doLogout()" title="Abmelden">⏻</button>
       </div>
     </div>
-    <div class="tab-row" id="tabRow">
-      <button class="tab active-tab" id="tab-female" onclick="switchMode('female')">♀ Damen</button>
-      <button class="tab" id="tab-male" onclick="switchMode('male')">♂ Herren</button>
-      <button class="tab" id="tab-beard" onclick="switchMode('beard')">✂ Bart</button>
-      <button class="tab" id="tab-color" onclick="switchMode('color')">🎨 Farbe</button>
-      <button class="tab" id="tab-treatment" onclick="switchMode('treatment')">✨ Keratin &amp; Perm</button>
+    <div class="tab-row" id="genderRow">
+      <button class="tab active-tab" id="gender-female" onclick="switchGender('female')">Damen</button>
+      <button class="tab" id="gender-male" onclick="switchGender('male')">Herren</button>
     </div>
-    <div class="gender-row" id="genderRow" style="display:none"></div>
+    <div class="tab-row" id="subRow"></div>
     <div class="search-row" id="searchRow">
       <div class="search-wrap">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
