@@ -203,6 +203,9 @@ function scrollToCat(catId,btn){
 }
 function buildCatNav(mode){
   const nav=document.getElementById('catNav');
+  if(nav)nav.style.display='none';  // نوار ناوبری دسته‌ها حذف شد
+  return;
+  // eslint-disable-next-line no-unreachable
   const cfg=CAT_NAV[mode];
   if(!cfg||cfg.length===0){nav.style.display='none';return}
   nav.style.display='flex';
