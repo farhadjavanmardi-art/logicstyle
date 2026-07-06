@@ -68,7 +68,7 @@ async function doLogin(){
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('mainApp').style.display='block';
     setTimeout(updateTopbarPad,50);
-    updateCredits();switchMode('female');startHeartbeat();loadGalleryCounts();
+    updateCredits();switchGender('female');startHeartbeat();loadGalleryCounts();
     forcePasswordChange=false;
     if(result.user.must_change_password){forcePasswordChange=true;setTimeout(()=>openChangePw(),500)}
   }catch(e){showLoginErr('Fehler: '+e.message)}finally{resetBtn()}
@@ -121,14 +121,13 @@ async function deductCredit(){
 function getRemaining(){if(currentUser?.is_admin)return 999999;const master=currentUser._masterUser||currentUser;return Math.max(0,Number(master.simulations_limit||0)-Number(master.simulations_used||0))}
 
 /* ── MODE / CATALOG ── */
-function switchGender(gender){ currentGender=gender; }
 function modelMatchesGender(m){ return true; }
 
 const MODE_TITLES={
   female:['Logic Style · Damen','Damenhaarschnitte · Styling · Trendlooks'],
   male:['Logic Style · Herren','Herrenhaarschnitte · Barber · Trendlooks'],
   beard:['Logic Style · Bart','Bartformen · Konturen · Grooming'],
-  color:['Logic Style · Farbe','Balayage · Blond · Toning · Grey · Bartfarbe'],
+  color:['Logic Style · Farbe','Balayage · Blond · Highlights · Money Piece · Toning · Grey'],
   treatment:['Logic Style · Behandlung','Keratin · Pflege · Repair · Extensions · Perm']
 };
 
@@ -211,9 +210,39 @@ function buildCatNav(mode){
   setTimeout(updateTopbarPad,30);
 }
 
+/* ساختار دو سطحی: جنسیت → زیرمجموعه */
+const SUBCATS={
+  female:[
+    {mode:'female',   label:'Haarschnitt'},
+    {mode:'color',    label:'Farbe'},
+    {mode:'treatment',label:'Keratin & Perm'},
+  ],
+  male:[
+    {mode:'male',     label:'Haarschnitt'},
+    {mode:'beard',    label:'Bart'},
+    {mode:'treatment',label:'Keratin & Perm'},
+  ],
+};
+
+function switchGender(g){
+  currentGender=g;
+  ['female','male'].forEach(x=>{const t=document.getElementById('gender-'+x);if(t)t.className='tab'+(x===g?' active-tab':'');});
+  buildSubRow(g);
+  // اولین زیرمجموعه را فعال کن
+  switchMode(SUBCATS[g][0].mode);
+}
+
+function buildSubRow(g){
+  const row=document.getElementById('subRow');if(!row)return;
+  row.innerHTML=SUBCATS[g].map(s=>
+    `<button class="tab sub-tab" id="sub-${s.mode}" onclick="switchMode('${s.mode}')">${s.label}</button>`
+  ).join('');
+}
+
 function switchMode(mode){
   currentMode=mode;
-  ['female','male','beard','color','treatment'].forEach(m=>{const t=document.getElementById('tab-'+m);if(t)t.className='tab'+(m===mode?' active-tab':'');});
+  // فعال کردن زیرمجموعهٔ درست
+  (SUBCATS[currentGender]||[]).forEach(s=>{const t=document.getElementById('sub-'+s.mode);if(t)t.className='tab sub-tab'+(s.mode===mode?' active-tab':'');});
   const [title,sub]=MODE_TITLES[mode]||['Logic Style',''];
   document.getElementById('mainTitle').textContent=title;
   document.getElementById('mainSub').textContent=sub;
@@ -263,7 +292,15 @@ async function loadGalleryCounts(){
 
 function renderCurrent(){
   if(currentMode==='color')return renderServiceMode(STYLE_FARBE_SECTIONS,'color');
-  if(currentMode==='treatment')return renderServiceMode(STYLE_BEHANDLUNG_SECTIONS,'treatment');
+  if(currentMode==='treatment'){
+    // فیلتر بر اساس جنسیت: Dauerwelle Damen فقط برای زنان، Herren فقط برای مردان
+    const secs=STYLE_BEHANDLUNG_SECTIONS.filter(s=>{
+      if(s.title==='Dauerwelle Damen')return currentGender==='female';
+      if(s.title==='Dauerwelle Herren')return currentGender==='male';
+      return true; // Keratin & Glätten برای هر دو
+    });
+    return renderServiceMode(secs,'treatment');
+  }
   return render();
 }
 
