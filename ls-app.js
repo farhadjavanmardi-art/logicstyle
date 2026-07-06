@@ -892,10 +892,8 @@ async function saveToModels(){
   const page=(location.pathname||'').split('/').pop().replace(/\.html$/i,'');
   const isAdminPage=page==='Admin_Software'||page==='Admin_Gallery';
   if(!isAdminPage){showErr('Nur auf Admin-Seite verfügbar (Seite: '+page+')');return;}
-  const{data:{session}}=await getSB().auth.getSession();
-  const adminUid='d2e06720-0d33-4c52-b6c2-91e1499ba226';
-  if(!session?.user?.id){showErr('Bitte zuerst als Admin einloggen');return;}
-  if(session.user.id!==adminUid){showErr('Nur der Haupt-Admin kann in die Galerie speichern');return;}
+  if(!currentUser){showErr('Bitte zuerst als Admin einloggen');return;}
+  if(!currentUser.is_admin){showErr('Nur Admins können in die Galerie speichern');return;}
   const beforeSrc=simulationResults.at(-1)?.before||capturedPhoto;
   const afterSrc=currentResultBase64||simulationResults.at(-1)?.after||document.getElementById('imgAfter')?.src;
   if(!beforeSrc||!afterSrc){showErr('Kein Bild vorhanden');return;}
