@@ -80,6 +80,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
 .model-row:last-child{border-bottom:none}
 .model-row:active{background:rgba(232,121,160,0.06)}
 .model-dot{width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--active-color);opacity:.6;flex-shrink:0}
+/* thumbnail عکس نمونه جلوی مدل */
+.model-thumb{width:46px;height:46px;min-width:46px;border-radius:10px;object-fit:cover;cursor:pointer;border:1.5px solid var(--active-color);opacity:.92;transition:transform .15s,opacity .15s;flex-shrink:0;background:#111}
+.model-thumb:hover{transform:scale(1.06);opacity:1}
+.model-thumb:active{transform:scale(.97)}
+.model-icon-box{width:46px;height:46px;min-width:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(255,255,255,0.04);flex-shrink:0}
+/* ردیف قبل/بعد که درجا باز می‌شود */
+.inline-pair{display:flex;gap:8px;padding:10px 14px 14px;animation:ipFade .2s ease;background:rgba(232,121,160,0.03)}
+@keyframes ipFade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.inline-pair-cell{position:relative;flex:1;border-radius:12px;overflow:hidden;cursor:pointer;max-width:190px;border:1px solid rgba(255,255,255,0.08)}
+.inline-pair-cell.single{max-width:220px;margin:0 auto}
+.inline-pair-cell img{width:100%;height:auto;display:block;aspect-ratio:3/4;object-fit:cover}
+.ip-tag{position:absolute;bottom:6px;left:6px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;color:#fff;letter-spacing:.4px}
+.ip-tag.vor{background:rgba(100,116,139,.9)}
+.ip-tag.nach{background:rgba(232,121,160,.92)}
 .model-info{flex:1;min-width:0}
 .model-name{font-size:14px;font-weight:600;color:var(--text)}
 .model-desc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
