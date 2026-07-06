@@ -570,7 +570,7 @@ function optionDef(key,label,items,def){return {key,label,items,def:def||items[0
 function getAdvancedOptionDefs(){
  const defs=[];
  if(currentMode==='female'){
-  if(isBobModel()) defs.push(optionDef('bangs','Pony / Bangs',ADVANCED_OPTION_GROUPS.bangs,'auto'));
+  /* Pony/Bangs-Auswahl entfernt — jedes Modell definiert seinen eigenen Pony/Fringe (Referenzbild + Spec) */
  }
  if(currentMode==='male'){
   /* Fade/Taper-Auswahl entfernt — jedes Modell definiert sein eigenes Fade-Verhalten (Referenzbild + Spec) */
