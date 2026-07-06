@@ -205,7 +205,6 @@ const STYLE_FARBE_SECTIONS = [
   { title: 'Grey Blending & Coverage', items: GREY_SERVICES },
   { title: 'Fashion Color', items: FASHION_COLOR },
   { title: 'Men’s Color', items: MENS_COLOR },
-  { title: 'Bartfarbe', items: BART_FARBEN },
 ];
 const STYLE_BEHANDLUNG_SECTIONS = [
   { title: 'Keratin & Glätten', items: KERATIN_SERVICES },
