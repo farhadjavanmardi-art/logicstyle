@@ -24,6 +24,7 @@ let _currentModelId='', _currentColorItem=null;
 let _currentAngles=[], _selectedAngle=null, _selectedIntensity=null;
 let _currentGalleryModelId='', _currentGalleryModelName='';
 let _galleryCounts={};
+let _galleryThumbs={};  // model_id → {before, after} آخرین جفت شبیه‌سازی
 let _selectedAdvancedOptions={};
 
 /* ── HELPERS ── */
@@ -223,8 +224,9 @@ function switchMode(mode){
 
 async function loadGalleryCounts(){
   try{
-    const{data}=await getSB().from('model_gallery').select('model_id,mode,pair_label');
+    const{data}=await getSB().from('model_gallery').select('model_id,mode,pair_label,before_url,after_url,image_url,sort_order');
     _galleryCounts={};
+    _galleryThumbs={};
     const _nameToCode={};
     [[VOLLFARBEN],[BALAYAGE],[OMBRE],[HIGHLIGHTS],[MONEY_PIECE],
      [ROOT_SERVICES],[TONING],[BLONDE_SERVICES],[GREY_SERVICES],
@@ -243,6 +245,17 @@ async function loadGalleryCounts(){
       const code=/^\d+$/.test(mid)?mid:(_nameToCode[normColorId(mid)]||mid);
       _galleryCounts[code]=(_galleryCounts[code]||0)+1;
       if(code!==mid)_galleryCounts[mid]=(_galleryCounts[mid]||0)+1;
+      // ذخیره جفت before/after برای thumbnail — آخرین (بیشترین sort_order) نگه داشته می‌شود
+      const bef=r.before_url||'', aft=r.after_url||r.image_url||'';
+      if(aft){
+        const so=r.sort_order||0;
+        [code,mid].forEach(k=>{
+          if(!k)return;
+          if(!_galleryThumbs[k] || so>=(_galleryThumbs[k]._so||0)){
+            _galleryThumbs[k]={before:bef,after:aft,_so:so};
+          }
+        });
+      }
     });
     renderCurrent();
   }catch(e){_galleryCounts={}}
@@ -262,6 +275,38 @@ function buildRefLinks(name){
   return`<a class="btn-ref btn-pin" href="https://www.pinterest.com/search/pins/?q=${q}" target="_blank" rel="noopener" title="Pinterest">📌</a><a class="btn-ref btn-goo" href="https://www.google.com/search?q=${qFrisur}&tbm=isch" target="_blank" rel="noopener" title="Google Bilder">🔍</a>`;
 }
 
+/* thumbnail کوچک عکس نمونه جلوی هر مدل (آخرین شبیه‌سازی) */
+function buildThumb(id){
+  const t=_galleryThumbs[id];
+  if(!t||!t.after)return'';
+  const after=String(t.after).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+  return`<img class="model-thumb" src="${after}" loading="lazy" onclick="toggleInlinePair('${id}',event)" title="Vorher/Nachher ansehen">`;
+}
+
+/* باز/بسته کردن قبل و بعد درجا زیر همان ردیف */
+function toggleInlinePair(id,event){
+  if(event&&event.stopPropagation)event.stopPropagation();
+  const existing=document.getElementById('inlinePair_'+id);
+  // اگر باز است، ببند
+  if(existing){existing.remove();return;}
+  // همه بازهای دیگر را ببند (فقط یکی همزمان)
+  document.querySelectorAll('.inline-pair').forEach(el=>el.remove());
+  const t=_galleryThumbs[id];
+  if(!t||!t.after)return;
+  const row=event&&event.target?event.target.closest('.model-row'):null;
+  if(!row)return;
+  const bef=String(t.before||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+  const aft=String(t.after||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+  const box=document.createElement('div');
+  box.className='inline-pair';box.id='inlinePair_'+id;
+  if(bef){
+    box.innerHTML=`<div class="inline-pair-cell" onclick="event.stopPropagation();openLightbox('${bef}')"><img src="${bef}" loading="lazy"><span class="ip-tag vor">VORHER</span></div><div class="inline-pair-cell" onclick="event.stopPropagation();openLightbox('${aft}')"><img src="${aft}" loading="lazy"><span class="ip-tag nach">NACHHER</span></div>`;
+  }else{
+    box.innerHTML=`<div class="inline-pair-cell single" onclick="event.stopPropagation();openLightbox('${aft}')"><img src="${aft}" loading="lazy"><span class="ip-tag nach">ERGEBNIS</span></div>`;
+  }
+  row.insertAdjacentElement('afterend',box);
+}
+
 function render(){
   const grid=document.getElementById('catalogGrid');
   const term=(document.getElementById('searchInput')?.value||'').toLowerCase();
@@ -276,7 +321,7 @@ function render(){
     items.forEach(m=>{
       const safeName=htmlSafe(m.name);const gc=_galleryCounts[m.id]||0;
       const row=document.createElement('div');row.className='model-row';
-      row.innerHTML=`<div class="model-dot"></div><div class="model-info"><div class="model-name"><span class="model-num">#${m.id}</span>${m.name}</div></div><div class="model-row-right">${buildRefLinks(m.name)}${gc>0?`<button class="btn-gallery-row" onclick="openGallery('${m.id}','${safeName}',event)">Beispiele</button>`:''}<button class="btn-simulate" onclick="openSim('${m.id}',event)">Simulieren ▸</button></div>`;
+      row.innerHTML=`${buildThumb(m.id)||'<div class="model-dot"></div>'}<div class="model-info"><div class="model-name"><span class="model-num">#${m.id}</span>${m.name}</div></div><div class="model-row-right">${buildRefLinks(m.name)}<button class="btn-simulate" onclick="openSim('${m.id}',event)">Simulieren ▸</button></div>`;
       list.appendChild(row);
     });
     block.appendChild(list);grid.appendChild(block);
@@ -298,7 +343,7 @@ function renderServiceMode(sections, mode){
     items.forEach(item=>{
       const id=item.id||serviceIdFromVal(item.val);const gc=(_galleryCounts[id]||0)+(_galleryCounts[serviceIdFromVal(item.val)]||0);const safeName=htmlSafe(item.name);const safeVal=htmlSafe(item.val);
       const row=document.createElement('div');row.className='model-row';
-      row.innerHTML=`<div class="model-dot"></div><div class="model-info"><div class="model-name">${item.icon?item.icon+' ':''}<span class="model-num">#${item.id||''}</span>${item.name}</div></div><div class="model-row-right">${buildRefLinks(item.name)}${gc>0?`<button class="btn-gallery-row" onclick="openGallery('${id}','${safeName}',event)">Beispiele</button>`:''}<button class="btn-simulate" onclick="openSim('${item.id||id}',event)">Simulieren ▸</button></div>`;
+      row.innerHTML=`${buildThumb(id)||(item.icon?`<div class="model-icon-box">${item.icon}</div>`:'<div class="model-dot"></div>')}<div class="model-info"><div class="model-name"><span class="model-num">#${item.id||''}</span>${item.name}</div></div><div class="model-row-right">${buildRefLinks(item.name)}<button class="btn-simulate" onclick="openSim('${item.id||id}',event)">Simulieren ▸</button></div>`;
       list.appendChild(row);
     });
     block.appendChild(list);grid.appendChild(block);
