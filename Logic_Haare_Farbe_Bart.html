@@ -17,7 +17,7 @@
     <div class="login-logo">
       <img src="logo.png" alt="Logic Style" style="height:80px;width:auto;object-fit:contain;display:block">
       <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.8rem;line-height:1;text-align:center">
-        <span style="color:#e879a0">Logic</span> <span style="color:#c8d4e0">Style</span>
+        <span style="color:#FF1F6E">Logic</span> <span style="color:#c8d4e0">Style</span>
       </div>
       <div style="font-size:9px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;font-family:'Space Mono',monospace;text-align:center">Haare · Farbe · Bart · KI-Software</div>
     </div>
@@ -56,13 +56,11 @@
         <button class="btn-top" onclick="doLogout()" title="Abmelden">⏻</button>
       </div>
     </div>
-    <div class="tab-row" id="tabRow">
-      <button class="tab active-tab" id="tab-female" onclick="switchMode('female')">♀ Damen</button>
-      <button class="tab" id="tab-male" onclick="switchMode('male')">♂ Herren</button>
-      <button class="tab" id="tab-beard" onclick="switchMode('beard')">✂ Bart</button>
-      <button class="tab" id="tab-color" onclick="switchMode('color')">🎨 Farbe</button>
-      <button class="tab" id="tab-treatment" onclick="switchMode('treatment')">✨ Keratin &amp; Perm</button>
+    <div class="tab-row" id="genderRow">
+      <button class="tab active-tab" id="gender-female" onclick="switchGender('female')">Damen</button>
+      <button class="tab" id="gender-male" onclick="switchGender('male')">Herren</button>
     </div>
+    <div class="tab-row" id="subRow"></div>
     <div class="gender-row" id="genderRow" style="display:none"></div>
     <div class="search-row" id="searchRow">
       <div class="search-wrap">
@@ -219,7 +217,7 @@
 <!-- ════ PASSWORD SHEET ════ -->
 <div class="pw-modal" id="changePwModal">
   <div class="pw-sheet">
-    <div class="sheet-handle" style="background:rgba(232,121,160,0.3);margin-top:8px"></div>
+    <div class="sheet-handle" style="background:rgba(255,31,110,0.3);margin-top:8px"></div>
     <div class="pw-inner">
       <div class="pw-title">🔑 Passwort ändern</div>
       <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5">Neues Passwort eingeben — mindestens 6 Zeichen.</div>
