@@ -204,6 +204,9 @@ const STYLE_FARBE_SECTIONS = [
   { title: 'Bleach & Blonde Refresh', items: BLONDE_SERVICES },
   { title: 'Grey Blending & Coverage', items: GREY_SERVICES },
   { title: 'Fashion Color', items: FASHION_COLOR },
+  { title: 'Keratin & Glätten', items: KERATIN_SERVICES },
+  { title: 'Dauerwelle Damen', items: PERM_WOMEN },
+  { title: 'Dauerwelle Herren', items: PERM_MEN },
 ];
 const STYLE_BEHANDLUNG_SECTIONS = [
   { title: 'Keratin & Glätten', items: KERATIN_SERVICES },
