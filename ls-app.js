@@ -127,7 +127,7 @@ const MODE_TITLES={
   female:['Logic Style · Damen','Damenhaarschnitte · Styling · Trendlooks'],
   male:['Logic Style · Herren','Herrenhaarschnitte · Barber · Trendlooks'],
   beard:['Logic Style · Bart','Bartformen · Konturen · Grooming'],
-  color:['Logic Style · Farbe','Balayage · Blond · Highlights · Money Piece · Toning · Grey'],
+  color:['Logic Style · Behandlung','Farbe · Balayage · Highlights · Toning · Keratin · Dauerwelle'],
   treatment:['Logic Style · Behandlung','Keratin · Pflege · Repair · Extensions · Perm']
 };
 
@@ -217,13 +217,11 @@ function buildCatNav(mode){
 const SUBCATS={
   female:[
     {mode:'female',   label:'Haarschnitt'},
-    {mode:'color',    label:'Farbe'},
-    {mode:'treatment',label:'Keratin & Perm'},
+    {mode:'color',    label:'Behandlung'},
   ],
   male:[
     {mode:'male',     label:'Haarschnitt'},
     {mode:'beard',    label:'Bart'},
-    {mode:'treatment',label:'Keratin & Perm'},
   ],
 };
 
@@ -294,7 +292,15 @@ async function loadGalleryCounts(){
 }
 
 function renderCurrent(){
-  if(currentMode==='color')return renderServiceMode(STYLE_FARBE_SECTIONS,'color');
+  if(currentMode==='color'){
+    // فیلتر جنسیت: Dauerwelle Damen فقط زنان، Herren فقط مردان
+    const secs=STYLE_FARBE_SECTIONS.filter(s=>{
+      if(s.title==='Dauerwelle Damen')return currentGender==='female';
+      if(s.title==='Dauerwelle Herren')return currentGender==='male';
+      return true;
+    });
+    return renderServiceMode(secs,'color');
+  }
   if(currentMode==='treatment'){
     // فیلتر بر اساس جنسیت: Dauerwelle Damen فقط برای زنان، Herren فقط برای مردان
     const secs=STYLE_BEHANDLUNG_SECTIONS.filter(s=>{
