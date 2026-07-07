@@ -582,14 +582,7 @@ function getAdvancedOptionDefs(){
   /* Fade/Taper-Auswahl entfernt — jedes Modell definiert sein eigenes Fade-Verhalten (Referenzbild + Spec) */
  }
  if(currentMode==='beard'){
-  defs.push(optionDef('beardAction','Bart-Aktion',ADVANCED_OPTION_GROUPS.beardAction,'shape_existing'));
-  defs.push(optionDef('beardLength','Länge',ADVANCED_OPTION_GROUPS.beardLength,'style_default'));
-  defs.push(optionDef('beardShape','Form',ADVANCED_OPTION_GROUPS.beardShape,'style_default'));
-  defs.push(optionDef('cheekLine','Wangenlinie',ADVANCED_OPTION_GROUPS.cheekLine,'natural'));
-  defs.push(optionDef('neckline','Halslinie',ADVANCED_OPTION_GROUPS.neckline,'clean'));
-  defs.push(optionDef('beardFade','Bart-Fade',ADVANCED_OPTION_GROUPS.beardFade,'none'));
-  defs.push(optionDef('beardDensity','Bartdichte',ADVANCED_OPTION_GROUPS.beardDensity,'realistic'));
-  defs.push(optionDef('mustache','Schnurrbart',ADVANCED_OPTION_GROUPS.mustache,'model_default'));
+  /* PROFI-EINSTELLUNGEN für Bart entfernt — jedes Modell definiert seine eigene Form/Länge/Kontur (Referenzbild + Spec) */
  }
  if(currentMode==='color'){
   const isBeardColor=/beard hair only|bartfarbe|beard color|salt-and-pepper beard/i.test(_selectedFarbeService||'');
