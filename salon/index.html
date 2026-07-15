@@ -36,40 +36,33 @@ h1,h2,h3{line-height:1.2;font-weight:800;letter-spacing:-.02em}
 .head h2{font-size:clamp(1.8rem,3.8vw,2.5rem)}
 .head p{color:var(--muted);margin-top:12px}
 
-/* CONTACT TOP BAR */
+/* CONTACT TOP BAR - اصلاح شده */
 .top-bar {
   background: #0d0d11;
   border-bottom: 1px solid var(--line);
-  font-size: 0.75rem;
-  color: var(--muted);
-  padding: 8px 0;
+  padding: 14px 0;
 }
 .top-bar-inner {
   display: flex;
   justify-content: flex-end;
-  gap: 18px;
+  gap: 28px;
   flex-wrap: wrap;
 }
 .top-bar-inner a {
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: color 0.15s;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
 }
-.top-bar-inner a:hover {
-  color: var(--pink);
-}
-.top-bar-inner svg {
-  width: 14px;
-  height: 14px;
-  fill: currentColor;
-}
-@media(max-width: 760px) {
-  .top-bar-inner {
-    justify-content: center;
-    gap: 12px;
-  }
-}
+.top-bar-inner a:hover { opacity: 0.8; }
+.top-bar-inner svg { width: 20px; height: 20px; }
+.wa-ico { fill: #25D366; }
+.mail-ico { fill: #FF1F6E; }
+.tg-ico { fill: #229ED9; }
+.ig-ico { fill: #E1306C; }
+.web-ico { fill: #74e0a0; }
 
 /* NAV */
 header{position:sticky;top:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
@@ -203,24 +196,24 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
 </head>
 <body>
 
-<!-- CONTACT TOP BAR -->
+<!-- CONTACT TOP BAR - اصلاح شده -->
 <div class="top-bar">
   <div class="wrap top-bar-inner">
-    <a href="https://wa.me/491794286020" target="_blank" title="WhatsApp">
-      <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.62.964 3.206 1.448 4.823 1.449 5.423 0 9.834-4.384 9.837-9.778.002-2.613-1.013-5.068-2.86-6.92C16.598 2.051 14.15 1.037 11.543 1.037c-5.424 0-9.835 4.385-9.838 9.779-.001 1.77.49 3.498 1.42 5.032l-.97 3.541 3.636-.951zm12.39-6.2c-.328-.164-1.94-.959-2.241-1.07-.301-.11-.522-.164-.741.164-.219.329-.848 1.07-1.039 1.289-.192.22-.383.247-.711.083-.327-.164-1.383-.51-2.635-1.627-.973-.867-1.63-1.939-1.821-2.267-.192-.329-.02-.507.144-.67.148-.147.328-.384.493-.576.164-.192.219-.329.328-.548.11-.219.055-.411-.027-.575-.082-.164-.741-1.785-1.013-2.443-.266-.64-.537-.553-.741-.564-.192-.01-.41-.012-.629-.012-.218 0-.574.082-.874.411-.3.329-1.147 1.123-1.147 2.737 0 1.614 1.174 3.176 1.339 3.395.164.22 2.31 3.527 5.596 4.947.781.338 1.391.54 1.866.69.784.249 1.497.214 2.061.129.629-.095 1.94-.794 2.214-1.562.274-.767.274-1.424.192-1.562-.082-.138-.3-.22-.628-.384z"/></svg>
+    <a href="https://www.logicstyle-salon.de" target="_blank">
+      <svg class="web-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      <span>logicstyle-salon.de</span>
+    </a>
+    <a href="https://wa.me/491794286020" target="_blank">
+      <svg class="wa-ico" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24z"/></svg>
       <span>01794286020</span>
     </a>
-    <a href="mailto:info@logicstyle-salon.de" title="E-Mail">
-      <svg viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm21.518 2L12 12.79 2.482 5h19.036zm-19.518 14v-11.725l10 8.138 10-8.138v11.725h-20z"/></svg>
-      <span>info@logicstyle-salon.de</span>
+    <a href="mailto:info@logicstyle-salon.de">
+      <svg class="mail-ico" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm21.518 2L12 12.79 2.482 5h19.036z"/></svg>
+      <span>E-Mail</span>
     </a>
-    <a href="https://t.me/Logic_style_salon" target="_blank" title="Telegram Channel">
-      <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-.962 4.384-1.362 5.922-.17.65-.41 1.02-.64 1.05-.51.06-.9-.32-1.39-.64-.77-.5-1.21-.81-1.96-1.3-1.04-.68-.36-1.05.23-1.66.15-.16 2.82-2.58 2.87-2.79.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.5 1.03-4.24 2.88-.4.27-.76.41-1.08.4-.35-.01-1.02-.2-1.52-.36-.61-.2-1.1-.31-1.06-.65.02-.18.27-.36.75-.55 2.93-1.28 4.88-2.12 5.86-2.53 2.79-1.16 3.37-1.36 3.75-1.36.08 0 .27.02.39.12.1.08.13.19.14.28-.01.07 0 .17-.01.2z"/></svg>
-      <span>@Logic_style_salon</span>
-    </a>
-    <a href="https://instagram.com/logic_style_salon" target="_blank" title="Instagram">
-      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-      <span>@logic_style_salon</span>
+    <a href="https://t.me/Logic_style_salon" target="_blank">
+      <svg class="tg-ico" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-.962 4.384-1.362 5.922-.17.65-.41 1.02-.64 1.05-.51.06-.9-.32-1.39-.64-.77-.5-1.21-.81-1.96-1.3-1.04-.68-.36-1.05.23-1.66.15-.16 2.82-2.58 2.87-2.79.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.5 1.03-4.24 2.88-.4.27-.76.41-1.08.4-.35-.01-1.02-.2-1.52-.36-.61-.2-1.1-.31-1.06-.65.02-.18.27-.36.75-.55 2.93-1.28 4.88-2.12 5.86-2.53 2.79-1.16 3.37-1.36 3.75-1.36.08 0 .27.02.39.12.1.08.13.19.14.28-.01.07 0 .17-.01.2z"/></svg>
+      <span>Telegram</span>
     </a>
   </div>
 </div>
@@ -251,9 +244,9 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
 <section class="hero">
 <div class="wrap">
   <div>
-    <span class="eyebrow" data-i="hero_ey">Logic Style · Software Development</span>
+    <span class="eyebrow" data-i="hero_ey">Logic Style · Software-Entwicklung</span>
     <h1 data-i="hero_h">Kostenloser Haarschnitt.<br><em>Für die Wissenschaft.</em></h1>
-    <p class="lead" data-i="hero_p">Wir entwickeln eine KI, die Frisuren realistisch simuliert — und brauchen echte Modelle. Du bekommst einen kostenlosen Haarschnitt, wir testen unsere Software. Win-win.</p>
+    <p class="lead" data-i="hero_p">Wir entwickeln eine KI, die Frisuren realistisch simuliert — und brauchen echte Modelle. Du bekommst einen kostenlosen Haarschnitt, wir testen unsere Software.</p>
     <div class="hero-cta">
       <a href="#book" class="btn" data-i="h_cta1">Jetzt kostenlos buchen</a>
       <a href="#how" class="btn ghost" data-i="h_cta2">Wie es funktioniert</a>
@@ -399,7 +392,6 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
   </div>
 </div>
 </section>
-
 
 <!-- FAQ -->
 <section id="faq">
