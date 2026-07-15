@@ -84,7 +84,7 @@ h1,h2,h3{line-height:1.2;font-weight:800;letter-spacing:-.02em}
 
 .head h2{font-size:clamp(1.8rem,3.8vw,2.5rem)}
 
-.head p{color:var(--muted);margin-:12px}
+.head p{color:var(--muted);margin-top:12px}
 
 
 
@@ -114,11 +114,15 @@ h1,h2,h3{line-height:1.2;font-weight:800;letter-spacing:-.02em}
 
 /* NAV */
 
-header{position:sticky;:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+header{position:sticky;top:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
 
-.nav{display:flex;align-items:center;height:64px;gap:10px}
+.nav{display:flex;align-items:center;height:64px;gap:10px;min-width:0}
 
-.brand{font-weight:900;font-size:.9rem;letter-spacing:-.01em;display:flex;align-items:center;gap:12px;white-space:nowrap}
+.brand{font-weight:900;font-size:.9rem;letter-spacing:-.01em;display:flex;align-items:center;gap:12px;white-space:nowrap;min-width:0}
+
+.brand span{overflow:hidden;text-overflow:ellipsis}
+
+@media(max-width:520px){.brand span{display:none}}
 
 /* لوگو بزرگتر شد */
 
@@ -141,6 +145,8 @@ header{position:sticky;:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter
 .lang button.on{background:var(--pink);color:#fff}
 
 .btn{background:var(--pink);color:#fff;border:0;cursor:pointer;padding:9px 16px;border-radius:999px;font:inherit;font-weight:700;font-size:.82rem;box-shadow:0 8px 24px -10px var(--pink);transition:transform .15s,box-shadow .15s;white-space:nowrap}
+
+@media(max-width:400px){.nav .btn{padding:8px 11px;font-size:.72rem}}
 
 .btn:hover{transform:translateY(-1px);box-shadow:0 14px 30px -8px var(--pink)}
 
@@ -174,6 +180,18 @@ header{position:sticky;:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter
 
 @media(max-width:760px){.hero-img{display:none}}
 
+@media(max-width:760px){
+  .hero{padding:44px 0 48px}
+  .hero .wrap{gap:28px;text-align:center}
+  .hero .lead{margin-inline:auto}
+  .hero-cta{justify-content:center}
+}
+
+@media(max-width:480px){
+  .hero-cta{flex-direction:column}
+  .hero-cta .btn{width:100%;text-align:center}
+}
+
 
 
 /* HOW IT WORKS */
@@ -204,7 +222,7 @@ header{position:sticky;:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter
 
 .svc h3{font-size:.97rem;margin-bottom:2px}
 
-.svc .chk{position:absolute;:12px;inset-inline-end:12px;width:22px;height:22px;border-radius:50%;background:var(--pink);display:none;place-items:center;color:#fff;font-size:.7rem;font-weight:900}
+.svc .chk{position:absolute;top:12px;inset-inline-end:12px;width:22px;height:22px;border-radius:50%;background:var(--pink);display:none;place-items:center;color:#fff;font-size:.7rem;font-weight:900}
 
 .svc.on .chk{display:grid}
 
@@ -262,7 +280,7 @@ header{position:sticky;:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter
 
 .cal-day.today{border-color:var(--line)}
 
-.cal-legend{display:flex;gap:12px;flex-wrap:wrap;margin-:10px;font-size:.75rem;color:var(--muted)}
+.cal-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:.75rem;color:var(--muted)}
 
 .cal-legend i{width:11px;height:11px;border-radius:3px;display:inline-block;vertical-align:middle;margin-inline-end:4px}
 
@@ -274,7 +292,7 @@ header{position:sticky;:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter
 
 /* SLOTS */
 
-.slots{display:flex;gap:10px;margin-:14px;flex-wrap:wrap}
+.slots{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
 
 .slot{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 22px;cursor:pointer;font-weight:700;font-size:1rem;font-family:inherit;transition:border-color .15s,background .15s}
 
@@ -326,13 +344,13 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
 
 textarea{resize:vertical;min-height:80px}
 
-.sum-box{background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;margin-:8px}
+.sum-box{background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;margin-top:8px}
 
 .sum-row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:.88rem;color:var(--muted)}
 
-.sum-row.total{color:var(--text);font-weight:800;font-size:1.05rem;border-:1px solid var(--line);margin-:8px;padding-:12px}
+.sum-row.total{color:var(--text);font-weight:800;font-size:1.05rem;border-top:1px solid var(--line);margin-top:8px;padding-top:12px}
 
-.msg{border-radius:12px;padding:13px 15px;margin-:16px;font-size:.9rem;display:none}
+.msg{border-radius:12px;padding:13px 15px;margin-top:16px;font-size:.9rem;display:none}
 
 .msg.ok{display:block;background:rgba(40,170,90,.12);border:1px solid rgba(40,170,90,.35);color:#74e0a0}
 
@@ -356,7 +374,7 @@ textarea{resize:vertical;min-height:80px}
 
 
 
-footer{border-:1px solid var(--line);padding:38px 0;color:var(--muted);font-size:.87rem}
+footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-size:.87rem}
 
 .foot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
 
@@ -632,7 +650,7 @@ footer{border-:1px solid var(--line);padding:38px 0;color:var(--muted);font-size
 
       <!-- SCHRITT 2: Datum & Uhrzeit -->
 
-      <div class="step-label" style="margin-:20px" data-i="step2">② Datum & Uhrzeit</div>
+      <div class="step-label" style="margin-top:20px" data-i="step2">② Datum & Uhrzeit</div>
 
       <div class="cal" id="cal">
 
@@ -664,7 +682,7 @@ footer{border-:1px solid var(--line);padding:38px 0;color:var(--muted);font-size
 
 
 
-      <div id="slot_wrap" hidden style="margin-:14px">
+      <div id="slot_wrap" hidden style="margin-top:14px">
 
         <div class="slots" id="slotsEl"></div>
 
@@ -676,7 +694,7 @@ footer{border-:1px solid var(--line);padding:38px 0;color:var(--muted);font-size
 
       <!-- SCHRITT 3: Kontakt -->
 
-      <div class="step-label" style="margin-:20px" data-i="step3">③ Deine Kontaktdaten</div>
+      <div class="step-label" style="margin-top:20px" data-i="step3">③ Deine Kontaktdaten</div>
 
       <div class="form-grid">
 
@@ -708,7 +726,7 @@ footer{border-:1px solid var(--line);padding:38px 0;color:var(--muted);font-size
 
 
 
-      <div style="margin-:22px">
+      <div style="margin-top:22px">
 
         <button type="submit" class="btn" id="submitBtn" data-i="f_sub">Kostenlos buchen</button>
 
@@ -1318,5 +1336,4 @@ setLang("de");fetchBooked();
 
 </body>
 
-</html> 
-
+</html>
