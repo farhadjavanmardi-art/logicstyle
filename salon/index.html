@@ -302,6 +302,10 @@ header{position:sticky;top:0;z-index:50;background:rgba(8,8,10,.92);backdrop-fil
 
 .slot.taken{color:#2e2e36;cursor:not-allowed;text-decoration:line-through}
 
+.slot.need-gap{color:#c06080;cursor:not-allowed;text-decoration:line-through;border-style:dashed}
+
+.need-two-note{background:rgba(255,31,110,.1);border:1px solid rgba(255,31,110,.35);color:var(--pink-soft);border-radius:10px;padding:10px 14px;font-size:.82rem;margin-bottom:10px;line-height:1.5}
+
 
 
 /* FORM */
@@ -684,6 +688,8 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
 
       <div id="slot_wrap" hidden style="margin-top:14px">
 
+        <div id="needTwoNote" class="need-two-note" hidden></div>
+
         <div class="slots" id="slotsEl"></div>
 
         <input type="hidden" id="sel_slot" name="booking_slot">
@@ -884,6 +890,10 @@ const T={
 
     e_svc:"Bitte wähle eine Leistung.",e_date:"Bitte wähle ein Datum.",e_slot:"Bitte wähle eine Uhrzeit.",
 
+    need_two:"⏱️ Du hast mehrere Leistungen gewählt – dafür brauchst du einen 1-Stunden-Termin (2 Slots hintereinander). Zeiten ohne freien Anschluss-Slot sind ausgegraut.",
+
+    slot_blocked:"Diese Uhrzeit reicht nicht: Für deine gewählten Leistungen wird 1 Stunde benötigt, der nächste Slot ist aber schon belegt. Bitte wähle eine andere Uhrzeit.",
+
     months:["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
 
     wd:["Mo","Di","Mi","Do","Fr","Sa","So"],
@@ -957,6 +967,10 @@ const T={
     sending:"Sending…",err:"Error. Please try again.",
 
     e_svc:"Please select a service.",e_date:"Please select a date.",e_slot:"Please select a time.",
+
+    need_two:"⏱️ You've selected multiple services – this needs a 1-hour appointment (2 slots in a row). Times without a free follow-up slot are greyed out.",
+
+    slot_blocked:"This time doesn't work: your selected services need 1 hour, but the next slot is already booked. Please pick a different time.",
 
     months:["January","February","March","April","May","June","July","August","September","October","November","December"],
 
@@ -1134,17 +1148,25 @@ function renderSlots(){
 
   const needTwo = selSvcs.length >= 2; // e.g. 1 hour needed
 
+  const t=T[lang];
 
+  const note=document.getElementById("needTwoNote");
+
+  note.hidden=!needTwo;
+
+  if(needTwo)note.textContent=t.need_two;
 
   document.getElementById("slotsEl").innerHTML=SLOTS.map((s, idx)=>{
 
     let isTaken = taken.includes(s);
 
+    let needGap = false;
+
     if (!isTaken && needTwo) {
 
       if (idx + 1 >= SLOTS.length) {
 
-        isTaken = true; // No next consecutive slot exists in the calendar range
+        needGap = true; // No next consecutive slot exists in the calendar range
 
       } else {
 
@@ -1152,7 +1174,7 @@ function renderSlots(){
 
         if (taken.includes(nextSlot)) {
 
-          isTaken = true; // Next consecutive slot is already booked
+          needGap = true; // Next consecutive slot is already booked
 
         }
 
@@ -1160,13 +1182,34 @@ function renderSlots(){
 
     }
 
+    const blocked = isTaken || needGap;
+
     const on=cur===s;
 
-    return `<div class="slot${isTaken?" taken":""}${on?" on":""}" ${isTaken?"":` onclick="pickSlot('${s}')"`}>${s}</div>`;
+    let cls = "slot" + (isTaken ? " taken" : "") + (needGap ? " need-gap" : "") + (on ? " on" : "");
+
+    let attrs;
+
+    if (needGap) {
+
+      attrs = ` title="${t.slot_blocked}" onclick="alert(T[lang].slot_blocked)"`;
+
+    } else if (isTaken) {
+
+      attrs = "";
+
+    } else {
+
+      attrs = ` onclick="pickSlot('${s}')"`;
+
+    }
+
+    return `<div class="${cls}"${attrs}>${s}</div>`;
 
   }).join("");
 
 }
+
 
 function pickSlot(s){document.getElementById("sel_slot").value=s;renderSlots();updateSum();}
 
