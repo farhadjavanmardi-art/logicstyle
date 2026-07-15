@@ -7,12 +7,12 @@
 <script>
   const SUPABASE_URL      = "https://owgfhhkmlkdpjqlwavsx.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_xGeaZikMQI8MclH3CnClBg_INoBJ7F-";
-  const SLOTS = ["20:00","21:00"];
+  const SLOTS = ["19:00", "19:30", "20:00", "20:30", "21:00", "21:30"];
   const SERVICES = {
-    haircut:   { de:"Haarschnitt",          en:"Haircut"            },
-    beard_s:   { de:"Bart kurz",             en:"Beard – short"      },
+    haircut:   { de:"Haarschnitt",         en:"Haircut"             },
+    beard_s:   { de:"Bart kurz",             en:"Beard – short"       },
     beard_l:   { de:"Bart lang & Styling",   en:"Beard – long & styling" },
-    color:     { de:"Haarfarbe",             en:"Hair colour"        },
+    color:     { de:"Haarfarbe",             en:"Hair colour"         },
     highlight: { de:"Highlights (Herren)",   en:"Highlights (men)"   },
   };
 </script>
@@ -36,11 +36,46 @@ h1,h2,h3{line-height:1.2;font-weight:800;letter-spacing:-.02em}
 .head h2{font-size:clamp(1.8rem,3.8vw,2.5rem)}
 .head p{color:var(--muted);margin-top:12px}
 
+/* CONTACT TOP BAR */
+.top-bar {
+  background: #0d0d11;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.75rem;
+  color: var(--muted);
+  padding: 8px 0;
+}
+.top-bar-inner {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.top-bar-inner a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+.top-bar-inner a:hover {
+  color: var(--pink);
+}
+.top-bar-inner svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+@media(max-width: 760px) {
+  .top-bar-inner {
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
 /* NAV */
 header{position:sticky;top:0;z-index:50;background:rgba(8,8,10,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;height:54px;gap:10px}
-.brand{font-weight:900;font-size:.82rem;letter-spacing:-.01em;display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden}
-.pip{width:7px;height:7px;border-radius:50%;background:var(--pink);box-shadow:0 0 8px var(--pink);flex:none;display:inline-block}
+.brand{font-weight:900;font-size:.82rem;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;white-space:nowrap;overflow:hidden}
+.brand img{height:30px;width:auto;object-fit:contain;flex-shrink:0}
 .nav-links{display:none;gap:22px;font-size:.88rem;color:var(--muted);margin-inline-start:auto}
 .nav-links a:hover{color:var(--text)}
 @media(min-width:860px){.nav-links{display:flex}}
@@ -168,9 +203,34 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
 </head>
 <body>
 
+<!-- CONTACT TOP BAR -->
+<div class="top-bar">
+  <div class="wrap top-bar-inner">
+    <a href="https://wa.me/491794286020" target="_blank" title="WhatsApp">
+      <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.62.964 3.206 1.448 4.823 1.449 5.423 0 9.834-4.384 9.837-9.778.002-2.613-1.013-5.068-2.86-6.92C16.598 2.051 14.15 1.037 11.543 1.037c-5.424 0-9.835 4.385-9.838 9.779-.001 1.77.49 3.498 1.42 5.032l-.97 3.541 3.636-.951zm12.39-6.2c-.328-.164-1.94-.959-2.241-1.07-.301-.11-.522-.164-.741.164-.219.329-.848 1.07-1.039 1.289-.192.22-.383.247-.711.083-.327-.164-1.383-.51-2.635-1.627-.973-.867-1.63-1.939-1.821-2.267-.192-.329-.02-.507.144-.67.148-.147.328-.384.493-.576.164-.192.219-.329.328-.548.11-.219.055-.411-.027-.575-.082-.164-.741-1.785-1.013-2.443-.266-.64-.537-.553-.741-.564-.192-.01-.41-.012-.629-.012-.218 0-.574.082-.874.411-.3.329-1.147 1.123-1.147 2.737 0 1.614 1.174 3.176 1.339 3.395.164.22 2.31 3.527 5.596 4.947.781.338 1.391.54 1.866.69.784.249 1.497.214 2.061.129.629-.095 1.94-.794 2.214-1.562.274-.767.274-1.424.192-1.562-.082-.138-.3-.22-.628-.384z"/></svg>
+      <span>01794286020</span>
+    </a>
+    <a href="mailto:info@logicstyle-salon.de" title="E-Mail">
+      <svg viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm21.518 2L12 12.79 2.482 5h19.036zm-19.518 14v-11.725l10 8.138 10-8.138v11.725h-20z"/></svg>
+      <span>info@logicstyle-salon.de</span>
+    </a>
+    <a href="https://t.me/Logic_style_salon" target="_blank" title="Telegram Channel">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-.962 4.384-1.362 5.922-.17.65-.41 1.02-.64 1.05-.51.06-.9-.32-1.39-.64-.77-.5-1.21-.81-1.96-1.3-1.04-.68-.36-1.05.23-1.66.15-.16 2.82-2.58 2.87-2.79.01-.03.01-.13-.05-.18-.06-.05-.15-.03-.21-.02-.09.02-1.5 1.03-4.24 2.88-.4.27-.76.41-1.08.4-.35-.01-1.02-.2-1.52-.36-.61-.2-1.1-.31-1.06-.65.02-.18.27-.36.75-.55 2.93-1.28 4.88-2.12 5.86-2.53 2.79-1.16 3.37-1.36 3.75-1.36.08 0 .27.02.39.12.1.08.13.19.14.28-.01.07 0 .17-.01.2z"/></svg>
+      <span>@Logic_style_salon</span>
+    </a>
+    <a href="https://instagram.com/logic_style_salon" target="_blank" title="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      <span>@logic_style_salon</span>
+    </a>
+  </div>
+</div>
+
 <header>
 <div class="wrap nav">
-  <div class="brand"><span class="pip"></span><span data-i="brand">Logic Style · Model Appointments</span></div>
+  <div class="brand">
+    <img src="logo.png" alt="Logo" />
+    <span data-i="brand">Logic Style · Model Appointments</span>
+  </div>
   <nav class="nav-links">
     <a href="#how" data-i="nav_how">How it works</a>
     <a href="#services" data-i="nav_svc">Services</a>
@@ -215,7 +275,7 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
     <p data-i="how_p">In 3 Schritten zum kostenlosen Haarschnitt — und du hilfst uns dabei, die Zukunft des Hairstylings zu entwickeln.</p>
   </div>
   <div class="steps">
-    <div class="step"><div class="num">1</div><h3 data-i="st1_h">Termin buchen</h3><p data-i="st1_p">Wähle einen freien Abendtermin um 20:00 oder 21:00 Uhr und buche ihn kostenlos online.</p></div>
+    <div class="step"><div class="num">1</div><h3 data-i="st1_h">Termin buchen</h3><p data-i="st1_p">Wähle einen freien Abendtermin zwischen 19:00 und 22:00 Uhr und buche ihn kostenlos online.</p></div>
     <div class="step"><div class="num">2</div><h3 data-i="st2_h">KI-Simulation</h3><p data-i="st2_p">Wir testen die Logic Style KI an deinem Foto — du siehst verschiedene Styles, bevor wir anfangen.</p></div>
     <div class="step"><div class="num">3</div><h3 data-i="st3_h">Kostenloser Schnitt</h3><p data-i="st3_p">Du bekommst deinen Wunsch-Style — komplett kostenlos. Keine Kosten, kein Haken.</p></div>
   </div>
@@ -276,7 +336,7 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
   <div class="head">
     <span class="eyebrow" data-i="bk_ey">Kostenlos buchen</span>
     <h2 data-i="bk_h">Termin reservieren</h2>
-    <p data-i="bk_p">Wähle Leistung, Datum und Uhrzeit — fertig.</p>
+    <p data-i="bk_p">Abendtermine täglich von 19:00 bis 22:00 Uhr (30-Minuten-Slots). Grüne Tage sind verfügbar.</p>
   </div>
   <div class="book-card">
     <form id="bookForm">
@@ -350,7 +410,7 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
   </div>
   <details class="faq-item"><summary data-i="q1">Ist das wirklich kostenlos?</summary><div class="ans" data-i="a1">Ja, 100 % kostenlos. Du bist unser Testmodell für die Logic Style KI-Software. Du bekommst einen Haarschnitt, wir bekommen Daten für die Entwicklung. Keine versteckten Kosten.</div></details>
   <details class="faq-item"><summary data-i="q2">Was ist Logic Style?</summary><div class="ans" data-i="a2">Logic Style ist eine KI-Software, die Frisuren, Farben und Bart-Styles realistisch auf Fotos simuliert — für Friseure und Barbers als Beratungstool.</div></details>
-  <details class="faq-item"><summary data-i="q3">Wann sind die Termine?</summary><div class="ans" data-i="a3">Täglich um 20:00 und 21:00 Uhr. Maximal 2 Plätze pro Abend.</div></details>
+  <details class="faq-item"><summary data-i="q3">Wann sind die Termine?</summary><div class="ans" data-i="a3">Täglich zwischen 19:00 und 22:00 Uhr. Je nach ausgewählter Leistung buchst du entweder einen 30-Minuten-Slot oder einen 1-Stunden-Slot (bei 2 Leistungen).</div></details>
   <details class="faq-item"><summary data-i="q4">Was passiert mit meinen Fotos?</summary><div class="ans" data-i="a4">Deine Fotos werden nur zur Simulation in der App verwendet und nicht öffentlich geteilt.</div></details>
   <details class="faq-item"><summary data-i="q5">Wo findet der Termin statt?</summary><div class="ans" data-i="a5">Privat zu Hause. Die genaue Adresse bekommst du nach Buchung via Telegram oder WhatsApp.</div></details>
   <details class="faq-item"><summary data-i="q6">Kann ich absagen?</summary><div class="ans" data-i="a6">Bitte mindestens 24 Stunden vorher via WhatsApp oder Telegram Bescheid geben.</div></details>
@@ -359,8 +419,8 @@ footer{border-top:1px solid var(--line);padding:38px 0;color:var(--muted);font-s
 
 <footer>
 <div class="wrap foot">
-  <div class="foot-brand"><span class="pip"></span> Logic Style · Model Appointments</div>
-  <span data-i="ft_t">Kostenlose Abendtermine · 20:00 & 21:00</span>
+  <div class="foot-brand"><img src="logo.png" alt="Logo" style="height:24px;width:auto;margin-inline-end:8px;vertical-align:middle;" /> Logic Style · Model Appointments</div>
+  <span data-i="ft_t">Kostenlose Abendtermine · 19:00 - 22:00</span>
 </div>
 </footer>
 
@@ -376,7 +436,7 @@ const T={
     h_cta1:"Jetzt kostenlos buchen",h_cta2:"Wie es funktioniert",
     free_note:"100 % kostenlos · Keine versteckten Kosten",
     how_ey:"Der Ablauf",how_h:"So funktioniert es",how_p:"In 3 Schritten zum kostenlosen Haarschnitt — und du hilfst uns dabei, die Zukunft des Hairstylings zu entwickeln.",
-    st1_h:"Termin buchen",st1_p:"Wähle einen freien Abendtermin um 20:00 oder 21:00 Uhr und buche ihn kostenlos.",
+    st1_h:"Termin buchen",st1_p:"Wähle einen freien Abendtermin zwischen 19:00 und 22:00 Uhr und buche ihn kostenlos.",
     st2_h:"KI-Simulation",st2_p:"Wir testen die Logic Style KI an deinem Foto — du siehst verschiedene Styles, bevor wir anfangen.",
     st3_h:"Kostenloser Schnitt",st3_p:"Du bekommst deinen Wunsch-Style — komplett kostenlos. Kein Haken.",
     svc_ey:"Leistungen",svc_h:"Was wir anbieten",svc_p:"Alles kostenlos im Rahmen unserer Software-Entwicklung.",
@@ -385,7 +445,7 @@ const T={
     ai_h:"Sieh deinen neuen Style<br>bevor wir anfangen",
     ai_p:"Unsere KI simuliert Haarschnitte, Farben und Bart-Styles realistisch auf deinem Foto. Du entscheidest, was du willst — dann setzen wir es um.",
     ai_cta:"Zur KI-Vorschau →",
-    bk_ey:"Kostenlos buchen",bk_h:"Termin reservieren",bk_p:"Abendtermine täglich um 20:00 und 21:00 Uhr. Grüne Tage sind verfügbar.",
+    bk_ey:"Kostenlos buchen",bk_h:"Termin reservieren",bk_p:"Abendtermine täglich von 19:00 bis 22:00 Uhr (30-Minuten-Slots). Grüne Tage sind verfügbar.",
     step1:"① Leistung wählen (max. 2)",step2:"② Datum & Uhrzeit",step3:"③ Kontaktdaten",f_fn:"Vorname",f_ln:"Nachname",f_wa:"WhatsApp",f_tg:"Telegram",
     f_dt:"Datum wählen",f_sl:"Uhrzeit wählen",f_nt:"Anmerkungen",f_sub:"Kostenlos buchen",
     leg_f:"Verfügbar",leg_b:"Ausgebucht",
@@ -393,11 +453,11 @@ const T={
     fq_ey:"FAQ",fq_h:"Häufige Fragen",
     q1:"Ist das wirklich kostenlos?",a1:"Ja, 100 % kostenlos. Du bist unser Testmodell für die Logic Style KI-Software. Kein Haken.",
     q2:"Was ist Logic Style?",a2:"Eine KI-Software, die Frisuren, Farben und Bart-Styles realistisch auf Fotos simuliert — als Beratungstool für Friseure und Barbers.",
-    q3:"Wann sind die Termine?",a3:"Täglich um 20:00 und 21:00 Uhr. Maximal 2 Plätze pro Abend.",
+    q3:"Wann sind die Termine?",a3:"Täglich zwischen 19:00 und 22:00 Uhr. Je nach gewählter Leistung 30 oder 60 Minuten lang.",
     q4:"Was passiert mit meinen Fotos?",a4:"Deine Fotos werden nur zur Simulation in der App verwendet und nicht öffentlich geteilt.",
     q5:"Wo findet der Termin statt?",a5:"Privat zu Hause. Adresse nach Buchung via Telegram oder WhatsApp.",
     q6:"Kann ich absagen?",a6:"Bitte mindestens 24 Stunden vorher via WhatsApp oder Telegram Bescheid geben.",
-    ft_t:"Kostenlose Abendtermine · 20:00 & 21:00",
+    ft_t:"Kostenlose Abendtermine · 19:00 - 22:00",
     ok:"✅ Termin gebucht! Du bekommst bald eine Bestätigung via Telegram/WhatsApp.",
     sending:"Wird gesendet…",err:"Fehler. Bitte nochmals versuchen.",
     e_svc:"Bitte wähle eine Leistung.",e_date:"Bitte wähle ein Datum.",e_slot:"Bitte wähle eine Uhrzeit.",
@@ -413,7 +473,7 @@ const T={
     h_cta1:"Book for free now",h_cta2:"How it works",
     free_note:"100% free · No hidden costs",
     how_ey:"The process",how_h:"How it works",how_p:"3 steps to a free haircut — and you help us build the future of hairstyling.",
-    st1_h:"Book a slot",st1_p:"Pick a free evening slot at 20:00 or 21:00 and book it online for free.",
+    st1_h:"Book a slot",st1_p:"Pick a free evening slot between 19:00 and 22:00 and book it online for free.",
     st2_h:"AI simulation",st2_p:"We test the Logic Style AI on your photo — you see different styles before we start.",
     st3_h:"Free cut",st3_p:"You get the style you want — completely free. No catch.",
     svc_ey:"Services",svc_h:"What we offer",svc_p:"Everything free as part of our software development.",
@@ -422,7 +482,7 @@ const T={
     ai_h:"See your new style<br>before we start",
     ai_p:"Our AI simulates haircuts, colours and beard styles realistically on your photo. You decide what you want — then we make it happen.",
     ai_cta:"Open AI preview →",
-    bk_ey:"Book for free",bk_h:"Reserve your slot",bk_p:"Evening slots daily at 20:00 and 21:00. Green days are available.",
+    bk_ey:"Book for free",bk_h:"Reserve your slot",bk_p:"Evening slots daily from 19:00 to 22:00 (30-minute slots). Green days are available.",
     step1:"① Choose service (max. 2)",step2:"② Date & time",step3:"③ Your details",f_fn:"First name",f_ln:"Last name",f_wa:"WhatsApp",f_tg:"Telegram",
     f_dt:"Choose a date",f_sl:"Choose a time",f_nt:"Notes",f_sub:"Book for free",
     leg_f:"Available",leg_b:"Booked",
@@ -430,11 +490,11 @@ const T={
     fq_ey:"FAQ",fq_h:"Frequently asked questions",
     q1:"Is this really free?",a1:"Yes, 100% free. You're our test model for the Logic Style AI software. No hidden costs, no catch.",
     q2:"What is Logic Style?",a2:"An AI tool that realistically simulates haircuts, colours and beard styles on photos — as a consultation tool for hairdressers and barbers.",
-    q3:"When are the slots?",a3:"Daily at 20:00 and 21:00. Maximum 2 spots per evening.",
+    q3:"When are the slots?",a3:"Daily between 19:00 and 22:00. Depending on selected services, either 30 or 60 minutes long.",
     q4:"What happens to my photos?",a4:"Your photos are used only for simulation within the app and are not shared publicly.",
     q5:"Where does the appointment take place?",a5:"At home privately. You'll get the exact address after booking via Telegram or WhatsApp.",
     q6:"Can I cancel?",a6:"Please let us know at least 24 hours in advance via WhatsApp or Telegram.",
-    ft_t:"Free evening slots · 20:00 & 21:00",
+    ft_t:"Free evening slots · 19:00 - 22:00",
     ok:"✅ Booked! You'll receive a confirmation via Telegram/WhatsApp shortly.",
     sending:"Sending…",err:"Error. Please try again.",
     e_svc:"Please select a service.",e_date:"Please select a date.",e_slot:"Please select a time.",
@@ -449,7 +509,10 @@ function setLang(l){
   document.documentElement.lang=l;
   document.getElementById("lde").classList.toggle("on",l==="de");
   document.getElementById("len").classList.toggle("on",l==="en");
-  document.querySelectorAll("[data-i]").forEach(el=>{const k=el.getAttribute("data-i");if(t[k]!==undefined)el.innerHTML=t[k];});
+  document.querySelectorAll("[data-i]").forEach(el=>{
+    const k=el.getAttribute("data-i");
+    if(t[k]!==undefined)el.innerHTML=t[k];
+  });
   Object.keys(SERVICES).forEach(k=>{
     const el=document.querySelector(`#svc_${k} h3`);if(el)el.textContent=SERVICES[k][l==="en"?"en":"de"];
     const el2=document.querySelector(`#fp_${k} span:nth-child(2)`);if(el2)el2.textContent=SERVICES[k][l==="en"?"en":"de"];
@@ -477,6 +540,9 @@ function toggleSvc(k){
     document.getElementById("fp_"+k)?.classList.add("on");
   }
   document.getElementById("sel_svc_in").value=selSvcs.join(",");
+  // Reset selected slot on service change since duration/availability constraints might change
+  document.getElementById("sel_slot").value="";
+  renderSlots();
   updateSum();
 }
 
@@ -494,7 +560,10 @@ function renderCal(){
   for(let d=1;d<=dim;d++){
     const dt=new Date(calY,calM,d),k=ymd(dt);let cls="cal-day";
     if(dt<TODAY)cls+=" dis";
-    else{const tk=booked[k]||[];cls+=tk.length>=SLOTS.length?" full":" free";}
+    else{
+      const tk=booked[k]||[];
+      cls+=tk.length>=SLOTS.length?" full":" free";
+    }
     if(selDate&&k===ymd(selDate))cls+=" on";
     c+=`<div class="${cls}" data-d="${k}">${d}</div>`;
   }
@@ -512,12 +581,26 @@ function pickDate(k){
   document.getElementById("slot_wrap").hidden=false;
   renderCal();renderSlots();updateSum();
 }
+
 function renderSlots(){
   if(!selDate){document.getElementById("slot_wrap").hidden=true;return;}
   const k=ymd(selDate),taken=booked[k]||[],cur=document.getElementById("sel_slot").value;
-  document.getElementById("slotsEl").innerHTML=SLOTS.map(s=>{
-    const full=taken.includes(s),on=cur===s;
-    return `<div class="slot${full?" taken":""}${on?" on":""}" ${full?"":` onclick="pickSlot('${s}')"`}>${s}</div>`;
+  const needTwo = selSvcs.length >= 2; // e.g. 1 hour needed
+
+  document.getElementById("slotsEl").innerHTML=SLOTS.map((s, idx)=>{
+    let isTaken = taken.includes(s);
+    if (!isTaken && needTwo) {
+      if (idx + 1 >= SLOTS.length) {
+        isTaken = true; // No next consecutive slot exists in the calendar range
+      } else {
+        const nextSlot = SLOTS[idx + 1];
+        if (taken.includes(nextSlot)) {
+          isTaken = true; // Next consecutive slot is already booked
+        }
+      }
+    }
+    const on=cur===s;
+    return `<div class="slot${isTaken?" taken":""}${on?" on":""}" ${isTaken?"":` onclick="pickSlot('${s}')"`}>${s}</div>`;
   }).join("");
 }
 function pickSlot(s){document.getElementById("sel_slot").value=s;renderSlots();updateSum();}
@@ -530,7 +613,26 @@ function updateSum(){
   const svcNames=selSvcs.map(k=>SERVICES[k][lang==="en"?"en":"de"]).join(" + ")||"—";
   document.getElementById("ss_s_v").textContent=svcNames;
   document.getElementById("ss_d_v").textContent=dt?fmtD(dt):"—";
-  document.getElementById("ss_t_v").textContent=sl||"—";
+  
+  let slotStr = sl || "—";
+  if (sl) {
+    const idx = SLOTS.indexOf(sl);
+    const nextTimes = {
+      "19:00": ["19:30", "20:00"],
+      "19:30": ["20:00", "20:30"],
+      "20:00": ["20:30", "21:00"],
+      "20:30": ["21:00", "21:30"],
+      "21:00": ["21:30", "22:00"],
+      "21:30": ["22:00", "22:30"]
+    };
+    const ends = nextTimes[sl];
+    if (ends) {
+      const numSlots = Math.max(1, selSvcs.length);
+      const end = ends[numSlots - 1] || ends[0];
+      slotStr = `${sl} - ${end}`;
+    }
+  }
+  document.getElementById("ss_t_v").textContent=slotStr;
 }
 
 const cfg=SUPABASE_URL&&!SUPABASE_URL.startsWith("YOUR_");
@@ -541,7 +643,20 @@ async function fetchBooked(){
   if(!sb)return;
   try{
     const{data,error}=await sb.rpc("salon_get_booked_slots");
-    if(!error&&data)data.forEach(r=>{if(!booked[r.booking_date])booked[r.booking_date]=[];booked[r.booking_date].push(r.booking_slot);});
+    if(!error&&data){
+      data.forEach(r=>{
+        if(!booked[r.booking_date])booked[r.booking_date]=[];
+        booked[r.booking_date].push(r.booking_slot);
+        
+        // If service contains multiple items (comma-separated), it blocks both start slot and next slot
+        if (r.service && r.service.includes(",")) {
+          const idx = SLOTS.indexOf(r.booking_slot);
+          if (idx > -1 && idx + 1 < SLOTS.length) {
+            booked[r.booking_date].push(SLOTS[idx + 1]);
+          }
+        }
+      });
+    }
   }catch(e){console.warn(e);}
   renderCal();if(selDate)renderSlots();
 }
