@@ -11,8 +11,8 @@
   const TELEGRAM_CHAT_ID  = "822853301";
   const ADMIN_EMAIL       = "farhadjavanmardi@icloud.com";
 
-  const SVC_DE={haircut_classic:"Haarschnitt Classic",haircut_trend:"Haarschnitt Trend / Fade",beard_s:"Bart kurz",beard_l:"Bart lang & Styling",wash_style:"Waschen & Styling",keratin:"Keratin-Behandlung",perm:"Dauerwelle",color:"Haarfarbe",highlight:"Strähnen / Mesh",eyebrows:"Augenbrauen",kids:"Kinderhaarschnitt"};
-  const SVC_FA={haircut_classic:"اصلاح کلاسیک",haircut_trend:"اصلاح ترند / فید",beard_s:"ریش کوتاه",beard_l:"ریش بلند و استایل",wash_style:"شستشو و استایل",keratin:"کراتین",perm:"فر (دائمی)",color:"رنگ مو",highlight:"هایلایت / مش",eyebrows:"اصلاح ابرو",kids:"اصلاح کودک"};
+  const SVC_DE={haircut:"Haarschnitt",beard_s:"Bart kurz",beard_l:"Bart lang & Styling",color:"Haarfarbe",highlight:"Highlights"};
+  const SVC_FA={haircut:"اصلاح مو",beard_s:"ریش کوتاه",beard_l:"ریش بلند",color:"رنگ مو",highlight:"هایلایت"};
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -86,6 +86,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
 .exp-row{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:.88rem}
 .exp-row .l span{color:var(--muted);font-size:.76rem;margin-inline-start:8px}
 .exp-del{background:none;border:0;color:#f0a0a0;cursor:pointer;font-size:1rem}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.photo-card{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1}
+.photo-card img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-card .del{position:absolute;top:4px;inset-inline-end:4px;background:rgba(0,0,0,.6);border:0;color:#f0a0a0;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.85rem;line-height:1}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -115,6 +119,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
   <div class="tabs">
     <button class="tab on" id="tRes" onclick="setTab('res')">Termine</button>
     <button class="tab" id="tAcc" onclick="setTab('acc')">Buchhaltung</button>
+    <button class="tab" id="tInsta" onclick="setTab('insta')">Instagram</button>
   </div>
 
   <!-- TERMINE -->
@@ -156,6 +161,25 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
     <div class="cat-grid" id="catGrid"></div>
     <div class="acc-h">Alle Ausgaben</div>
     <div id="expList"></div>
+  </div>
+
+  <!-- INSTAGRAM -->
+  <div id="pInsta" hidden>
+    <div class="kpis" id="instaKpis"></div>
+
+    <div class="acc-h">📮 Feed-Post (insta-photos)</div>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px">Diese Fotos werden täglich um 12:00 Uhr der Reihe nach automatisch als Instagram-Post veröffentlicht (mit fester Bildunterschrift).</p>
+    <input type="file" id="feedFile" accept="image/*" multiple style="margin-bottom:8px">
+    <button class="btn sm" onclick="uploadPhotos('insta-photos','feedFile','feedGrid')">Hochladen</button>
+    <div class="err" id="feedErr" style="margin-top:8px"></div>
+    <div class="photo-grid" id="feedGrid" style="margin-top:14px"></div>
+
+    <div class="acc-h" style="margin-top:28px">📱 Story (story-photos)</div>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px">Diese Fotos werden täglich um 18:00 Uhr der Reihe nach automatisch als Instagram-Story veröffentlicht.</p>
+    <input type="file" id="storyFile" accept="image/*" multiple style="margin-bottom:8px">
+    <button class="btn sm" onclick="uploadPhotos('story-photos','storyFile','storyGrid')">Hochladen</button>
+    <div class="err" id="storyErr" style="margin-top:8px"></div>
+    <div class="photo-grid" id="storyGrid" style="margin-top:14px"></div>
   </div>
 </div>
 </div>
@@ -200,9 +224,12 @@ function setTab(t){
   tab=t;
   document.getElementById("tRes").classList.toggle("on",t==="res");
   document.getElementById("tAcc").classList.toggle("on",t==="acc");
+  document.getElementById("tInsta").classList.toggle("on",t==="insta");
   document.getElementById("pRes").hidden=t!=="res";
   document.getElementById("pAcc").hidden=t!=="acc";
+  document.getElementById("pInsta").hidden=t!=="insta";
   if(t==="acc")loadExp();
+  if(t==="insta")loadInstaPhotos();
 }
 
 /* status */
@@ -232,7 +259,7 @@ function normPhone(p){
   return s;
 }
 function buildMsg(r){
-  const svc=r.service?.split(",").map(s=>({haircut_classic:"Haarschnitt Classic ✂️",haircut_trend:"Haarschnitt Trend/Fade 💈",beard_s:"Bart kurz 🪒",beard_l:"Bart lang & Styling 🧔",wash_style:"Waschen & Styling 🚿",keratin:"Keratin-Behandlung 💧",perm:"Dauerwelle 🌀",color:"Haarfarbe 🎨",highlight:"Strähnen / Mesh ✨",eyebrows:"Augenbrauen 👁️",kids:"Kinderhaarschnitt 🧒"}[s]||s)).join(" + ")||"—";
+  const svc=r.service?.split(",").map(s=>({haircut:"Haarschnitt ✂️",beard_s:"Bart kurz 🪒",beard_l:"Bart lang & Styling 🧔",color:"Haarfarbe 🎨",highlight:"Highlights ✨"}[s]||s)).join(" + ")||"—";
   const d=new Date(r.booking_date+"T00:00:00").toLocaleDateString("de-DE");
   return `Hallo ${r.first_name}! 👋\n\nDein Termin bei Logic Style Salon ist bestätigt ✅\n\n✂️ Leistung: ${svc}\n📅 Datum: ${d}\n🕗 Uhrzeit: ${r.booking_slot}\n\n📍 Adresse:\nWelfenstraße 30, 3. Etage\n76137 Karlsruhe\n👤 Javanmardi\n📞 01794286020\n\nBis dann! 😊`;
 }
@@ -274,7 +301,6 @@ function render(){
           <div class="meta">📅 ${r.booking_date} · ${r.booking_slot||"—"} · ✂️ ${SVC_DE[r.service]||r.service||"—"}</div>
           <div class="meta">📞 ${esc(r.phone||"")}${r.telegram?` · ✈️ ${esc(r.telegram)}`:""}${r.email?` · ✉️ ${esc(r.email)}`:""}
           </div>
-          <div class="meta">📸 Foto-Einverständnis: ${r.photo_consent?'<span style="color:#74e0a0">Ja ✓</span>':'<span style="color:#f0a0a0">Nein ✗</span>'}</div>
         </div>
         <span class="badge ${r.status}">${r.status==="confirmed"?"Bestätigt":r.status==="pending"?"Ausstehend":"Abgesagt"}</span>
       </div>
@@ -336,6 +362,49 @@ function renderAcc(){
       <div class="l"><b>${CAT[e.category]||e.category}</b><span>${e.date}${e.description?" · "+esc(e.description):""}</span></div>
       <div style="display:flex;align-items:center;gap:12px"><b>${(e.amount_eur||0).toFixed(2)} €</b><button class="exp-del" onclick="delExp('${e.id}')">🗑️</button></div>
     </div>`).join("");
+}
+
+/* instagram photo buckets */
+async function loadInstaPhotos(){
+  if(!sb)return;
+  const feed=await sb.storage.from('insta-photos').list('',{sortBy:{column:'name',order:'asc'}});
+  const story=await sb.storage.from('story-photos').list('',{sortBy:{column:'name',order:'asc'}});
+  renderPhotoGrid('feedGrid','insta-photos',feed.data||[]);
+  renderPhotoGrid('storyGrid','story-photos',story.data||[]);
+  document.getElementById('instaKpis').innerHTML=
+    `<div class="kpi"><b>${(feed.data||[]).length}</b><span>Fotos im Feed-Post-Pool</span></div>`+
+    `<div class="kpi"><b>${(story.data||[]).length}</b><span>Fotos im Story-Pool</span></div>`;
+}
+function renderPhotoGrid(elId,bucket,files){
+  const base=`${SUPABASE_URL}/storage/v1/object/public/${bucket}/`;
+  const el=document.getElementById(elId);
+  if(!files.length){el.innerHTML=`<div class="empty">Noch keine Fotos hochgeladen.</div>`;return;}
+  el.innerHTML=files.map(f=>`
+    <div class="photo-card">
+      <img src="${base}${encodeURIComponent(f.name)}" loading="lazy">
+      <button class="del" onclick="deletePhoto('${bucket}','${f.name.replace(/'/g,"\\'")}','${elId}')">×</button>
+    </div>`).join('');
+}
+async function uploadPhotos(bucket,inputId,gridId){
+  if(!sb)return;
+  const input=document.getElementById(inputId);
+  const errId=bucket==='insta-photos'?'feedErr':'storyErr';
+  const err=document.getElementById(errId);err.textContent='';
+  const files=input.files;
+  if(!files||!files.length){err.textContent='Bitte zuerst Fotos auswählen.';return;}
+  for(const file of files){
+    const path=`${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const{error}=await sb.storage.from(bucket).upload(path,file,{cacheControl:'3600',upsert:false});
+    if(error){err.textContent='Fehler beim Hochladen: '+error.message;return;}
+  }
+  input.value='';
+  loadInstaPhotos();
+}
+async function deletePhoto(bucket,name,gridId){
+  if(!sb)return;
+  if(!confirm('Dieses Foto wirklich löschen?'))return;
+  const{error}=await sb.storage.from(bucket).remove([name]);
+  if(!error)loadInstaPhotos();
 }
 
 /* init */
