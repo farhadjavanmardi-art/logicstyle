@@ -177,7 +177,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
       <label style="margin-inline-end:14px"><input type="radio" name="igKind" value="post" checked> پست فید</label>
       <label><input type="radio" name="igKind" value="story"> استوری</label>
     </div>
-    <textarea id="igCaption" placeholder="کپشن (فقط برای پست، نه استوری)" style="width:100%;min-height:70px;margin-bottom:8px"></textarea>
+    <textarea id="igCaption" placeholder="کپشن (فقط برای پست، نه استوری)" style="width:100%;min-height:120px;margin-bottom:8px"></textarea>
     <button class="btn sm" onclick="queueContent('instagram')">افزودن به صف انتشار</button>
     <div class="err" id="igErr" style="margin-top:8px"></div>
     <div class="acc-h" style="margin-top:24px">تاریخچه صف</div>
@@ -188,7 +188,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
   <div id="pTg" hidden>
     <div class="acc-h">✈️ محتوای جدید برای تلگرام</div>
     <input type="file" id="tgFile" accept="image/*" capture="environment" style="margin-bottom:8px">
-    <textarea id="tgCaption" placeholder="کپشن پیام" style="width:100%;min-height:70px;margin-bottom:8px"></textarea>
+    <textarea id="tgCaption" placeholder="کپشن پیام" style="width:100%;min-height:120px;margin-bottom:8px"></textarea>
     <button class="btn sm" onclick="queueContent('telegram')">افزودن به صف انتشار</button>
     <div class="err" id="tgErr" style="margin-top:8px"></div>
     <div class="acc-h" style="margin-top:24px">تاریخچه صف</div>
@@ -381,6 +381,18 @@ function renderAcc(){
 }
 
 /* content queue: instagram + telegram */
+const DEFAULT_CAPTION = `✂️ Was ist Logic Style?
+
+Logic Style ist unsere KI-Software, die Frisuren, Bart-Styles und Farben realistisch auf Fotos simuliert — als Beratungstool für Friseure & Barbers.
+
+Um unsere Software weiter zu verbessern, haben wir uns entschieden: Haarschnitt, Bart-Styling oder Coloration bei uns bekommst du kostenlos, im Austausch dafür, dass wir dein Vorher/Nachher-Foto für die Entwicklung nutzen dürfen.
+
+Falls es für dich okay ist, dass wir dein Foto auch auf Instagram, Telegram oder in unserer Galerie veröffentlichen, freuen wir uns riesig! Melde dich einfach über unsere Website an:
+👉 https://www.logicstyle-salon.de
+
+📸 Instagram: https://www.instagram.com/logic_style_salon/
+✈️ Telegram: @Logicstyle_news`;
+
 async function queueContent(platform){
   if(!sb)return;
   const errId=platform==='instagram'?'igErr':'tgErr';
@@ -400,8 +412,8 @@ async function queueContent(platform){
   if(insErr){err.textContent='خطا در ثبت صف: '+insErr.message;return;}
 
   fileInput.value='';
-  if(platform==='instagram'){document.getElementById('igCaption').value='';loadQueue('instagram','igQueueList');}
-  else{document.getElementById('tgCaption').value='';loadQueue('telegram','tgQueueList');}
+  if(platform==='instagram'){document.getElementById('igCaption').value=DEFAULT_CAPTION;loadQueue('instagram','igQueueList');}
+  else{document.getElementById('tgCaption').value=DEFAULT_CAPTION;loadQueue('telegram','tgQueueList');}
 }
 async function loadQueue(platform,elId){
   if(!sb)return;
@@ -423,6 +435,7 @@ async function loadQueue(platform,elId){
 
 /* init */
 (function(){const d=document.getElementById("exp_d");if(d)d.value=new Date().toISOString().split("T")[0];})();
+(function(){const a=document.getElementById("igCaption"),b=document.getElementById("tgCaption");if(a)a.value=DEFAULT_CAPTION;if(b)b.value=DEFAULT_CAPTION;})();
 checkSession();
 </script>
 </body>
