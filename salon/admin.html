@@ -172,17 +172,20 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
   <!-- INSTAGRAM -->
   <div id="pInsta" hidden>
     <div class="acc-h">📸 محتوای جدید برای اینستاگرام</div>
-    <input type="file" id="igFile" accept="image/*" capture="environment" style="margin-bottom:8px">
+    <input type="file" id="igFile" accept="image/*" multiple style="margin-bottom:6px" onchange="igFilesChanged()">
+    <div class="err" id="igCountHint" style="margin-bottom:8px;color:var(--muted);font-size:.78rem"></div>
     <div style="margin:10px 0">
-      <label style="margin-inline-end:14px"><input type="radio" name="igKind" value="post" checked> پست فید</label>
-      <label><input type="radio" name="igKind" value="story"> استوری</label>
+      <label style="margin-inline-end:14px"><input type="radio" name="igKind" value="post" checked onchange="igFilesChanged()"> پست فید (۱ عکس)</label>
+      <label style="margin-inline-end:14px"><input type="radio" name="igKind" value="carousel" onchange="igFilesChanged()"> کاروسل / چند اسلاید (۲ تا ۱۰ عکس)</label>
+      <label><input type="radio" name="igKind" value="story" onchange="igFilesChanged()"> استوری (۱ عکس)</label>
     </div>
-    <textarea id="igCaption" placeholder="کپشن (فقط برای پست، نه استوری)" style="width:100%;min-height:120px;margin-bottom:8px"></textarea>
+    <textarea id="igCaption" placeholder="کپشن (فقط برای پست/کاروسل، نه استوری)" style="width:100%;min-height:120px;margin-bottom:8px"></textarea>
     <button class="btn sm" onclick="queueContent('instagram')">افزودن به صف انتشار</button>
     <div class="err" id="igErr" style="margin-top:8px"></div>
     <div class="acc-h" style="margin-top:24px">تاریخچه صف</div>
     <div id="igQueueList"></div>
   </div>
+
 
   <!-- TELEGRAM -->
   <div id="pTg" hidden>
@@ -393,26 +396,49 @@ Falls es für dich okay ist, dass wir dein Foto auch auf Instagram, Telegram ode
 📸 Instagram: https://www.instagram.com/logic_style_salon/
 ✈️ Telegram: @Logicstyle_news`;
 
+function igFilesChanged(){
+  const kind=document.querySelector('input[name="igKind"]:checked').value;
+  const n=(document.getElementById('igFile').files||[]).length;
+  const hint=document.getElementById('igCountHint');
+  if(kind==='carousel'){
+    hint.textContent=n?`${n} عکس انتخاب شده (باید بین ۲ تا ۱۰ تا باشه).`:'برای کاروسل، ۲ تا ۱۰ عکس انتخاب کن.';
+  } else {
+    hint.textContent=n>1?'برای این نوع فقط عکس اول استفاده می‌شه.':'';
+  }
+}
+
 async function queueContent(platform){
   if(!sb)return;
   const errId=platform==='instagram'?'igErr':'tgErr';
   const err=document.getElementById(errId);err.textContent='';
   const fileInput=document.getElementById(platform==='instagram'?'igFile':'tgFile');
-  const file=fileInput.files&&fileInput.files[0];
-  if(!file){err.textContent='لطفاً اول یه عکس انتخاب/بگیر.';return;}
+  const files=Array.from(fileInput.files||[]);
+  if(!files.length){err.textContent='لطفاً اول یه عکس انتخاب/بگیر.';return;}
   const kind=platform==='instagram'?(document.querySelector('input[name="igKind"]:checked').value):'post';
   const caption=(platform==='instagram'?document.getElementById('igCaption'):document.getElementById('tgCaption')).value.trim()||null;
 
-  const path=`${platform}_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-  const{error:upErr}=await sb.storage.from('content-uploads').upload(path,file,{cacheControl:'3600',upsert:false});
-  if(upErr){err.textContent='خطا در آپلود عکس: '+upErr.message;return;}
-  const image_url=`${SUPABASE_URL}/storage/v1/object/public/content-uploads/${path}`;
+  if(kind==='carousel'){
+    if(files.length<2||files.length>10){err.textContent='برای کاروسل باید بین ۲ تا ۱۰ عکس انتخاب کنی.';return;}
+  }
+  const toUpload=kind==='carousel'?files:[files[0]];
 
-  const{error:insErr}=await sb.from('content_queue').insert({platform,kind,image_url,caption,status:'pending'});
+  const urls=[];
+  for(const file of toUpload){
+    const path=`${platform}_${Date.now()}_${Math.random().toString(36).slice(2,7)}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const{error:upErr}=await sb.storage.from('content-uploads').upload(path,file,{cacheControl:'3600',upsert:false});
+    if(upErr){err.textContent='خطا در آپلود عکس: '+upErr.message;return;}
+    urls.push(`${SUPABASE_URL}/storage/v1/object/public/content-uploads/${path}`);
+  }
+
+  const row=kind==='carousel'
+    ?{platform,kind,image_url:urls[0],image_urls:urls,caption,status:'pending'}
+    :{platform,kind,image_url:urls[0],image_urls:null,caption,status:'pending'};
+
+  const{error:insErr}=await sb.from('content_queue').insert(row);
   if(insErr){err.textContent='خطا در ثبت صف: '+insErr.message;return;}
 
   fileInput.value='';
-  if(platform==='instagram'){document.getElementById('igCaption').value=DEFAULT_CAPTION;loadQueue('instagram','igQueueList');}
+  if(platform==='instagram'){document.getElementById('igCaption').value=DEFAULT_CAPTION;document.getElementById('igCountHint').textContent='';loadQueue('instagram','igQueueList');}
   else{document.getElementById('tgCaption').value=DEFAULT_CAPTION;loadQueue('telegram','tgQueueList');}
 }
 async function loadQueue(platform,elId){
@@ -422,11 +448,12 @@ async function loadQueue(platform,elId){
   if(error){el.innerHTML=`<div class="empty">خطا در بارگذاری صف.</div>`;return;}
   if(!data||!data.length){el.innerHTML=`<div class="empty">هنوز چیزی توی صف نیست.</div>`;return;}
   const statusLabel={pending:'⏳ در انتظار',posted:'✅ منتشر شد',failed:'❌ خطا'};
+  const kindLabel={story:'استوری',carousel:'کاروسل',post:'پست'};
   el.innerHTML=data.map(r=>`
     <div class="queue-row">
       <img src="${r.image_url}" loading="lazy">
       <div class="qmeta">
-        <div>${r.kind==='story'?'استوری':'پست'} — ${statusLabel[r.status]||r.status}</div>
+        <div>${kindLabel[r.kind]||r.kind}${r.kind==='carousel'&&r.image_urls?` (${r.image_urls.length} عکس)`:''} — ${statusLabel[r.status]||r.status}</div>
         <div class="qcap">${r.caption?esc(r.caption):''}</div>
         ${r.status==='failed'&&r.error?`<div class="qerr">${esc(r.error)}</div>`:''}
       </div>
