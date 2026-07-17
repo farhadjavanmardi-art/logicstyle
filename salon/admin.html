@@ -19,7 +19,9 @@
 <style>
 :root{--bg:#08080A;--surface:#101014;--surface-2:#18181E;--line:#242428;--pink:#FF1F6E;--text:#F5F0F3;--muted:#7A7484;--radius:14px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:"Sora",system-ui,sans-serif;line-height:1.6}
+html{overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:"Sora",system-ui,sans-serif;line-height:1.6;overflow-x:hidden;max-width:100vw}
+img{max-width:100%}
 .wrap{max-width:1080px;margin:0 auto;padding:22px}
 .pip{width:8px;height:8px;border-radius:50%;background:var(--pink);box-shadow:0 0 10px var(--pink);display:inline-block}
 .brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:1.05rem}
@@ -46,8 +48,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
 .err{color:#f0a0a0;font-size:.85rem;margin-top:8px}
 
 /* dashboard */
-.tabs{display:flex;gap:8px;margin:20px 0 16px}
-.tab{background:var(--surface);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 18px;cursor:pointer;font:inherit;font-weight:600;font-size:.88rem}
+.tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:8px;margin:20px 0 16px;scrollbar-width:none;padding-bottom:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:var(--surface);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 18px;cursor:pointer;font:inherit;font-weight:600;font-size:.88rem;white-space:nowrap;flex:0 0 auto}
 .tab.on{background:var(--pink);color:#fff;border-color:var(--pink)}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
@@ -96,8 +99,17 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
 .qcap{color:var(--muted);font-size:.78rem;margin-top:2px}
 .qerr{color:#f0a0a0;font-size:.75rem;margin-top:2px}
 [hidden]{display:none!important}
+input[type=file]{width:100%;max-width:100%}
+@media(max-width:480px){
+  .wrap{padding:14px}
+  .tab{padding:7px 13px;font-size:.8rem}
+  .kpi b{font-size:1.2rem}
+  .brand{font-size:.92rem}
+  .card .name{font-size:.92rem}
+}
 </style>
 </head>
+
 <body>
 
 <!-- LOGIN -->
@@ -174,9 +186,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
     <div class="acc-h">📸 محتوای جدید برای اینستاگرام</div>
     <input type="file" id="igFile" accept="image/*" multiple style="margin-bottom:6px" onchange="igFilesChanged()">
     <div class="err" id="igCountHint" style="margin-bottom:8px;color:var(--muted);font-size:.78rem"></div>
-    <div style="margin:10px 0">
-      <label style="margin-inline-end:14px"><input type="radio" name="igKind" value="post" checked onchange="igFilesChanged()"> پست فید (۱ عکس)</label>
-      <label style="margin-inline-end:14px"><input type="radio" name="igKind" value="carousel" onchange="igFilesChanged()"> کاروسل / چند اسلاید (۲ تا ۱۰ عکس)</label>
+    <div style="margin:10px 0;display:flex;flex-wrap:wrap;gap:6px 14px">
+      <label><input type="radio" name="igKind" value="post" checked onchange="igFilesChanged()"> پست فید (۱ عکس)</label>
+      <label><input type="radio" name="igKind" value="carousel" onchange="igFilesChanged()"> کاروسل / چند اسلاید (۲ تا ۱۰ عکس)</label>
       <label><input type="radio" name="igKind" value="story" onchange="igFilesChanged()"> استوری (۱ عکس)</label>
     </div>
     <textarea id="igCaption" placeholder="کپشن (فقط برای پست/کاروسل، نه استوری)" style="width:100%;min-height:120px;margin-bottom:8px"></textarea>
@@ -190,7 +202,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
   <!-- TELEGRAM -->
   <div id="pTg" hidden>
     <div class="acc-h">✈️ محتوای جدید برای تلگرام</div>
-    <input type="file" id="tgFile" accept="image/*" style="margin-bottom:8px">
+    <input type="file" id="tgFile" accept="image/*" multiple style="margin-bottom:6px" onchange="tgFilesChanged()">
+    <div class="err" id="tgCountHint" style="margin-bottom:8px;color:var(--muted);font-size:.78rem"></div>
     <textarea id="tgCaption" placeholder="کپشن پیام" style="width:100%;min-height:120px;margin-bottom:8px"></textarea>
     <button class="btn sm" onclick="queueContent('telegram')">افزودن به صف انتشار</button>
     <div class="err" id="tgErr" style="margin-top:8px"></div>
@@ -406,6 +419,11 @@ function igFilesChanged(){
     hint.textContent=n>1?'برای این نوع فقط عکس اول استفاده می‌شه.':'';
   }
 }
+function tgFilesChanged(){
+  const n=(document.getElementById('tgFile').files||[]).length;
+  const hint=document.getElementById('tgCountHint');
+  hint.textContent=n>1?`${n} عکس انتخاب شده — به‌صورت آلبوم (حداکثر ۱۰ تا) فرستاده می‌شه.`:'';
+}
 
 async function queueContent(platform){
   if(!sb)return;
@@ -417,10 +435,11 @@ async function queueContent(platform){
   const kind=platform==='instagram'?(document.querySelector('input[name="igKind"]:checked').value):'post';
   const caption=(platform==='instagram'?document.getElementById('igCaption'):document.getElementById('tgCaption')).value.trim()||null;
 
-  if(kind==='carousel'){
-    if(files.length<2||files.length>10){err.textContent='برای کاروسل باید بین ۲ تا ۱۰ عکس انتخاب کنی.';return;}
-  }
-  const toUpload=kind==='carousel'?files:[files[0]];
+  if(kind==='carousel'&&(files.length<2||files.length>10)){err.textContent='برای کاروسل باید بین ۲ تا ۱۰ عکس انتخاب کنی.';return;}
+  if(platform==='telegram'&&files.length>10){err.textContent='حداکثر ۱۰ عکس برای یه آلبوم تلگرام.';return;}
+
+  const isMulti=kind==='carousel'||(platform==='telegram'&&files.length>1);
+  const toUpload=isMulti?files:[files[0]];
 
   const urls=[];
   for(const file of toUpload){
@@ -430,7 +449,7 @@ async function queueContent(platform){
     urls.push(`${SUPABASE_URL}/storage/v1/object/public/content-uploads/${path}`);
   }
 
-  const row=kind==='carousel'
+  const row=isMulti
     ?{platform,kind,image_url:urls[0],image_urls:urls,caption,status:'pending'}
     :{platform,kind,image_url:urls[0],image_urls:null,caption,status:'pending'};
 
@@ -439,7 +458,7 @@ async function queueContent(platform){
 
   fileInput.value='';
   if(platform==='instagram'){document.getElementById('igCaption').value=DEFAULT_CAPTION;document.getElementById('igCountHint').textContent='';loadQueue('instagram','igQueueList');}
-  else{document.getElementById('tgCaption').value=DEFAULT_CAPTION;loadQueue('telegram','tgQueueList');}
+  else{document.getElementById('tgCaption').value=DEFAULT_CAPTION;document.getElementById('tgCountHint').textContent='';loadQueue('telegram','tgQueueList');}
 }
 async function loadQueue(platform,elId){
   if(!sb)return;
@@ -453,7 +472,7 @@ async function loadQueue(platform,elId){
     <div class="queue-row">
       <img src="${r.image_url}" loading="lazy">
       <div class="qmeta">
-        <div>${kindLabel[r.kind]||r.kind}${r.kind==='carousel'&&r.image_urls?` (${r.image_urls.length} عکس)`:''} — ${statusLabel[r.status]||r.status}</div>
+        <div>${kindLabel[r.kind]||r.kind}${r.image_urls&&r.image_urls.length>1?` (${r.image_urls.length} عکس${r.platform==='telegram'?' — آلبوم':''})`:''} — ${statusLabel[r.status]||r.status}</div>
         <div class="qcap">${r.caption?esc(r.caption):''}</div>
         ${r.status==='failed'&&r.error?`<div class="qerr">${esc(r.error)}</div>`:''}
       </div>
