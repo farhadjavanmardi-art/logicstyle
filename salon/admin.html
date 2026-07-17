@@ -90,6 +90,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
 .photo-card{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1}
 .photo-card img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-card .del{position:absolute;top:4px;inset-inline-end:4px;background:rgba(0,0,0,.6);border:0;color:#f0a0a0;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.85rem;line-height:1}
+.queue-row{display:flex;gap:12px;align-items:flex-start;padding:10px;border-bottom:1px solid var(--line)}
+.queue-row img{width:60px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0}
+.qmeta{font-size:.85rem}
+.qcap{color:var(--muted);font-size:.78rem;margin-top:2px}
+.qerr{color:#f0a0a0;font-size:.75rem;margin-top:2px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -119,7 +124,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
   <div class="tabs">
     <button class="tab on" id="tRes" onclick="setTab('res')">Termine</button>
     <button class="tab" id="tAcc" onclick="setTab('acc')">Buchhaltung</button>
-    <button class="tab" id="tInsta" onclick="setTab('insta')">Instagram</button>
+    <button class="tab" id="tInsta" onclick="setTab('insta')">📸 اینستاگرام</button>
+    <button class="tab" id="tTg" onclick="setTab('tg')">✈️ تلگرام</button>
   </div>
 
   <!-- TERMINE -->
@@ -165,21 +171,28 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink)}
 
   <!-- INSTAGRAM -->
   <div id="pInsta" hidden>
-    <div class="kpis" id="instaKpis"></div>
+    <div class="acc-h">📸 محتوای جدید برای اینستاگرام</div>
+    <input type="file" id="igFile" accept="image/*" capture="environment" style="margin-bottom:8px">
+    <div style="margin:10px 0">
+      <label style="margin-inline-end:14px"><input type="radio" name="igKind" value="post" checked> پست فید</label>
+      <label><input type="radio" name="igKind" value="story"> استوری</label>
+    </div>
+    <textarea id="igCaption" placeholder="کپشن (فقط برای پست، نه استوری)" style="width:100%;min-height:70px;margin-bottom:8px"></textarea>
+    <button class="btn sm" onclick="queueContent('instagram')">افزودن به صف انتشار</button>
+    <div class="err" id="igErr" style="margin-top:8px"></div>
+    <div class="acc-h" style="margin-top:24px">تاریخچه صف</div>
+    <div id="igQueueList"></div>
+  </div>
 
-    <div class="acc-h">📮 Feed-Post (insta-photos)</div>
-    <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px">Diese Fotos werden täglich um 12:00 Uhr der Reihe nach automatisch als Instagram-Post veröffentlicht (mit fester Bildunterschrift).</p>
-    <input type="file" id="feedFile" accept="image/*" multiple style="margin-bottom:8px">
-    <button class="btn sm" onclick="uploadPhotos('insta-photos','feedFile','feedGrid')">Hochladen</button>
-    <div class="err" id="feedErr" style="margin-top:8px"></div>
-    <div class="photo-grid" id="feedGrid" style="margin-top:14px"></div>
-
-    <div class="acc-h" style="margin-top:28px">📱 Story (story-photos)</div>
-    <p style="color:var(--muted);font-size:.85rem;margin-bottom:10px">Diese Fotos werden täglich um 18:00 Uhr der Reihe nach automatisch als Instagram-Story veröffentlicht.</p>
-    <input type="file" id="storyFile" accept="image/*" multiple style="margin-bottom:8px">
-    <button class="btn sm" onclick="uploadPhotos('story-photos','storyFile','storyGrid')">Hochladen</button>
-    <div class="err" id="storyErr" style="margin-top:8px"></div>
-    <div class="photo-grid" id="storyGrid" style="margin-top:14px"></div>
+  <!-- TELEGRAM -->
+  <div id="pTg" hidden>
+    <div class="acc-h">✈️ محتوای جدید برای تلگرام</div>
+    <input type="file" id="tgFile" accept="image/*" capture="environment" style="margin-bottom:8px">
+    <textarea id="tgCaption" placeholder="کپشن پیام" style="width:100%;min-height:70px;margin-bottom:8px"></textarea>
+    <button class="btn sm" onclick="queueContent('telegram')">افزودن به صف انتشار</button>
+    <div class="err" id="tgErr" style="margin-top:8px"></div>
+    <div class="acc-h" style="margin-top:24px">تاریخچه صف</div>
+    <div id="tgQueueList"></div>
   </div>
 </div>
 </div>
@@ -225,11 +238,14 @@ function setTab(t){
   document.getElementById("tRes").classList.toggle("on",t==="res");
   document.getElementById("tAcc").classList.toggle("on",t==="acc");
   document.getElementById("tInsta").classList.toggle("on",t==="insta");
+  document.getElementById("tTg").classList.toggle("on",t==="tg");
   document.getElementById("pRes").hidden=t!=="res";
   document.getElementById("pAcc").hidden=t!=="acc";
   document.getElementById("pInsta").hidden=t!=="insta";
+  document.getElementById("pTg").hidden=t!=="tg";
   if(t==="acc")loadExp();
-  if(t==="insta")loadInstaPhotos();
+  if(t==="insta")loadQueue('instagram','igQueueList');
+  if(t==="tg")loadQueue('telegram','tgQueueList');
 }
 
 /* status */
@@ -364,47 +380,45 @@ function renderAcc(){
     </div>`).join("");
 }
 
-/* instagram photo buckets */
-async function loadInstaPhotos(){
+/* content queue: instagram + telegram */
+async function queueContent(platform){
   if(!sb)return;
-  const feed=await sb.storage.from('insta-photos').list('',{sortBy:{column:'name',order:'asc'}});
-  const story=await sb.storage.from('story-photos').list('',{sortBy:{column:'name',order:'asc'}});
-  renderPhotoGrid('feedGrid','insta-photos',feed.data||[]);
-  renderPhotoGrid('storyGrid','story-photos',story.data||[]);
-  document.getElementById('instaKpis').innerHTML=
-    `<div class="kpi"><b>${(feed.data||[]).length}</b><span>Fotos im Feed-Post-Pool</span></div>`+
-    `<div class="kpi"><b>${(story.data||[]).length}</b><span>Fotos im Story-Pool</span></div>`;
-}
-function renderPhotoGrid(elId,bucket,files){
-  const base=`${SUPABASE_URL}/storage/v1/object/public/${bucket}/`;
-  const el=document.getElementById(elId);
-  if(!files.length){el.innerHTML=`<div class="empty">Noch keine Fotos hochgeladen.</div>`;return;}
-  el.innerHTML=files.map(f=>`
-    <div class="photo-card">
-      <img src="${base}${encodeURIComponent(f.name)}" loading="lazy">
-      <button class="del" onclick="deletePhoto('${bucket}','${f.name.replace(/'/g,"\\'")}','${elId}')">×</button>
-    </div>`).join('');
-}
-async function uploadPhotos(bucket,inputId,gridId){
-  if(!sb)return;
-  const input=document.getElementById(inputId);
-  const errId=bucket==='insta-photos'?'feedErr':'storyErr';
+  const errId=platform==='instagram'?'igErr':'tgErr';
   const err=document.getElementById(errId);err.textContent='';
-  const files=input.files;
-  if(!files||!files.length){err.textContent='Bitte zuerst Fotos auswählen.';return;}
-  for(const file of files){
-    const path=`${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-    const{error}=await sb.storage.from(bucket).upload(path,file,{cacheControl:'3600',upsert:false});
-    if(error){err.textContent='Fehler beim Hochladen: '+error.message;return;}
-  }
-  input.value='';
-  loadInstaPhotos();
+  const fileInput=document.getElementById(platform==='instagram'?'igFile':'tgFile');
+  const file=fileInput.files&&fileInput.files[0];
+  if(!file){err.textContent='لطفاً اول یه عکس انتخاب/بگیر.';return;}
+  const kind=platform==='instagram'?(document.querySelector('input[name="igKind"]:checked').value):'post';
+  const caption=(platform==='instagram'?document.getElementById('igCaption'):document.getElementById('tgCaption')).value.trim()||null;
+
+  const path=`${platform}_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+  const{error:upErr}=await sb.storage.from('content-uploads').upload(path,file,{cacheControl:'3600',upsert:false});
+  if(upErr){err.textContent='خطا در آپلود عکس: '+upErr.message;return;}
+  const image_url=`${SUPABASE_URL}/storage/v1/object/public/content-uploads/${path}`;
+
+  const{error:insErr}=await sb.from('content_queue').insert({platform,kind,image_url,caption,status:'pending'});
+  if(insErr){err.textContent='خطا در ثبت صف: '+insErr.message;return;}
+
+  fileInput.value='';
+  if(platform==='instagram'){document.getElementById('igCaption').value='';loadQueue('instagram','igQueueList');}
+  else{document.getElementById('tgCaption').value='';loadQueue('telegram','tgQueueList');}
 }
-async function deletePhoto(bucket,name,gridId){
+async function loadQueue(platform,elId){
   if(!sb)return;
-  if(!confirm('Dieses Foto wirklich löschen?'))return;
-  const{error}=await sb.storage.from(bucket).remove([name]);
-  if(!error)loadInstaPhotos();
+  const{data,error}=await sb.from('content_queue').select('*').eq('platform',platform).order('created_at',{ascending:false}).limit(30);
+  const el=document.getElementById(elId);
+  if(error){el.innerHTML=`<div class="empty">خطا در بارگذاری صف.</div>`;return;}
+  if(!data||!data.length){el.innerHTML=`<div class="empty">هنوز چیزی توی صف نیست.</div>`;return;}
+  const statusLabel={pending:'⏳ در انتظار',posted:'✅ منتشر شد',failed:'❌ خطا'};
+  el.innerHTML=data.map(r=>`
+    <div class="queue-row">
+      <img src="${r.image_url}" loading="lazy">
+      <div class="qmeta">
+        <div>${r.kind==='story'?'استوری':'پست'} — ${statusLabel[r.status]||r.status}</div>
+        <div class="qcap">${r.caption?esc(r.caption):''}</div>
+        ${r.status==='failed'&&r.error?`<div class="qerr">${esc(r.error)}</div>`:''}
+      </div>
+    </div>`).join('');
 }
 
 /* init */
