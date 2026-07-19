@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Logic Style | Gallery Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000;--card:#0c0f16;--card2:#0f1219;
+  --text:#e8edf5;--muted:#64748b;
+  --pink:#e879a0;--pink2:#f0a0bc;
+  --pink-dim:rgba(232,121,160,0.08);--pink-border:rgba(232,121,160,0.2);
+  --border:rgba(255,255,255,0.06);
+  --ok:#4ade80;--ok-bg:rgba(74,222,128,0.08);--ok-border:rgba(74,222,128,0.2);
+  --blue:#60a5fa;--danger:#f87171;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100svh;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;z-index:9000;background:#000000;background-image:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(232,121,160,0.14) 0%,transparent 60%);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--pink-border);border-radius:22px;padding:32px 28px;box-shadow:0 0 60px rgba(232,121,160,0.08)}
+.login-logo{text-align:center;margin-bottom:20px}
+.login-logo img{height:72px;width:auto;object-fit:contain}
+.login-title{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--pink);text-align:center;margin-bottom:18px;letter-spacing:1px}
+.login-err{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--danger);margin-bottom:12px;display:none}
+.f-lbl{display:block;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.f-inp{width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:#fff;font-size:14px;outline:none;transition:.2s;font-family:'DM Sans',sans-serif;margin-bottom:10px}
+.f-inp:focus{border-color:var(--pink);background:rgba(255,255,255,0.07)}
+.btn-login{width:100%;padding:13px;background:var(--pink);color:#000;border:none;border-radius:13px;font-weight:700;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px;transition:.2s}
+.btn-login:hover{background:var(--pink2)}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:#000000;border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:14px}
+nav img{height:56px;width:auto;object-fit:contain;flex-shrink:0}
+.nav-title{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--pink);flex:1}
+.btn-sm{padding:7px 14px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:.2s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.btn-sm.light{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--muted)}
+.btn-sm.light:hover{border-color:rgba(232,121,160,0.25);color:var(--pink)}
+.btn-sm.danger{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);color:var(--danger)}
+.btn-sm.danger:hover{background:rgba(248,113,113,0.16)}
+.btn-sm.primary{background:var(--pink);color:#000}
+.btn-sm.primary:hover{background:var(--pink2)}
+
+/* ── MODE TABS ── */
+.mode-tabs-wrap{position:sticky;top:72px;z-index:150;background:#000000;border-bottom:1px solid var(--border)}
+.mode-tabs{display:flex;overflow-x:auto;scrollbar-width:none;padding:0 14px;justify-content:center}
+.mode-tabs::-webkit-scrollbar{display:none}
+.mode-tab{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:12px 16px;border:none;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;cursor:pointer;position:relative;transition:.2s;white-space:nowrap}
+.mode-tab::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:transparent;border-radius:2px 2px 0 0;transition:.2s}
+.mode-tab.active{color:var(--pink)}
+.mode-tab.active::after{background:var(--pink)}
+.mode-tab-count{font-family:'Space Mono',monospace;font-size:8px;background:rgba(232,121,160,0.15);color:var(--pink);padding:1px 6px;border-radius:9px;min-width:18px;text-align:center}
+
+/* ── SUBCAT TABS ── */
+.subcat-wrap{position:sticky;top:120px;z-index:140;background:#000;border-bottom:1px solid rgba(255,255,255,0.04);padding:7px 14px}
+.subcat-tabs{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;justify-content:center;flex-wrap:nowrap}
+.subcat-tabs::-webkit-scrollbar{display:none}
+.subcat-tab{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.03);cursor:pointer;transition:.2s;min-width:50px;font-family:'DM Sans',sans-serif}
+.subcat-tab.active,.subcat-tab:active{background:var(--pink-dim);border-color:var(--pink-border)}
+.subcat-tab.active .sct-label{color:var(--pink)}
+.sct-icon{font-size:15px;line-height:1}
+.sct-label{font-size:8px;font-weight:700;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+
+/* ── SEARCH ── */
+.search-bar{padding:8px 20px;border-bottom:1px solid var(--border);background:#000}
+.search-inner{max-width:480px;margin:0 auto;position:relative}
+.search-inner svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:.3;pointer-events:none}
+.search-input{width:100%;padding:9px 12px 9px 34px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:.2s}
+.search-input:focus{border-color:var(--pink)}
+.search-input::placeholder{color:var(--muted)}
+
+/* ── MODE HERO ── */
+.mode-hero{padding:14px 20px;text-align:center;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.01)}
+.mode-hero h2{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:var(--pink);margin-bottom:2px}
+.mode-hero p{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace}
+
+/* ── MODEL GRID ── */
+.models-wrap{max-width:1280px;margin:0 auto;padding:16px 20px 80px}
+.models-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+@media(max-width:1200px){.models-grid{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:1000px){.models-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:760px){.models-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){.models-grid{grid-template-columns:repeat(2,1fr)}}
+
+.model-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column}
+.model-card:hover{border-color:var(--pink-border);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+.model-card.has-imgs{border-color:rgba(74,222,128,0.2);background:rgba(74,222,128,0.02)}
+.model-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pink),transparent);opacity:0;transition:.25s;z-index:1}
+.model-card:hover::before{opacity:1}
+.card-thumb{width:100%;aspect-ratio:3/4;overflow:hidden;background:#080b10;position:relative;flex-shrink:0}
+.card-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.model-card:hover .card-thumb img{transform:scale(1.04)}
+.card-thumb-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.card-count{position:absolute;bottom:7px;right:7px;background:rgba(232,121,160,0.88);color:#000;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;pointer-events:none}
+.card-info{padding:9px 11px 11px}
+.card-section{font-family:'Space Mono',monospace;font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);opacity:.7;margin-bottom:2px}
+.card-name{font-size:12px;font-weight:700;color:var(--text);line-height:1.3}
+.card-id{font-family:'Space Mono',monospace;font-size:8px;color:rgba(100,116,139,.4);margin-top:2px}
+.card-action{position:absolute;bottom:0;left:0;right:0;background:rgba(232,121,160,0.92);color:#000;font-size:12px;font-weight:800;padding:7px;text-align:center;opacity:0;transition:.2s}
+.model-card:hover .card-action{opacity:1}
+.empty-state{grid-column:1/-1;padding:60px 20px;text-align:center;color:var(--muted)}
+
+/* ── UPLOAD PANEL (full screen overlay) ── */
+#uploadPanel{position:fixed;inset:0;z-index:500;background:#000000;overflow-y:auto;display:none}
+#uploadPanel.open{display:block}
+.up-nav{position:sticky;top:0;z-index:10;background:#000000;border-bottom:1px solid rgba(232,121,160,0.2);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.up-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.15rem;color:var(--pink);flex:1}
+.up-model-badge{font-family:'Space Mono',monospace;font-size:10px;color:#94a3b8;background:rgba(232,121,160,0.06);border:1px solid var(--pink-border);border-radius:20px;padding:3px 10px}
+.up-body{max-width:860px;margin:0 auto;padding:18px 18px 60px}
+
+/* ── SECTION TITLE ── */
+.sec-title{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--pink);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-title-line{flex:1;height:1px;background:rgba(232,121,160,0.12)}
+
+/* ── EXISTING GALLERY ── */
+.existing-gallery{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.existing-empty{border:1px dashed rgba(255,255,255,0.1);border-radius:12px;padding:16px;text-align:center;color:var(--muted);font-size:13px;background:rgba(255,255,255,0.02)}
+.existing-block{border:1px solid var(--border);border-radius:14px;background:#080b10;overflow:hidden}
+.existing-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.existing-set-name{font-family:'Space Mono',monospace;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}
+.existing-set-meta{font-size:10px;color:var(--muted)}
+.existing-section-label{padding:5px 12px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.existing-section-label.vor{color:#60a5fa;background:rgba(96,165,250,0.05)}
+.existing-section-label.nach{color:#e879a0;background:rgba(232,121,160,0.05)}
+.existing-row{display:flex;flex-wrap:wrap;gap:4px;padding:6px 8px}
+.existing-cell{position:relative;width:calc(25% - 4px);min-width:60px;aspect-ratio:3/4;background:var(--card);border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)}
+.existing-cell img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in}
+.existing-cell.empty-cell{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);font-family:'Space Mono',monospace}
+.existing-tag{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,0.78);color:#fff;font-family:'Space Mono',monospace;font-size:7px;padding:2px 5px;border-radius:4px;pointer-events:none}
+.existing-del{position:absolute;top:4px;right:4px;width:22px;height:22px;background:rgba(248,113,113,0.9);color:#000;border:none;border-radius:50%;font-weight:900;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;line-height:1;transition:.15s}
+.existing-del:hover{background:#f87171;transform:scale(1.1)}
+.existing-basis{position:absolute;top:4px;left:4px;height:22px;padding:0 7px;background:rgba(0,0,0,0.72);color:#fbbf24;border:1px solid rgba(251,191,36,0.5);border-radius:11px;font-weight:700;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;line-height:1;transition:.15s;font-family:'Space Mono',monospace}
+.existing-basis:hover{background:rgba(251,191,36,0.9);color:#000;transform:scale(1.05)}
+.existing-basis.on{background:rgba(251,191,36,0.92);color:#000;border-color:#fbbf24}
+.existing-cell.is-basis{border-color:rgba(251,191,36,0.65);box-shadow:0 0 10px rgba(251,191,36,0.18)}
+
+/* ── UPLOAD FORM ── */
+.cid-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-bottom:16px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.form-input{padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:#fff;font-size:13px;outline:none;transition:.2s;font-family:'DM Sans',sans-serif}
+.form-input:focus{border-color:var(--pink);background:rgba(255,255,255,0.07)}
+.form-input::placeholder{color:var(--muted)}
+
+/* FLEXIBLE ANGLE GRID */
+.angle-section{margin-bottom:18px}
+.angle-section-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.angle-badge{padding:5px 14px;border-radius:20px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.angle-badge.vor{background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);color:#60a5fa}
+.angle-badge.nach{background:rgba(232,121,160,0.08);border:1px solid rgba(232,121,160,0.2);color:#e879a0}
+.angle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+@media(max-width:600px){.angle-grid{grid-template-columns:repeat(2,1fr)}}
+.angle-slot{aspect-ratio:3/4;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;overflow:hidden;position:relative;transition:.2s;border:2px dashed rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)}
+.angle-slot.vor-slot{border-color:rgba(96,165,250,0.25);background:rgba(96,165,250,0.03)}
+.angle-slot.nach-slot{border-color:rgba(232,121,160,0.25);background:rgba(232,121,160,0.04)}
+.angle-slot.filled{border-style:solid;border-color:rgba(74,222,128,0.5);background:rgba(74,222,128,0.04)}
+.angle-slot img{width:100%;height:100%;object-fit:cover;display:block}
+.slot-icon{font-size:16px;pointer-events:none}
+.slot-name{font-family:'Space Mono',monospace;font-size:7px;font-weight:700;color:var(--muted);text-transform:uppercase;pointer-events:none;text-align:center;line-height:1.3}
+.slot-check{position:absolute;top:4px;right:4px;background:rgba(74,222,128,0.9);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#000;font-weight:700;pointer-events:none}
+.slot-clear{position:absolute;top:4px;left:4px;background:rgba(248,113,113,0.9);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#000;font-weight:700;cursor:pointer;border:none;line-height:1}
+
+/* UPLOAD ACTIONS */
+.upload-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn-full{flex:1;min-width:140px;padding:13px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:.2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-full.primary{background:var(--pink);color:#000}
+.btn-full.primary:hover{background:var(--pink2)}
+.btn-full.primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-full.light{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--muted)}
+.btn-full.light:hover{border-color:rgba(232,121,160,0.25);color:var(--pink)}
+
+/* PROGRESS */
+.progress-wrap{margin-top:14px;display:none}
+.progress-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:var(--pink);border-radius:4px;transition:width .3s}
+.status-msg{font-size:12px;margin-top:8px;min-height:18px;color:var(--muted);font-family:'Space Mono',monospace}
+.status-msg.ok{color:var(--ok)}.status-msg.err{color:var(--danger)}
+
+/* QUICK TIPS */
+.tip-box{background:rgba(96,165,250,0.05);border:1px solid rgba(96,165,250,0.15);border-radius:12px;padding:12px 16px;font-size:12px;color:#94a3b8;line-height:1.7;margin-bottom:16px}
+.tip-box strong{color:#60a5fa}
+
+/* ── LIGHTBOX ── */
+#lightbox{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.97);display:none;align-items:center;justify-content:center;cursor:zoom-out}
+#lightbox.open{display:flex}
+#lightbox img{max-width:94vw;max-height:92svh;object-fit:contain;border-radius:8px}
+#lb-close{position:fixed;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5001}
+
+/* ── TOAST ── */
+#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:22px;font-weight:700;font-size:13px;z-index:9999;display:none;pointer-events:none;white-space:nowrap}
+
+/* ── COOKIE ── */
+#ls-consent{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#0c0f16;border-top:1px solid rgba(232,121,160,0.25);padding:12px 16px;display:none}
+#ls-consent.show{display:block}
+.lsci{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lsct{flex:1;min-width:220px;font-size:12px;color:#94a3b8;line-height:1.5}
+.lsct a{color:#60a5fa;text-decoration:none}
+.lscbtns{display:flex;gap:8px;flex-shrink:0}
+.lsca{padding:8px 18px;background:#e879a0;color:#000;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+.lscd{padding:8px 18px;background:transparent;color:#64748b;border:1px solid rgba(255,255,255,0.08);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#e879a022;border-radius:2px}
+@media(max-width:500px){.cid-row{grid-template-columns:1fr}}
+
+/* ── HARD BLACK + CENTER FIX ── */
+html,body,#loginScreen,nav,.mode-tabs-wrap,.subcat-wrap,.search-bar,.mode-hero,.models-wrap,#uploadPanel,.up-nav,.login-card,.model-card,.existing-block,#ls-consent{background:#000000!important;background-image:none!important}
+.model-card,.card-info,.card-thumb-ph,.empty-state,.mode-hero,.login-logo,.login-title{text-align:center!important}
+.card-thumb-ph{flex-direction:column;gap:8px}
+.card-info{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.card-section,.card-name,.card-id{width:100%;text-align:center}
+.existing-empty,.tip-box,.form-input,.search-input,.subcat-tab,.btn-sm.light,.btn-full.light,.angle-slot{background:#000000!important}
+
+
+/* ── EXTRA HARD BLACK + CENTERED UI FIX ── */
+*{text-align:inherit}
+html,body,#loginScreen,nav,.mode-tabs-wrap,.subcat-wrap,.search-bar,.mode-hero,.models-wrap,#uploadPanel,.up-nav,.login-card,.model-card,.card-info,.card-thumb,.existing-block,.existing-gallery,.up-body,.form-card,.angle-slot,.tip-box,#ls-consent{background:#000000!important;background-image:none!important}
+.mode-tabs,.subcat-tabs,.models-grid,.login-card,.mode-hero,.card-info,.card-thumb-ph,.existing-empty,.sec-title,.up-title,.up-model-badge{text-align:center!important;justify-content:center!important}
+.card-info{align-items:center!important}.card-section,.card-name,.card-id,.card-action{width:100%;text-align:center!important}
+
+
+.model-code-badge{font-family:'Space Mono',monospace;font-size:8px;font-weight:700;
+  color:rgba(232,121,160,0.5);margin-right:4px;vertical-align:middle;flex-shrink:0}
+
+/* ── BASIS BILDER PANEL ── */
+#baseBilderPanel{display:none;min-height:100svh}
+#baseBilderPanel.open{display:block}
+.basis-nav{position:sticky;top:72px;z-index:149;background:#000;border-bottom:1px solid var(--border);padding:8px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.basis-mode-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:.2s;text-transform:uppercase}
+.basis-mode-btn.active{background:var(--pink-dim);border-color:var(--pink-border);color:var(--pink)}
+.basis-hero{padding:12px 20px;text-align:center;border-bottom:1px solid var(--border)}
+.basis-hero h2{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--pink)}
+.basis-hero p{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace}
+.basis-grid-wrap{max-width:1280px;margin:0 auto;padding:16px 20px 80px}
+.basis-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+@media(max-width:1200px){.basis-grid{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:1000px){.basis-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:760px){.basis-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){.basis-grid{grid-template-columns:repeat(2,1fr)}}
+.basis-card{background:#000;border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;text-align:center}
+.basis-card:hover{border-color:var(--pink-border);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.basis-card.has-img{border-color:rgba(74,222,128,0.3)}
+.basis-card.is-featured{border-color:rgba(232,121,160,0.6);box-shadow:0 0 14px rgba(232,121,160,0.12)}
+.basis-thumb{width:100%;aspect-ratio:3/4;overflow:hidden;background:#080b10;position:relative;flex-shrink:0}
+.basis-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.basis-card:hover .basis-thumb img{transform:scale(1.04)}
+.basis-thumb-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted)}
+.basis-thumb-ph svg{opacity:.3}
+.basis-info{padding:8px 10px 10px;display:flex;flex-direction:column;align-items:center}
+.basis-name{font-size:11px;font-weight:700;color:var(--text);line-height:1.3}
+.basis-id{font-family:'Space Mono',monospace;font-size:8px;color:rgba(100,116,139,.5);margin-top:2px}
+.basis-feat-badge{position:absolute;top:6px;left:6px;background:rgba(232,121,160,0.88);color:#000;font-size:8px;font-weight:700;padding:2px 6px;border-radius:8px;font-family:'Space Mono',monospace}
+.basis-has-badge{position:absolute;top:6px;right:6px;background:rgba(74,222,128,0.88);color:#000;font-size:8px;font-weight:700;padding:2px 6px;border-radius:8px;font-family:'Space Mono',monospace}
+.basis-ref-badge{position:absolute;bottom:6px;left:6px;background:rgba(96,165,250,0.9);color:#000;font-size:8px;font-weight:700;padding:2px 6px;border-radius:8px;font-family:'Space Mono',monospace}
+/* BASIS UPLOAD PANEL */
+#basisUpPanel{position:fixed;inset:0;z-index:600;background:#000;overflow-y:auto;display:none}
+#basisUpPanel.open{display:block}
+.bup-nav{position:sticky;top:0;z-index:10;background:#000;border-bottom:1px solid rgba(232,121,160,.2);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bup-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;color:var(--pink);flex:1}
+.bup-body{max-width:500px;margin:0 auto;padding:24px 18px 60px}
+.bup-thumb-preview{width:100%;aspect-ratio:3/4;max-width:280px;margin:0 auto 20px;border-radius:14px;overflow:hidden;background:#080b10;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative}
+.bup-thumb-preview img{width:100%;height:100%;object-fit:cover}
+.bup-drop{border:2px dashed rgba(232,121,160,.25);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:.2s;background:rgba(232,121,160,.02)}
+.bup-drop:hover{border-color:rgba(232,121,160,.5);background:rgba(232,121,160,.04)}
+.bup-drop input{display:none}
+.bup-drop-icon{font-size:2rem;margin-bottom:8px}
+.bup-drop-txt{font-size:13px;color:var(--muted)}
+.bup-feat-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--border);margin-top:16px}
+.bup-feat-label{flex:1;font-size:13px;color:var(--text)}
+.bup-feat-sub{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+.bup-toggle{width:40px;height:22px;border-radius:11px;border:none;cursor:pointer;position:relative;transition:.2s;background:rgba(255,255,255,.1)}
+.bup-toggle.on{background:var(--pink)}
+.bup-toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.bup-toggle.on::after{left:21px}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo"><img src="logo.png" alt="Logic Style"></div>
+    <div class="login-title">Gallery Admin</div>
+    <div class="login-err" id="loginErr"></div>
+    <div>
+      <label class="f-lbl">E-Mail</label>
+      <input class="f-inp" type="email" id="loginEmail" autocomplete="email" placeholder="admin@email.de" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+    </div>
+    <div>
+      <label class="f-lbl">Passwort</label>
+      <input class="f-inp" type="password" id="loginPass" placeholder="Passwort" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()">→ Anmelden</button>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav id="mainNav" style="display:none">
+  <img src="logo.png" alt="Logic Style">
+  <div class="nav-title">Gallery Admin</div>
+  <div style="display:flex;gap:6px;margin-left:auto">
+    <a href="models.html" class="btn-sm light">📸 Galerie</a>
+    <button class="btn-sm light" id="btnBasisToggle" onclick="toggleBasisPanel()">🖼️ Basis</button>
+    <button class="btn-sm light" onclick="doLogout()">⏻ Abmelden</button>
+  </div>
+</nav>
+
+<!-- ── MODE TABS ── -->
+<div class="mode-tabs-wrap" id="modeTabsWrap" style="display:none">
+  <div class="mode-tabs" id="modeTabs"></div>
+</div>
+
+<!-- ── SUBCAT TABS ── -->
+<div class="subcat-wrap" id="subcatWrap" style="display:none">
+  <div class="subcat-tabs" id="subcatTabs"></div>
+</div>
+
+<!-- ── SEARCH ── -->
+<div class="search-bar" id="searchBar" style="display:none">
+  <div class="search-inner">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" class="search-input" id="searchInput" placeholder="Modell suchen…" oninput="renderGrid()">
+  </div>
+</div>
+
+<!-- ── MODE HERO ── -->
+<div class="mode-hero" id="modeHero" style="display:none">
+  <h2 id="modeTitle">Logic Style · Admin</h2>
+  <p id="modeMeta"></p>
+</div>
+
+<!-- ── MODEL GRID ── -->
+<div class="models-wrap" id="modelsWrap" style="display:none">
+  <div class="models-grid" id="modelsGrid"></div>
+</div>
+
+<!-- ── BASIS BILDER PANEL ── -->
+<div id="baseBilderPanel">
+  <div class="basis-nav" id="basisModeNav"></div>
+  <div class="basis-hero">
+    <h2 id="basisHeroTitle">Basis-Bilder</h2>
+    <p id="basisHeroMeta">Klicke auf ein Modell um ein Basis-Bild hochzuladen</p>
+  </div>
+  <div class="basis-grid-wrap">
+    <div class="basis-grid" id="basisGrid"></div>
+  </div>
+</div>
+
+<!-- ── BASIS UPLOAD PANEL ── -->
+<div id="basisUpPanel">
+  <div class="bup-nav">
+    <div class="bup-title" id="bupTitle">Basis-Bild hochladen</div>
+    <span class="up-model-badge" id="bupBadge">–</span>
+    <button class="btn-sm light" onclick="closeBasisUp()">✕ Zurück</button>
+  </div>
+  <div class="bup-body">
+    <div class="bup-thumb-preview" id="bupPreview">
+      <img id="bupPreviewImg" src="" style="display:none" alt="">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(232,121,160,0.3)" stroke-width="1.5" id="bupPreviewPh"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+    </div>
+    <div class="bup-drop" onclick="document.getElementById('bupFileInput').click()">
+      <input type="file" id="bupFileInput" accept="image/*" onchange="bupFileSelected(this)">
+      <div class="bup-drop-icon">📷</div>
+      <div class="bup-drop-txt">Bild auswählen oder hier ablegen<br><span style="font-size:11px;color:#475569">JPG, PNG, WebP · Max. 10 MB</span></div>
+    </div>
+    <div class="bup-feat-row">
+      <div class="bup-feat-label">Als Featured markieren
+        <span class="bup-feat-sub">Wird in index.html angezeigt (max. 1 pro Kategorie)</span>
+      </div>
+      <button class="bup-toggle" id="bupFeatToggle" onclick="this.classList.toggle('on')"></button>
+    </div>
+    <div class="upload-actions" style="margin-top:16px">
+      <button class="btn-full primary" id="bupSaveBtn" onclick="saveBasisBild()">⬆ Hochladen &amp; Speichern</button>
+      <button class="btn-full light" id="bupDeleteBtn" onclick="deleteBasisBild()" style="display:none">🗑 Löschen</button>
+    </div>
+    <div class="progress-wrap" id="bupProgress">
+      <div class="progress-bar"><div class="progress-fill" id="bupProgressFill" style="width:0%"></div></div>
+      <div class="status-msg" id="bupStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── UPLOAD PANEL ── -->
+<div id="uploadPanel">
+  <div class="up-nav">
+    <span class="up-title">📁 Galerie verwalten</span>
+    <span class="up-model-badge" id="upModelBadge">–</span>
+    <button class="btn-sm light" onclick="closeUpload()">✕ Zurück</button>
+  </div>
+
+  <div class="up-body">
+
+    <!-- EXISTING GALLERY -->
+    <div class="sec-title">✅ Vorhandene Bilder <div class="sec-title-line"></div><button class="btn-sm light" onclick="downloadCurrentModelImages()">⬇ Alle Bilder</button></div>
+    <div id="existingGallery" class="existing-gallery">
+      <div class="existing-empty">Lädt…</div>
+    </div>
+
+    <!-- NEW UPLOAD -->
+    <div class="sec-title">⬆ Neue Bilder hochladen <div class="sec-title-line"></div></div>
+
+    <div class="tip-box">
+      <strong>Anleitung:</strong> Klicke auf die Slots unten, um Fotos zu laden. Du musst nicht alle 6 Perspektiven befüllen — lade nur die, die du hast. Vorher-Fotos sind optional, aber empfohlen.
+    </div>
+
+    <div class="cid-row">
+      <div class="form-group">
+        <label class="form-label">Kunden-ID / Set-Name</label>
+        <input type="text" class="form-input" id="inpCustomer" placeholder="z.B. Kunde_April2026 (optional)">
+      </div>
+      <button class="btn-sm light" onclick="clearSlots()" style="align-self:flex-end;padding:10px 16px">🗑 Reset</button>
+    </div>
+
+    <!-- VORHER SLOTS -->
+    <div class="angle-section">
+      <div class="angle-section-header">
+        <div class="angle-badge vor">📷 VORHER</div>
+        <span style="font-size:11px;color:var(--muted)">Alle optional</span>
+      </div>
+      <div class="angle-grid" id="slotGridVor"></div>
+    </div>
+
+    <!-- NACHHER SLOTS -->
+    <div class="angle-section">
+      <div class="angle-section-header">
+        <div class="angle-badge nach">✨ NACHHER</div>
+        <span style="font-size:11px;color:var(--muted)">Mindestens 1 empfohlen</span>
+      </div>
+      <div class="angle-grid" id="slotGridNach"></div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <div id="fileInputs"></div>
+
+    <div class="upload-actions">
+      <button class="btn-full primary" id="btnUpload" onclick="doUpload()" disabled>⬆ Hochladen</button>
+      <button class="btn-full light" onclick="clearSlots()">🗑 Zurücksetzen</button>
+    </div>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── LIGHTBOX ── -->
+<div id="lightbox" onclick="closeLb()">
+  <button id="lb-close" onclick="event.stopPropagation();closeLb()">✕</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<script>
+/* ══ CONFIG ══ */
+const SB_URL='https://owgfhhkmlkdpjqlwavsx.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93Z2ZoaGttbGtkcGpxbHdhdnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MTUyNDgsImV4cCI6MjA5MDA5MTI0OH0.arQzSmczsZX6re-mfC6EcvAs9p3Uf1LdG3AfjjgsZvM';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+
+/* ══ ANGLES — synced with public models gallery ══ */
+const ANGLES_ALL=[
+  {id:'front',   icon:'👤', label:'Vorne',      hint:'0°'},
+  {id:'left45',  icon:'↖️', label:'45° links',  hint:'45°L'},
+  {id:'right45', icon:'↗️', label:'45° rechts', hint:'45°R'},
+  {id:'back',    icon:'🔙', label:'Hinten',     hint:'180°'},
+];
+function activeAngles(mode=currentMode){
+  if(mode==='beard'||mode==='face') return ANGLES_ALL.filter(a=>a.id!=='back');
+  return ANGLES_ALL;
+}
+
+/* ══ MODE + SUBCAT CONFIG — synced with models_FINAL.html ══ */
+const MODE_TABS=[
+  {"mode":"female",     "icon":"♀",  "label":"Damen"},
+  {"mode":"male",       "icon":"♂",  "label":"Herren"},
+  {"mode":"beard",      "icon":"✂",  "label":"Bart"},
+  {"mode":"color",      "icon":"🎨", "label":"Farbe"},
+  {"mode":"behandlung", "icon":"✨", "label":"Keratin & Perm"}
+];
+const SUBCATS={
+  male:[
+    {cat:'all',                  label:'Alle'},
+    {cat:'Klassische Schnitte',  label:'Klassisch'},
+    {cat:'Business & Gentleman', label:'Business'},
+    {cat:'Fade & Taper',         label:'Fade'},
+    {cat:'Undercut & Defined',   label:'Undercut'},
+    {cat:'Crop & Fringe',        label:'Crop'},
+    {cat:'Mullet & Shag',        label:'Mullet'},
+    {cat:'Trending Styles',      label:'Trend'},
+    {cat:'Medium Length',        label:'Mittel'},
+    {cat:'Long Hair',            label:'Lang'},
+    {cat:'Curly & Wavy',         label:'Curly'},
+    {cat:'Natural & Specialty',  label:'Natural'},
+  ],
+  female:[
+    {cat:'all',              label:'Alle'},
+    {cat:'Bob Cuts',         label:'Bob'},
+    {cat:'Lob & Mid-Length', label:'Lob'},
+    {cat:'Short Hair',       label:'Kurz'},
+    {cat:'Shag & Wolf',      label:'Shag'},
+    {cat:'Layers & Movement',label:'Layer'},
+    {cat:'Trending Styles',  label:'Trend'},
+    {cat:'Long Hair',        label:'Lang'},
+    {cat:'Curly & Wavy',     label:'Curly'},
+    {cat:'Bridal & Event',   label:'Event'},
+    {cat:'Elegant & Premium',label:'Elegant'},
+    {cat:'Soft & Natural',   label:'Natürlich'},
+  ],
+  beard:[
+    {cat:'all',              label:'Alle'},
+    {cat:'Stubble',          label:'Stubble'},
+    {cat:'Short Beard',      label:'Kurz'},
+    {cat:'Full Beard',       label:'Voll'},
+    {cat:'Faded Beard',      label:'Fade'},
+    {cat:'Beard + Hair Combo',label:'Kombi'},
+    {cat:'Defined Lines',    label:'Kontur'},
+    {cat:'Goatee & Mustache',label:'Goatee'},
+    {cat:'Groomed Classic',  label:'Classic'},
+  ],
+  color:[
+    {cat:'all',                                    label:'Alle'},
+    {cat:'Farbe Voll',                             label:'Vollfarbe'},
+    {cat:'Balayage',                               label:'Balayage'},
+    {cat:'Ombré & Sombré',                         label:'Ombré'},
+    {cat:'Babylights / Highlights / Lowlights',    label:'Highlights'},
+    {cat:'Money Piece',                            label:'Money Piece'},
+    {cat:'Root Shadow / Root Melt',                label:'Root'},
+    {cat:'Glossing & Toning',                      label:'Toning'},
+    {cat:'Bleach & Blonde Refresh',                label:'Bleach'},
+    {cat:'Grey Blending & Coverage',               label:'Grey'},
+    {cat:'Fashion Color',                          label:'Fashion'},
+    {cat:"Men's Color",                            label:"Men's"},
+    {cat:'Bartfarbe',                              label:'Bart'},
+  ],
+  behandlung:[
+    {cat:'all',        label:'Alle'},
+    {cat:'keratin',    label:'Keratin'},
+    {cat:'perm_women', label:'Damen Perm'},
+    {cat:'perm_men',   label:'Herren Perm'},
+  ],
+};
+
+/* ══ MODEL DATA — exact catalog mirror of models_FINAL.html ══ */
+const MODEL_DATA={
+  "female": [
+    {"id": "067", "name": "French Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "113", "name": "Italian Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "071", "name": "Blunt Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "250", "name": "Jaw-Length Precision Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "251", "name": "Soft A-Line Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "076", "name": "Shoulder-Length Lob", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "080", "name": "Blunt Mid-Length", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "209", "name": "Polished Business Bob", "cat": "Elegant & Premium", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "252", "name": "Soft Elegant Shoulder-Length Styling", "cat": "Elegant & Premium", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "253", "name": "Premium Glossy Length Style", "cat": "Elegant & Premium", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "254", "name": "Long Luxe Smooth Finish", "cat": "Elegant & Premium", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "073", "name": "Sleek Straight Lengths", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "081", "name": "Layered Lob", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "202", "name": "Soft Layered Bob", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "255", "name": "Soft Wavy Lob", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "256", "name": "Chic Contemporary Midi Cut", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "257", "name": "Refined Editorial-Inspired Soft Shape", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "070", "name": "Asymmetrical Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "072", "name": "Micro Fringe Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "074", "name": "Textured Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "086", "name": "A-Line Lob", "cat": "Lob & Mid-Length", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "078", "name": "Butterfly Cut", "cat": "Layers & Movement", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "077", "name": "Soft Shag", "cat": "Shag & Wolf", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "083", "name": "Modern Wolf-Inspired Soft Cut", "cat": "Shag & Wolf", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "203", "name": "Statement Volume Layers", "cat": "Trending Styles", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "208", "name": "Textured Mid-Length Cut", "cat": "Trending Styles", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "258", "name": "Trend Face-Framing Luxury Blowout", "cat": "Trending Styles", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "259", "name": "Floating Fringe Layers", "cat": "Trending Styles", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "260", "name": "Soft Rounded Bob 2026", "cat": "Trending Styles", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "064", "name": "Pixie Soft Texture", "cat": "Short Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "065", "name": "Feminine Short Crop", "cat": "Short Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "068", "name": "Layered Pixie", "cat": "Short Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "096", "name": "Short Curl Definition Pixie", "cat": "Short Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "116", "name": "Micro Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "066", "name": "Feminine Buzz", "cat": "Short Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "069", "name": "Soft Crop", "cat": "Short Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "075", "name": "Boyish Side-Part", "cat": "Short Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "079", "name": "Curtain Bangs with Layers", "cat": "Layers & Movement", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "084", "name": "Face-Framing Layers", "cat": "Layers & Movement", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "085", "name": "Wispy Bangs Long Layers", "cat": "Layers & Movement", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "204", "name": "Long Soft Layers", "cat": "Layers & Movement", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "261", "name": "Natural Low-Maintenance Layers", "cat": "Soft & Natural", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "262", "name": "Romantic Layered Styling", "cat": "Soft & Natural", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "263", "name": "Dimensional Layered Brunette Look", "cat": "Soft & Natural", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "092", "name": "Center-Parted Sleek", "cat": "Soft & Natural", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "087", "name": "Long Straight Layers", "cat": "Long Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "088", "name": "Soft Glam Waves", "cat": "Long Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "089", "name": "Long Curtain Bang Layers", "cat": "Long Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "090", "name": "Long U-Cut Smooth Finish", "cat": "Long Hair", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "205", "name": "Hollywood Waves", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "094", "name": "Bridal Soft Updo", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "128", "name": "Bridal Romantic Updo", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "206", "name": "Half-Up Bridal Styling", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "207", "name": "Elegant Low Bun Styling", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "264", "name": "Event Glam Styling", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "093", "name": "Braided Crown", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "123", "name": "Ballerina Bun", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "126", "name": "French Twist", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "127", "name": "Low Chignon", "cat": "Bridal & Event", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "097", "name": "Curly Bob", "cat": "Bob Cuts", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "098", "name": "Curly Lob", "cat": "Curly & Wavy", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "099", "name": "Long Curly Layers", "cat": "Curly & Wavy", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "100", "name": "Natural Afro Shape", "cat": "Curly & Wavy", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "210", "name": "Soft Curl Definition Cut", "cat": "Curly & Wavy", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "265", "name": "Long Voluminous Blowout", "cat": "Volume & Styling", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id": "082", "name": "Vintage Waves", "cat": "Volume & Styling", "top": "female", "mode": "female", "label": "Damen", "icon": "♀"},
+    {"id":"508","name":"Bixie Cut","cat": "Bob Cuts","top":"female","mode":"female","label":"Damen","icon":"♀"},
+    {"id":"509","name":"Stacked Bob","cat": "Bob Cuts","top":"female","mode":"female","label":"Damen","icon":"♀"},
+    {"id":"510","name":"Long Wolf Cut","cat": "Long Hair","top":"female","mode":"female","label":"Damen","icon":"♀"},
+    {"id":"511","name":"Feathered Layers","cat": "Layers & Movement","top":"female","mode":"female","label":"Damen","icon":"♀"},
+    {"id":"512","name":"Textured Lob","cat": "Lob & Mid-Length","top":"female","mode":"female","label":"Damen","icon":"♀"}
+  ],
+  "male": [
+    {"id": "001", "name": "Buzz Cut Clean Line", "cat": "Klassische Schnitte", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "005", "name": "Crew Cut Premium Finish", "cat": "Klassische Schnitte", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "007", "name": "Ivy League Natural Taper", "cat": "Klassische Schnitte", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "023", "name": "Classic Side Part", "cat": "Klassische Schnitte", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "024", "name": "Natural Slick Back", "cat": "Klassische Schnitte", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "025", "name": "Modern Pompadour", "cat": "Klassische Schnitte", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "027", "name": "Executive Taper", "cat": "Business & Gentleman", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "211", "name": "Clean Business Cut", "cat": "Business & Gentleman", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "231", "name": "Contemporary Gentleman Cut", "cat": "Business & Gentleman", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "232", "name": "Relaxed Modern Business Style", "cat": "Business & Gentleman", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "233", "name": "Refined Masculine Medium Shape", "cat": "Business & Gentleman", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "011", "name": "French Crop", "cat": "Crop & Fringe", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "012", "name": "Textured Crop", "cat": "Crop & Fringe", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "212", "name": "Modern Side Part Fade", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "218", "name": "Soft Pompadour Taper", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "220", "name": "Sharp Defined Quiff", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "234", "name": "Slick Back Undercut", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "235", "name": "Scissor Cut Natural Shape", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "236", "name": "Clean Jawline-Framing Men Style", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "014", "name": "Short Quiff", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "028", "name": "Modern Quiff", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "033", "name": "Soft Undercut", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "058", "name": "Hard Part", "cat": "Undercut & Defined", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "031", "name": "Bro Flow", "cat": "Trending Styles", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "035", "name": "Soft Mullet Modern Men", "cat": "Mullet & Shag", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "036", "name": "Modern Mullet Textured", "cat": "Mullet & Shag", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "215", "name": "Modern Mullet Clean", "cat": "Mullet & Shag", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "237", "name": "Editorial Modern Men Flow", "cat": "Trending Styles", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "238", "name": "Textured Top with Low Taper", "cat": "Trending Styles", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "239", "name": "Men’s Korean Texture Flow", "cat": "Trending Styles", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "032", "name": "Two-Block", "cat": "Trending Styles", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "038", "name": "Modern Bowl Cut", "cat": "Trending Styles", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "057", "name": "Mohawk", "cat": "Trending Styles", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "240", "name": "Natural Low-Maintenance Men Cut", "cat": "Natural & Specialty", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "241", "name": "Soft Natural Taper", "cat": "Natural & Specialty", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "242", "name": "Low-Maintenance Crop", "cat": "Natural & Specialty", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "061", "name": "Cornrows", "cat": "Natural & Specialty", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "063", "name": "Dreadlocks", "cat": "Natural & Specialty", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "003", "name": "Buzz Cut Skin Taper", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "009", "name": "High & Tight Clean Fade", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "022", "name": "High Fade Sharp Finish", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "054", "name": "Skin Fade Structured Top", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "056", "name": "Taper Fade Classic", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "217", "name": "Textured Crop Low Fade", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "243", "name": "Low Fade Natural Blend", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "244", "name": "Mid Fade Textured Top", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "245", "name": "Premium Barber Fade Finish", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "052", "name": "Edgar Cut", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "055", "name": "Blowout Fade", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "059", "name": "Textured Quiff Fade", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "062", "name": "High Top Fade", "cat": "Fade & Taper", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "029", "name": "Messy Structured Texture", "cat": "Crop & Fringe", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "039", "name": "Textured Fringe", "cat": "Crop & Fringe", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "213", "name": "Low Taper Crop", "cat": "Crop & Fringe", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "246", "name": "French Crop Soft Texture", "cat": "Crop & Fringe", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "247", "name": "Matte Textured Quiff", "cat": "Crop & Fringe", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "015", "name": "Modern Spiky", "cat": "Crop & Fringe", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "030", "name": "Short Bro Flow", "cat": "Medium Length", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "034", "name": "Wavy Medium Men Style", "cat": "Medium Length", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "214", "name": "Medium Flow Men", "cat": "Medium Length", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "037", "name": "Medium Shag", "cat": "Mullet & Shag", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "051", "name": "Wavy Flow Mid", "cat": "Medium Length", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "040", "name": "Long Layered Men Hair", "cat": "Long Hair", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "041", "name": "Shoulder-Length Men Flow", "cat": "Long Hair", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "044", "name": "Surfer Hair Natural Flow", "cat": "Long Hair", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "042", "name": "Man Bun", "cat": "Long Hair", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "043", "name": "Half-Up Style", "cat": "Long Hair", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "045", "name": "Long Wolf Cut", "cat": "Long Hair", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "046", "name": "Long Curtains", "cat": "Long Hair", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "047", "name": "Long Slick Back", "cat": "Long Hair", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "016", "name": "Curly Top Natural Shape", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "048", "name": "Curly Taper", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "049", "name": "Curly Fringe Shape", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "050", "name": "Curly Shag Natural Volume", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "216", "name": "Curly Fade Definition", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "249", "name": "Wavy Flow Men Style", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "017", "name": "Low Fade Curly", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "018", "name": "Mid Fade Curly", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "019", "name": "High Fade Curly", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id": "060", "name": "360 Waves", "cat": "Curly & Wavy", "top": "male", "mode": "male", "label": "Herren", "icon": "♂"},
+    {"id":"501","name":"Drop Fade","cat": "Fade & Taper","top":"male","mode":"male","label":"Herren","icon":"♂"},
+    {"id":"502","name":"Burst Fade","cat": "Fade & Taper","top":"male","mode":"male","label":"Herren","icon":"♂"},
+    {"id":"503","name":"Shadow Fade","cat": "Fade & Taper","top":"male","mode":"male","label":"Herren","icon":"♂"},
+    {"id":"504","name":"Wolf Cut Men","cat": "Trending Styles","top":"male","mode":"male","label":"Herren","icon":"♂"},
+    {"id":"505","name":"Curtain Hair Modern","cat": "Trending Styles","top":"male","mode":"male","label":"Herren","icon":"♂"},
+    {"id":"506","name":"Loc Fade","cat": "Natural & Specialty","top":"male","mode":"male","label":"Herren","icon":"♂"},
+    {"id":"507","name":"Men's Afro Shape","cat": "Natural & Specialty","top":"male","mode":"male","label":"Herren","icon":"♂"}
+  ],
+  "beard": [
+    {"id": "701", "name": "Short Boxed · Natural", "cat": "Kurzer Bart", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "702", "name": "Short Boxed · Natural · Low Fade", "cat": "Kurzer Bart", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "703", "name": "Short Boxed · Natural · Mid Fade", "cat": "Kurzer Bart", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "704", "name": "Short Boxed · Natural · High Fade", "cat": "Kurzer Bart", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "705", "name": "Short Boxed · Line-Up", "cat": "Kurzer Bart", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "706", "name": "Short Boxed · Line-Up · Low Fade", "cat": "Kurzer Bart", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "707", "name": "Short Boxed · Line-Up · Mid Fade", "cat": "Kurzer Bart", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "708", "name": "Short Boxed · Line-Up · High Fade", "cat": "Kurzer Bart", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "711", "name": "Rounded Beard", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "712", "name": "Rounded Beard · Low Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "713", "name": "Rounded Beard · Mid Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "714", "name": "Rounded Beard · High Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "715", "name": "Rounded Beard · Burst Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "716", "name": "Rounded Beard · Drop Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "721", "name": "Angular Beard", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "722", "name": "Angular Beard · Low Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "723", "name": "Angular Beard · Mid Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "724", "name": "Angular Beard · High Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "725", "name": "Angular Beard · Burst Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "726", "name": "Angular Beard · Drop Fade", "cat": "Mittlerer Bart (3–4 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "731", "name": "Rounded Long Beard", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "732", "name": "Rounded Long Beard · Taper Fade", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "733", "name": "Rounded Long Beard · Low Taper", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "734", "name": "Rounded Long Beard · Mid Taper", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "735", "name": "Rounded Long Beard · High Taper", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "741", "name": "Viking Beard", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "742", "name": "Viking Beard · Taper Fade", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "743", "name": "Viking Beard · Low Taper", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "744", "name": "Viking Beard · Mid Taper", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"},
+    {"id": "745", "name": "Viking Beard · High Taper", "cat": "Langer Bart (10–15 cm)", "top": "beard", "mode": "beard", "label": "Bart", "icon": "✂"}
+  ],
+  "color": [
+    {"id": "301", "name": "Natural Soft Black", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "302", "name": "Espresso Brunette", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "303", "name": "Chocolate Brown", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "304", "name": "Mocha Brunette", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "305", "name": "Honey Brown", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "306", "name": "Beige Dark Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "307", "name": "Honey Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "308", "name": "Cool Beige Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "309", "name": "Pearl Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "310", "name": "Icy Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "311", "name": "Platinum Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "312", "name": "Soft Copper", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "313", "name": "Warm Copper", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "314", "name": "Auburn Red Brown", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "315", "name": "Rose Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "316", "name": "Violet Brunette", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "317", "name": "Soft Natural Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "318", "name": "Honey Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "319", "name": "Caramel Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "320", "name": "Cool Beige Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "321", "name": "Ash Blonde Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "322", "name": "Face-Framing Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "323", "name": "Dimensional Brunette Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "324", "name": "Copper Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "325", "name": "Mocha Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "326", "name": "Icy Blonde Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "327", "name": "Soft Rooted Ombré", "cat": "Ombré & Sombré", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "328", "name": "Warm Copper Ombré", "cat": "Ombré & Sombré", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "329", "name": "Cool Mocha Ombré", "cat": "Ombré & Sombré", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "330", "name": "Soft Sombré Beige", "cat": "Ombré & Sombré", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "331", "name": "Honey Blonde Ombré", "cat": "Ombré & Sombré", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "332", "name": "Chocolate Caramel Sombré", "cat": "Ombré & Sombré", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "333", "name": "Delicate Babylights", "cat": "Babylights / Highlights / Lowlights", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "334", "name": "Bright Blonde Babylights", "cat": "Babylights / Highlights / Lowlights", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "335", "name": "Classic Highlights Neutral", "cat": "Babylights / Highlights / Lowlights", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "336", "name": "Honey Highlights", "cat": "Babylights / Highlights / Lowlights", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "337", "name": "Cool Ash Highlights", "cat": "Babylights / Highlights / Lowlights", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "338", "name": "Soft Lowlights", "cat": "Babylights / Highlights / Lowlights", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "339", "name": "Mocha Lowlights", "cat": "Babylights / Highlights / Lowlights", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "340", "name": "Soft Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "341", "name": "Bold Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "342", "name": "Beige Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "343", "name": "Icy Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "344", "name": "Copper Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "345", "name": "Soft Root Shadow", "cat": "Root Shadow / Root Melt", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "346", "name": "Neutral Root Melt", "cat": "Root Shadow / Root Melt", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "347", "name": "Mocha Root Melt", "cat": "Root Shadow / Root Melt", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "348", "name": "Beige Root Smudge", "cat": "Root Shadow / Root Melt", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "349", "name": "Pearl Toner Refresh", "cat": "Glossing & Toning", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "350", "name": "Beige Gloss Refresh", "cat": "Glossing & Toning", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "351", "name": "Icy Blonde Toner", "cat": "Glossing & Toning", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "352", "name": "Ash Toner Refresh", "cat": "Glossing & Toning", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "353", "name": "Honey Gloss Refresh", "cat": "Glossing & Toning", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "354", "name": "Rose Gloss Refresh", "cat": "Glossing & Toning", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "355", "name": "Violet Neutralizing Toner", "cat": "Glossing & Toning", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "356", "name": "Icy Blonde Bleach & Tone", "cat": "Bleach & Blonde Refresh", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "357", "name": "Platinum Bleach & Tone", "cat": "Bleach & Blonde Refresh", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "358", "name": "Beige Blonde Refresh", "cat": "Bleach & Blonde Refresh", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "359", "name": "Warm Blonde Refresh", "cat": "Bleach & Blonde Refresh", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "360", "name": "Grey Blending Natural", "cat": "Grey Blending & Coverage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "361", "name": "Grey Coverage Soft Dimension", "cat": "Grey Blending & Coverage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "362", "name": "Silver Grey Gloss", "cat": "Grey Blending & Coverage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "363", "name": "Men’s Grey Blend", "cat": "Grey Blending & Coverage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "364", "name": "Rose Fashion Color", "cat": "Fashion Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "365", "name": "Violet Fashion Color", "cat": "Fashion Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "366", "name": "Silver Fashion Color", "cat": "Fashion Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "367", "name": "Peach Copper Fashion Color", "cat": "Fashion Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "368", "name": "Men’s Natural Darkening", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "369", "name": "Men’s Grey Blend", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "370", "name": "Men’s Mocha Refresh", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "371", "name": "Men’s Icy Blonde Tone", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "372", "name": "Beard Color Natural Blend", "cat": "Bartfarbe", "top": "color", "mode": "color_bart", "label": "Farbe", "icon": "🎨"},
+    {"id": "373", "name": "Bartfarbe — Natural Black", "cat": "Bartfarbe", "top": "color", "mode": "color_bart", "label": "Farbe", "icon": "🎨"},
+    {"id": "374", "name": "Bartfarbe — Espresso Brown", "cat": "Bartfarbe", "top": "color", "mode": "color_bart", "label": "Farbe", "icon": "🎨"},
+    {"id": "375", "name": "Bartfarbe — Medium Brown", "cat": "Bartfarbe", "top": "color", "mode": "color_bart", "label": "Farbe", "icon": "🎨"},
+    {"id": "376", "name": "Beard Grey Coverage Soft", "cat": "Bartfarbe", "top": "color", "mode": "color_bart", "label": "Farbe", "icon": "🎨"},
+    {"id": "377", "name": "Salt-and-Pepper Beard Blend", "cat": "Bartfarbe", "top": "color", "mode": "color_bart", "label": "Farbe", "icon": "🎨"},
+    {"id": "381", "name": "Mushroom Brown", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "382", "name": "Cinnamon Brown", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "383", "name": "Strawberry Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "384", "name": "Sandy Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "385", "name": "Dirty Blonde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "386", "name": "Bronde", "cat": "Farbe Voll", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "545", "name": "Double Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "546", "name": "Babylight Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "547", "name": "Chunky Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "548", "name": "Rose Gold Money Piece", "cat": "Money Piece", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "549", "name": "Reverse Ombré", "cat": "Ombré & Sombré", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "550", "name": "Color Melt", "cat": "Ombré & Sombré", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "551", "name": "Babylights Balayage", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "552", "name": "Teasy Lights", "cat": "Balayage", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "553", "name": "Men's Highlights Natural", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "554", "name": "Men's Bleached Tips", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "555", "name": "Men's Copper Color", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "556", "name": "Men's Color Block Panels", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "557", "name": "Men's Salt & Pepper Enhance", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"},
+    {"id": "558", "name": "Men's Full Highlights Blend", "cat": "Men's Color", "top": "color", "mode": "color", "label": "Farbe", "icon": "🎨"}
+  ],
+  "behandlung": [
+    {"id": "401", "name": "Keratin Smoothing Classic", "cat": "Keratin", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "402", "name": "Premium Keratin Smooth Finish", "cat": "Keratin", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "403", "name": "Soft Anti-Frizz Smoothing", "cat": "Keratin", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "404", "name": "Brazilian Blowout Style Finish", "cat": "Keratin", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "427", "name": "Soft Body Wave Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "428", "name": "Loose Natural Wave Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "429", "name": "Glam Volume Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "430", "name": "Modern Spiral Curl Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "431", "name": "Defined Curl Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "432", "name": "Soft Movement Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "437", "name": "Korean Style Soft Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "438", "name": "Romantic Wave Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "439", "name": "Elegant Loose Curl Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "434", "name": "Face-Framing Wave Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "436", "name": "Long Hair Soft Curl Perm", "cat": "Damen Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "442", "name": "Men's Natural Texture Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "443", "name": "Men's Loose Wave Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "444", "name": "Men's Korean Style Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "445", "name": "Men's Soft Curl Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "446", "name": "Men's Top Volume Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "447", "name": "Men's Flow Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "448", "name": "Men's Texture Boost Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "449", "name": "Men's Curly Top Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "450", "name": "Men's Modern Wave Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"},
+    {"id": "453", "name": "Men's Trend Texture Perm", "cat": "Herren Perm", "top": "behandlung", "mode": "color_behandlung", "label": "Keratin & Perm", "icon": "✨"}
+  ]
+};
+
+/* ══ STATE ══ */
+let currentMode='male', currentSubcat='all';
+let currentModelId='', currentModelName='', currentModelMode='';
+let slotFiles={};  // {`${angleId}-vor`: File, `${angleId}-nach`: File}
+let galleryCounts={}, galleryThumbs={};
+
+/* ══ AUTH ══ */
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  const errEl=document.getElementById('loginErr');
+  errEl.style.display='none';
+  if(!email||!pass){errEl.textContent='❌ Bitte E-Mail und Passwort eingeben.';errEl.style.display='block';return}
+  try{
+    const{data:authData,error:authErr}=await sb.auth.signInWithPassword({email,password:pass});
+    if(authErr||!authData?.user){errEl.textContent='❌ Anmeldung fehlgeschlagen.';errEl.style.display='block';return}
+    if(!authData.user.user_metadata?.is_admin){await sb.auth.signOut();errEl.textContent='❌ Kein Admin-Zugang.';errEl.style.display='block';return}
+    document.getElementById('loginScreen').style.display='none';
+    bootApp();
+  }catch(e){errEl.textContent='❌ '+e.message;errEl.style.display='block'}
+}
+function doLogout(){sb.auth.signOut();location.reload()}
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+(function(){sb.auth.getSession().then(({data})=>{if(!data?.session)return;if(data.session.user.user_metadata?.is_admin){document.getElementById('loginScreen').style.display='none';bootApp()}})})();
+
+/* ══ BOOT ══ */
+async function bootApp(){
+  ['mainNav','modeTabsWrap','subcatWrap','searchBar','modeHero','modelsWrap'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='block';
+  });
+  document.querySelector('.mode-tabs-wrap')&&(document.getElementById('modeTabsWrap').style.display='block');
+  await loadCounts();
+  buildModeTabs();
+  buildSubcatTabs();
+  renderGrid();
+  buildSlotGrids();
+}
+
+/* ══ COUNTS ══ */
+async function loadCounts(){
+  try{
+    const{data}=await sb.from('model_gallery')
+      .select('model_id,mode,after_url,image_url,pair_label,created_at')
+      .order('created_at',{ascending:false});
+    galleryCounts={};galleryThumbs={};galleryItems=[];
+    (data||[]).forEach(r=>{
+      const top=topModeFromDb(r.mode,r.model_id);
+      const key=`${r.mode||''}:${r.model_id||''}`;
+      galleryCounts[key]=(galleryCounts[key]||0)+1;
+      if(!galleryThumbs[key])galleryThumbs[key]=r.after_url||r.image_url||'';
+      galleryItems.push({
+        dbMode:String(r.mode||''),topMode:top,modelId:String(r.model_id||''),
+        label:String(r.pair_label||''),thumb:r.after_url||r.image_url||''
+      });
+    });
+  }catch(e){console.warn('loadCounts:',e.message)}
+}
+
+/* ══ TABS ══ */
+function buildModeTabs(){
+  document.getElementById('modeTabs').innerHTML=MODE_TABS.map(t=>{
+    // compute count across all subcats for this mode
+    const cnt=galleryCardCount(t.mode);
+    return`<button class="mode-tab${t.mode===currentMode?' active':''}" onclick="setMode('${t.mode}',this)">
+      <span>${t.icon}</span><span>${t.label}</span>
+      <span class="mode-tab-count" id="cnt-${t.mode}">${cnt||'–'}</span>
+    </button>`;
+  }).join('');
+}
+
+function topModeFromDb(dbMode,modelId=''){
+  const cat=CATALOG_BY_ID[String(modelId||'')];
+  if(cat&&cat.top)return cat.top;
+  dbMode=String(dbMode||'');
+  if(dbMode==='male')return 'male';
+  if(dbMode==='female')return 'female';
+  if(dbMode==='beard')return 'beard';
+  if(dbMode==='treatment'||dbMode==='behandlung'||dbMode==='color_behandlung')return 'behandlung';
+  if(dbMode==='color'||dbMode.startsWith('color_'))return 'color';
+  if(dbMode.startsWith('face_'))return 'face';
+  return '';
+}
+function dbModeForModel(m,mode=currentMode){return m.mode||mode}
+function modelCats(m){return Array.isArray(m.cats)&&m.cats.length?m.cats:[m.cat]}
+function modelMatchesSubcat(m){
+  if(currentSubcat==='all')return true;
+  if(currentMode==='behandlung'){
+    const cat=String(m.cat||'').toLowerCase();
+    if(currentSubcat==='keratin')return cat.includes('keratin');
+    if(currentSubcat==='perm_women')return cat.includes('damen');
+    if(currentSubcat==='perm_men')return cat.includes('herren');
+  }
+  return modelCats(m).some(c=>String(c||'')===currentSubcat||String(c||'').includes(currentSubcat));
+}
+const STYLE_NAME_MAP={
+  "female": {
+    "067": "French Bob",
+    "113": "Italian Bob",
+    "071": "Blunt Bob",
+    "250": "Jaw-Length Precision Bob",
+    "251": "Soft A-Line Bob",
+    "076": "Shoulder-Length Lob",
+    "080": "Blunt Mid-Length",
+    "209": "Polished Business Bob",
+    "252": "Soft Elegant Shoulder-Length Styling",
+    "253": "Premium Glossy Length Style",
+    "254": "Long Luxe Smooth Finish",
+    "201": "Italian Bob Luxe",
+    "073": "Sleek Straight Lengths",
+    "081": "Layered Lob",
+    "202": "Soft Layered Bob",
+    "255": "Soft Wavy Lob",
+    "256": "Chic Contemporary Midi Cut",
+    "257": "Refined Editorial-Inspired Soft Shape",
+    "070": "Asymmetrical Bob",
+    "072": "Micro Fringe Bob",
+    "074": "Textured Bob",
+    "086": "A-Line Lob",
+    "078": "Butterfly Cut",
+    "077": "Soft Shag",
+    "083": "Modern Wolf-Inspired Soft Cut",
+    "203": "Statement Volume Layers",
+    "208": "Textured Mid-Length Cut",
+    "258": "Trend Face-Framing Luxury Blowout",
+    "259": "Floating Fringe Layers",
+    "260": "Soft Rounded Bob 2026",
+    "064": "Pixie Soft Texture",
+    "065": "Feminine Short Crop",
+    "068": "Layered Pixie",
+    "096": "Short Curl Definition Pixie",
+    "116": "Micro Bob",
+    "066": "Feminine Buzz",
+    "069": "Soft Crop",
+    "075": "Boyish Side-Part",
+    "079": "Curtain Bangs with Layers",
+    "084": "Face-Framing Layers",
+    "085": "Wispy Bangs Long Layers",
+    "204": "Long Soft Layers",
+    "261": "Natural Low-Maintenance Layers",
+    "262": "Romantic Layered Styling",
+    "263": "Dimensional Layered Brunette Look",
+    "092": "Center-Parted Sleek",
+    "087": "Long Straight Layers",
+    "088": "Soft Glam Waves",
+    "089": "Long Curtain Bang Layers",
+    "090": "Long U-Cut Smooth Finish",
+    "205": "Hollywood Waves",
+    "094": "Bridal Soft Updo",
+    "128": "Bridal Romantic Updo",
+    "206": "Half-Up Bridal Styling",
+    "207": "Elegant Low Bun Styling",
+    "264": "Event Glam Styling",
+    "093": "Braided Crown",
+    "123": "Ballerina Bun",
+    "126": "French Twist",
+    "127": "Low Chignon",
+    "097": "Curly Bob",
+    "098": "Curly Lob",
+    "099": "Long Curly Layers",
+    "100": "Natural Afro Shape",
+    "210": "Soft Curl Definition Cut",
+    "265": "Long Voluminous Blowout",
+    "082": "Vintage Waves"
+  },
+  "male": {
+    "001": "Buzz Cut Clean Line",
+    "005": "Crew Cut Premium Finish",
+    "007": "Ivy League Natural Taper",
+    "023": "Classic Side Part",
+    "024": "Natural Slick Back",
+    "025": "Modern Pompadour",
+    "026": "Pompadour",
+    "027": "Executive Taper",
+    "211": "Clean Business Cut",
+    "231": "Contemporary Gentleman Cut",
+    "232": "Relaxed Modern Business Style",
+    "233": "Refined Masculine Medium Shape",
+    "011": "French Crop",
+    "012": "Textured Crop",
+    "212": "Modern Side Part Fade",
+    "218": "Soft Pompadour Taper",
+    "220": "Sharp Defined Quiff",
+    "234": "Slick Back Undercut",
+    "235": "Scissor Cut Natural Shape",
+    "236": "Clean Jawline-Framing Men Style",
+    "014": "Short Quiff",
+    "028": "Modern Quiff",
+    "033": "Soft Undercut",
+    "058": "Hard Part",
+    "031": "Bro Flow",
+    "035": "Soft Mullet Modern Men",
+    "036": "Modern Mullet Textured",
+    "215": "Modern Mullet Clean",
+    "237": "Editorial Modern Men Flow",
+    "238": "Textured Top with Low Taper",
+    "239": "Men’s Korean Texture Flow",
+    "032": "Two-Block",
+    "038": "Modern Bowl Cut",
+    "053": "Bro Flow Classic",
+    "057": "Mohawk",
+    "240": "Natural Low-Maintenance Men Cut",
+    "241": "Soft Natural Taper",
+    "242": "Low-Maintenance Crop",
+    "061": "Cornrows",
+    "063": "Dreadlocks",
+    "003": "Buzz Cut Skin Taper",
+    "009": "High & Tight Clean Fade",
+    "022": "High Fade Sharp Finish",
+    "054": "Skin Fade Structured Top",
+    "056": "Taper Fade Classic",
+    "217": "Textured Crop Low Fade",
+    "243": "Low Fade Natural Blend",
+    "244": "Mid Fade Textured Top",
+    "245": "Premium Barber Fade Finish",
+    "052": "Edgar Cut",
+    "055": "Blowout Fade",
+    "059": "Textured Quiff Fade",
+    "062": "High Top Fade",
+    "029": "Messy Structured Texture",
+    "039": "Textured Fringe",
+    "213": "Low Taper Crop",
+    "246": "French Crop Soft Texture",
+    "247": "Matte Textured Quiff",
+    "015": "Modern Spiky",
+    "030": "Short Bro Flow",
+    "034": "Wavy Medium Men Style",
+    "214": "Medium Flow Men",
+    "248": "Refined Medium Flow",
+    "037": "Medium Shag",
+    "051": "Wavy Flow Mid",
+    "040": "Long Layered Men Hair",
+    "041": "Shoulder-Length Men Flow",
+    "044": "Surfer Hair Natural Flow",
+    "219": "Long Layered Men Flow",
+    "042": "Man Bun",
+    "043": "Half-Up Style",
+    "045": "Long Wolf Cut",
+    "046": "Long Curtains",
+    "047": "Long Slick Back",
+    "016": "Curly Top Natural Shape",
+    "048": "Curly Taper",
+    "049": "Curly Fringe Shape",
+    "050": "Curly Shag Natural Volume",
+    "216": "Curly Fade Definition",
+    "249": "Wavy Flow Men Style",
+    "017": "Low Fade Curly",
+    "018": "Mid Fade Curly",
+    "019": "High Fade Curly",
+    "060": "360 Waves"
+  },
+  "beard": {
+    "701": "Short Boxed · Natural",
+    "702": "Short Boxed · Natural · Low Fade",
+    "703": "Short Boxed · Natural · Mid Fade",
+    "704": "Short Boxed · Natural · High Fade",
+    "705": "Short Boxed · Line-Up",
+    "706": "Short Boxed · Line-Up · Low Fade",
+    "707": "Short Boxed · Line-Up · Mid Fade",
+    "708": "Short Boxed · Line-Up · High Fade",
+    "711": "Rounded Beard",
+    "712": "Rounded Beard · Low Fade",
+    "713": "Rounded Beard · Mid Fade",
+    "714": "Rounded Beard · High Fade",
+    "715": "Rounded Beard · Burst Fade",
+    "716": "Rounded Beard · Drop Fade",
+    "721": "Angular Beard",
+    "722": "Angular Beard · Low Fade",
+    "723": "Angular Beard · Mid Fade",
+    "724": "Angular Beard · High Fade",
+    "725": "Angular Beard · Burst Fade",
+    "726": "Angular Beard · Drop Fade",
+    "731": "Rounded Long Beard",
+    "732": "Rounded Long Beard · Taper Fade",
+    "733": "Rounded Long Beard · Low Taper",
+    "734": "Rounded Long Beard · Mid Taper",
+    "735": "Rounded Long Beard · High Taper",
+    "741": "Viking Beard",
+    "742": "Viking Beard · Taper Fade",
+    "743": "Viking Beard · Low Taper",
+    "744": "Viking Beard · Mid Taper",
+    "745": "Viking Beard · High Taper",
+    "226": "Refined Heavy Stubble",
+    "268": "Soft Natural Beard Contour",
+    "273": "Sharp Outline Groomed Beard",
+    "274": "Contemporary Mustache and Beard Combo",
+    "279": "Modern Groomed Beard Look",
+    "280": "Executive Beard Shape Trend"
+  },
+  "color": {
+    "301": "Natural Soft Black",
+    "302": "Espresso Brunette",
+    "303": "Chocolate Brown",
+    "304": "Mocha Brunette",
+    "305": "Honey Brown",
+    "306": "Beige Dark Blonde",
+    "307": "Honey Blonde",
+    "308": "Cool Beige Blonde",
+    "309": "Pearl Blonde",
+    "310": "Icy Blonde",
+    "311": "Platinum Blonde",
+    "312": "Soft Copper",
+    "313": "Warm Copper",
+    "314": "Auburn Red Brown",
+    "315": "Rose Blonde",
+    "316": "Violet Brunette",
+    "317": "Soft Natural Balayage",
+    "318": "Honey Balayage",
+    "319": "Caramel Balayage",
+    "320": "Cool Beige Balayage",
+    "321": "Ash Blonde Balayage",
+    "322": "Face-Framing Balayage",
+    "323": "Dimensional Brunette Balayage",
+    "324": "Copper Balayage",
+    "325": "Mocha Balayage",
+    "326": "Icy Blonde Balayage",
+    "327": "Soft Rooted Ombré",
+    "328": "Warm Copper Ombré",
+    "329": "Cool Mocha Ombré",
+    "330": "Soft Sombré Beige",
+    "331": "Honey Blonde Ombré",
+    "332": "Chocolate Caramel Sombré",
+    "333": "Delicate Babylights",
+    "334": "Bright Blonde Babylights",
+    "335": "Classic Highlights Neutral",
+    "336": "Honey Highlights",
+    "337": "Cool Ash Highlights",
+    "338": "Soft Lowlights",
+    "339": "Mocha Lowlights",
+    "340": "Soft Money Piece",
+    "341": "Bold Money Piece",
+    "342": "Beige Money Piece",
+    "343": "Icy Money Piece",
+    "344": "Copper Money Piece",
+    "345": "Soft Root Shadow",
+    "346": "Neutral Root Melt",
+    "347": "Mocha Root Melt",
+    "348": "Beige Root Smudge",
+    "349": "Pearl Toner Refresh",
+    "350": "Beige Gloss Refresh",
+    "351": "Icy Blonde Toner",
+    "352": "Ash Toner Refresh",
+    "353": "Honey Gloss Refresh",
+    "354": "Rose Gloss Refresh",
+    "355": "Violet Neutralizing Toner",
+    "356": "Icy Blonde Bleach & Tone",
+    "357": "Platinum Bleach & Tone",
+    "358": "Beige Blonde Refresh",
+    "359": "Warm Blonde Refresh",
+    "360": "Grey Blending Natural",
+    "361": "Grey Coverage Soft Dimension",
+    "362": "Silver Grey Gloss",
+    "363": "Men’s Grey Blend",
+    "364": "Rose Fashion Color",
+    "365": "Violet Fashion Color",
+    "366": "Silver Fashion Color",
+    "367": "Peach Copper Fashion Color",
+    "368": "Men’s Natural Darkening",
+    "369": "Men’s Grey Blend",
+    "370": "Men’s Mocha Refresh",
+    "371": "Men’s Icy Blonde Tone",
+    "372": "Beard Color Natural Blend",
+    "373": "Bartfarbe — Natural Black",
+    "374": "Bartfarbe — Espresso Brown",
+    "375": "Bartfarbe — Medium Brown",
+    "376": "Beard Grey Coverage Soft",
+    "377": "Salt-and-Pepper Beard Blend"
+  },
+  "behandlung": {
+    "401": "Keratin Smoothing Classic",
+    "402": "Premium Keratin Smooth Finish",
+    "403": "Soft Anti-Frizz Smoothing",
+    "404": "Brazilian Blowout Style Finish",
+    "427": "Soft Body Wave Perm",
+    "428": "Loose Natural Wave Perm",
+    "429": "Glam Volume Perm",
+    "430": "Modern Spiral Curl Perm",
+    "431": "Defined Curl Perm",
+    "432": "Soft Movement Perm",
+    "434": "Face-Framing Wave Perm",
+    "436": "Long Hair Soft Curl Perm",
+    "437": "Korean Style Soft Perm",
+    "438": "Romantic Wave Perm",
+    "439": "Elegant Loose Curl Perm",
+    "442": "Men's Natural Texture Perm",
+    "443": "Men's Loose Wave Perm",
+    "444": "Men's Korean Style Perm",
+    "445": "Men's Soft Curl Perm",
+    "446": "Men's Top Volume Perm",
+    "447": "Men's Flow Perm",
+    "448": "Men's Texture Boost Perm",
+    "449": "Men's Curly Top Perm",
+    "450": "Men's Modern Wave Perm",
+    "453": "Men's Trend Texture Perm"
+  }
+};
+
+
+function normKey(v){return String(v||'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,'').trim()}
+function nameMapGroupForMode(mode){return mode}
+function canonicalNameForModel(mode,m){
+  const group=nameMapGroupForMode(mode);
+  return (STYLE_NAME_MAP[group]&&STYLE_NAME_MAP[group][m.id])||m.name||m.id;
+}
+const CATALOG_BY_ID={};
+Object.keys(MODEL_DATA).forEach(top=>{(MODEL_DATA[top]||[]).forEach(item=>{if(!CATALOG_BY_ID[item.id])CATALOG_BY_ID[item.id]=item})});
+
+function syncModelNames(){
+  Object.keys(MODEL_DATA).forEach(mode=>{
+    (MODEL_DATA[mode]||[]).forEach(m=>{m.name=canonicalNameForModel(mode,m)})
+  });
+}
+syncModelNames();
+function aliasesForModel(mode,m){
+  const base=[m.id,m.name,canonicalNameForModel(mode,m),String(m.id).replace(/^0+/,''),`style-${m.id}`,`model-${m.id}`];
+  // Color/Behandlung: also add name-based prefix to match old long-format IDs
+  // Old format: "color_natural_soft_black_..." → normKey → "colornaturalsoftblack..."
+  if(mode==='color'||mode==='behandlung'){
+    const nname=normKey(m.name);
+    if(nname.length>4){
+      base.push('color'+nname);       // matches old "color_NAME_..." IDs
+      base.push('tech'+nname);        // matches old "tech_NAME_..." treatment IDs
+      base.push(nname);               // matches IDs that are just the name
+    }
+  }
+  return new Set(base.map(normKey).filter(Boolean));
+}
+function galleryRowsForModel(mode,m){
+  const aliases=aliasesForModel(mode,m);
+  const dbMode=dbModeForModel(m,mode);
+  return galleryItems.filter(g=>{
+    if(g.topMode!==mode)return false;
+    // For color/behandlung, mode check is flexible (old records may have 'color' not 'color_vollfarbe')
+    if(mode==='color'||mode==='behandlung'){
+      if(g.dbMode&&g.dbMode!=='color'&&g.dbMode!=='behandlung'&&g.dbMode!==dbMode&&!g.dbMode.startsWith('color_'))return false;
+    }
+    const gNorm=normKey(g.modelId);
+    const lNorm=normKey(g.label);
+    // Exact match
+    if(aliases.has(gNorm)||aliases.has(lNorm))return true;
+    // Prefix/substring match for old long-format IDs (e.g. "colornaturalsoftblack...")
+    if(mode==='color'||mode==='behandlung'){
+      for(const alias of aliases){
+        if(alias.length>7&&(gNorm.startsWith(alias)||gNorm.includes(alias)))return true;
+      }
+    }
+    return false;
+  });
+}
+function currentUploadAliases(){
+  const nname=normKey(currentModelName);
+  return new Set([
+    currentModelId,
+    currentModelName,
+    String(currentModelId||'').replace(/^0+/,''),
+    `style-${currentModelId}`,
+    `model-${currentModelId}`,
+    // For color: also match old long-format IDs by name prefix
+    'color'+nname,
+    'tech'+nname,
+    nname
+  ].map(normKey).filter(Boolean));
+}
+function rowMatchesCurrentUpload(r){
+  const wantedTop=topModeFromDb(currentModelMode,currentModelId)||currentMode;
+  const rowTop=topModeFromDb(r.mode,r.model_id);
+  if(wantedTop&&rowTop&&rowTop!==wantedTop)return false;
+  // Color/behandlung: mode check — allow 'color', 'color_*' variants
+  if(wantedTop==='color'||wantedTop==='behandlung'){
+    const rMode=String(r.mode||'');
+    // Accept: exact match, or 'color'/'color_*' / 'treatment'/'behandlung'
+    const modeOk= rMode===currentModelMode
+      || rMode==='color' || rMode.startsWith('color_')
+      || rMode==='treatment' || rMode==='behandlung';
+    if(!modeOk)return false;
+  }
+  const aliases=currentUploadAliases();
+  const gNorm=normKey(r.model_id);
+  const lNorm=normKey(r.pair_label);
+  // Exact match
+  if(aliases.has(gNorm)||aliases.has(lNorm))return true;
+  // Substring match for old long-format IDs
+  if(wantedTop==='color'||wantedTop==='behandlung'){
+    for(const alias of aliases){
+      if(alias.length>6&&(gNorm.startsWith(alias)||gNorm.includes(alias)))return true;
+    }
+  }
+  return false;
+}
+function galleryCountForModel(mode,m){return galleryRowsForModel(mode,m).length}
+function galleryThumbForModel(mode,m){const r=galleryRowsForModel(mode,m).find(x=>x.thumb);return r?r.thumb:''}
+function galleryCardCount(mode){
+  return (MODEL_DATA[mode]||[]).filter(m=>galleryCountForModel(mode,m)>0).length;
+}
+function galleryRowCountForModel(mode,m){return galleryCountForModel(mode,m)}
+
+function buildSubcatTabs(){
+  const tabs=SUBCATS[currentMode]||[];
+  document.getElementById('subcatTabs').innerHTML=tabs.map(t=>`
+    <button class="subcat-tab${t.cat===currentSubcat?' active':''}" onclick="setSubcat('${t.cat}',this)"><span class="sct-label">${t.label}</span></button>`).join('');
+}
+
+function setMode(mode,btn){
+  currentMode=mode;currentSubcat='all';
+  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  else{const el=document.getElementById(`tab-${mode}`);if(el)el.classList.add('active')}
+  document.getElementById('searchInput').value='';
+  buildSubcatTabs();renderGrid();
+}
+
+function setSubcat(cat,btn){
+  currentSubcat=cat;
+  document.querySelectorAll('.subcat-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderGrid();
+}
+
+/* ══ RENDER GRID ══ */
+function renderGrid(){
+  const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
+  const list=(MODEL_DATA[currentMode]||[]).filter(m=>{
+    const matchSub=modelMatchesSubcat(m);
+    const matchQ=!q||m.name.toLowerCase().includes(q)||m.id.toLowerCase().includes(q);
+    return matchSub&&matchQ;
+  });
+  const modeLabel={female:'Damen',male:'Herren',beard:'Bart',color:'Farbe',behandlung:'Behandlung'};
+  const grid=document.getElementById('modelsGrid');
+
+  // Render known model cards
+  const knownCards=list.map(m=>{
+    const dbMode=dbModeForModel(m,currentMode);
+    const cnt=galleryRowCountForModel(currentMode,m);
+    const thumb=galleryThumbForModel(currentMode,m);
+    const displayName=canonicalNameForModel(currentMode,m);
+    const sectionText=modelCats(m).join(' · ');
+    return`<div class="model-card${cnt>0?' has-imgs':''}" onclick="openUpload('${esc(m.id)}','${esc(displayName)}','${esc(dbMode)}')">
+      <div class="card-thumb">
+        ${thumb
+          ?`<img src="${esc(thumb)}" loading="lazy" alt="${esc(displayName)}"><div class="card-count">${cnt}</div>`
+          :`<div class="card-thumb-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+      </div>
+      <div class="card-info">
+        <div class="card-section">${modeLabel[currentMode]||currentMode} · ${sectionText}</div>
+        <div class="card-name">${displayName}</div>
+        <div class="card-id">#${m.id}</div>
+      </div>
+      <div class="card-action">${cnt>0?'📁 Verwalten':'⬆ Hochladen'}</div>
+    </div>`;
+  }).join('');
+
+  const totalKnownWithImgs=list.filter(m=>galleryCountForModel(currentMode,m)>0).length;
+  grid.innerHTML=knownCards||`<div class="empty-state"><div style="font-size:2rem;margin-bottom:10px;opacity:.3">🔍</div><p>Keine Modelle gefunden</p></div>`;
+  document.getElementById('modeTitle').textContent=`Logic Style · ${modeLabel[currentMode]||currentMode} Gallery`;
+  document.getElementById('modeMeta').textContent=`${list.length} Modelle · ${totalKnownWithImgs} mit Bildern`;
+}
+
+function openUploadByModelId(modelId,label,mode){
+  // Find matching model or create a virtual one
+  const m=CATALOG_BY_ID[modelId]||{id:modelId,name:label,mode:mode,top:mode};
+  openUpload(modelId,label,m.mode||mode);
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function js(s){return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+
+/* ══ SLOT GRIDS ══ */
+function buildSlotGrids(){
+  // Build angle grids for Vor and Nach, synced to the selected model type
+  ['Vor','Nach'].forEach(type=>{
+    const t=type.toLowerCase();
+    const container=document.getElementById(`slotGrid${type}`);
+    container.innerHTML=activeAngles().map(a=>`
+      <div class="angle-slot ${t}-slot" id="slot-${a.id}-${t}" onclick="pickSlot('${a.id}','${t}')">
+        <span class="slot-icon">${a.icon}</span>
+        <span class="slot-name">${a.label}<br><span style="font-size:6px;opacity:.5">${a.hint}</span></span>
+      </div>`).join('');
+  });
+  // Build hidden file inputs
+  const fi=document.getElementById('fileInputs');
+  fi.innerHTML=activeAngles().flatMap(a=>['vor','nach'].map(t=>`
+    <input type="file" id="finp-${a.id}-${t}" accept="image/*" style="display:none"
+      onchange="onFile('${a.id}','${t}',this)">`)).join('');
+}
+
+function pickSlot(angleId,type){document.getElementById(`finp-${angleId}-${type}`).click()}
+
+function onFile(angleId,type,inp){
+  const file=inp.files[0];if(!file)return;
+  inp.value='';
+  slotFiles[`${angleId}-${type}`]=file;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const slot=document.getElementById(`slot-${angleId}-${type}`);
+    slot.innerHTML=`<img src="${e.target.result}" alt=""><div class="slot-check">✓</div><button class="slot-clear" onclick="event.stopPropagation();clearSlot('${angleId}','${type}')">✕</button>`;
+    slot.classList.add('filled');
+    checkReady();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearSlot(angleId,type){
+  delete slotFiles[`${angleId}-${type}`];
+  const a=activeAngles().find(x=>x.id===angleId);
+  const t=type;
+  const slot=document.getElementById(`slot-${angleId}-${type}`);
+  slot.className=`angle-slot ${t}-slot`;
+  slot.innerHTML=`<span class="slot-icon">${a?.icon||'📷'}</span><span class="slot-name">${a?.label||angleId}<br><span style="font-size:6px;opacity:.5">${a?.hint||''}</span></span>`;
+  slot.onclick=()=>pickSlot(angleId,type);
+  const fi=document.getElementById(`finp-${angleId}-${type}`);if(fi)fi.value='';
+  checkReady();
+}
+
+function clearSlots(){
+  slotFiles={};
+  buildSlotGrids();
+  document.getElementById('inpCustomer').value='';
+  document.getElementById('btnUpload').disabled=true;
+  document.getElementById('progressWrap').style.display='none';
+}
+
+function checkReady(){
+  // Enable upload if at least one nach slot is filled
+  const hasNach=activeAngles().some(a=>slotFiles[`${a.id}-nach`]);
+  document.getElementById('btnUpload').disabled=!hasNach;
+}
+
+/* ══ OPEN UPLOAD PANEL ══ */
+function openUpload(id,name,cat){
+  currentModelId=id;currentModelName=name;currentModelMode=cat;
+  document.getElementById('upModelBadge').textContent=`${name} · #${id}`;
+  document.getElementById('uploadPanel').classList.add('open');
+  document.body.style.overflow='hidden';
+  clearSlots();
+  loadExistingGallery();
+}
+function closeUpload(){
+  document.getElementById('uploadPanel').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ══ LOAD EXISTING ══ */
+async function loadExistingGallery(){
+  const box=document.getElementById('existingGallery');
+  box.innerHTML='<div class="existing-empty">Wird geladen…</div>';
+  await loadBasisData();
+  const{data:raw,error}=await sb.from('model_gallery').select('*')
+    .order('sort_order',{ascending:true})
+    .order('created_at',{ascending:false});
+  if(error){box.innerHTML=`<div class="existing-empty">❌ ${error.message}</div>`;return}
+  const data=(raw||[]).filter(rowMatchesCurrentUpload);
+  if(!data.length){box.innerHTML='<div class="existing-empty">Noch keine Bilder für dieses Modell.</div>';return}
+
+  // Group by customer_id or set_id
+  const groups={};const order=[];
+  data.forEach(r=>{
+    const cid=r.customer_id||r.set_id||`Set ${r.id}`;
+    if(!groups[cid]){groups[cid]={before:[],after:[],rows:[]};order.push(cid)}
+    groups[cid].rows.push(r);
+    if(r.before_url)groups[cid].before.push({url:r.before_url,angle:r.angle,id:r.id});
+    const after=r.after_url||r.image_url;
+    if(after)groups[cid].after.push({url:after,angle:r.angle,id:r.id});
+  });
+
+  box.innerHTML=order.map(cid=>{
+    const g=groups[cid];
+    const total=g.rows.length;
+    const setDate=g.rows[0].created_at?new Date(g.rows[0].created_at).toLocaleDateString('de-DE'):'';
+    return`<div class="existing-block">
+      <div class="existing-head">
+        <div>
+          <div class="existing-set-name">📁 ${esc(cid)}</div>
+          <div class="existing-set-meta">${total} Einträge${setDate?' · '+setDate:''}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn-sm light" onclick="downloadSet('${js(cid)}')">⬇ Set</button>
+          <button class="btn-sm danger" onclick="deleteSet('${js(cid)}')">🗑 Set löschen</button>
+        </div>
+      </div>
+      ${g.before.length?`
+        <div class="existing-section-label vor">📷 VORHER — ${g.before.length} Foto${g.before.length>1?'s':''}</div>
+        <div class="existing-row">${renderExistingRow(g.before)}</div>`:''}
+      ${g.after.length?`
+        <div class="existing-section-label nach">✨ NACHHER — ${g.after.length} Foto${g.after.length>1?'s':''}</div>
+        <div class="existing-row">${renderExistingRow(g.after,true)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function renderExistingRow(imgs,isAfter=false){
+  const basisUrl=basisData[currentModelId]?.base_image_url||'';
+  return activeAngles().map(a=>{
+    const img=imgs.find(i=>i.angle===a.id)||imgs.find(i=>!i.angle&&imgs.indexOf(i)===activeAngles().indexOf(a))||null;
+    if(img){
+      const isBasis=isAfter&&basisUrl&&img.url===basisUrl;
+      return`<div class="existing-cell${isBasis?' is-basis':''}">
+      <img src="${esc(img.url)}" onclick="openLb('${js(img.url)}')" alt="">
+      <span class="existing-tag">${a.hint}</span>
+      ${isAfter?`<button class="existing-basis${isBasis?' on':''}" title="Als Basis-Bild für die Simulation setzen" onclick="event.stopPropagation();setBasisFromGallery('${js(img.url)}')">★${isBasis?' BASIS':''}</button>`:''}
+      ${img.id?`<button class="existing-del" onclick="event.stopPropagation();deleteRow('${js(img.id)}')">×</button>`:''}
+    </div>`;
+    }
+    return`<div class="existing-cell empty-cell">${a.hint}</div>`;
+  }).join('');
+}
+
+/* ══ DOWNLOAD — admin only ══ */
+async function galleryRowsForCurrentModel(){
+  const{data:raw,error}=await sb.from('model_gallery').select('*')
+    .order('sort_order',{ascending:true})
+    .order('created_at',{ascending:false});
+  if(error)throw error;
+  return (raw||[]).filter(rowMatchesCurrentUpload);
+}
+
+function imageItemsFromRows(rows){
+  const items=[];
+  (rows||[]).forEach((r,idx)=>{
+    const cid=String(r.customer_id||r.set_id||`set_${r.id||idx}`).replace(/[^a-z0-9_-]+/gi,'_');
+    const angle=String(r.angle||'image').replace(/[^a-z0-9_-]+/gi,'_');
+    if(r.before_url)items.push({url:r.before_url,name:`${currentModelId}_${cid}_${angle}_vorher.jpg`});
+    const after=r.after_url||r.image_url;
+    if(after)items.push({url:after,name:`${currentModelId}_${cid}_${angle}_nachher.jpg`});
+  });
+  return items;
+}
+
+async function downloadUrl(url,filename){
+  try{
+    const res=await fetch(url,{mode:'cors'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const blob=await res.blob();
+    const obj=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=obj;a.download=filename||'bild.jpg';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(obj),1500);
+  }catch(e){
+    const a=document.createElement('a');
+    a.href=url;a.target='_blank';a.rel='noopener';
+    document.body.appendChild(a);a.click();a.remove();
+  }
+}
+
+async function downloadItems(items){
+  if(!items.length){toast('Keine Bilder zum Download.',false);return;}
+  toast(`⬇ ${items.length} Bilder werden heruntergeladen…`);
+  for(let i=0;i<items.length;i++){
+    await downloadUrl(items[i].url,items[i].name);
+    await new Promise(r=>setTimeout(r,180));
+  }
+  toast(`✅ ${items.length} Bilder heruntergeladen`);
+}
+
+async function downloadCurrentModelImages(){
+  try{
+    const rows=await galleryRowsForCurrentModel();
+    await downloadItems(imageItemsFromRows(rows));
+  }catch(e){toast('❌ Download-Fehler: '+e.message,false)}
+}
+
+async function downloadSet(cid){
+  try{
+    const rows=(await galleryRowsForCurrentModel()).filter(r=>String(r.customer_id||r.set_id||`Set ${r.id}`)===String(cid));
+    await downloadItems(imageItemsFromRows(rows));
+  }catch(e){toast('❌ Download-Fehler: '+e.message,false)}
+}
+
+/* ══ DELETE ══ */
+async function deleteSet(cid){
+  if(!confirm(`Set "${cid}" komplett löschen?\nAlle Bilder werden aus Storage und DB entfernt.`))return;
+  try{
+    const{data:raw}=await sb.from('model_gallery').select('*');
+    const rows=(raw||[]).filter(r=>rowMatchesCurrentUpload(r)&&String(r.customer_id||r.set_id||`Set ${r.id}`)===String(cid));
+    await deleteRows(rows);
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function deleteRow(id){
+  if(!confirm('Dieses Bild-Paar löschen?'))return;
+  try{
+    const{data}=await sb.from('model_gallery').select('*').eq('id',id).limit(1);
+    await deleteRows(data||[]);
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function deleteRows(rows){
+  try{
+    const ids=rows.map(r=>r.id).filter(Boolean);
+    const paths=[];
+    rows.forEach(r=>{
+      [r.before_url,r.after_url,r.image_url].forEach(u=>{
+        const p=storagePath(u);if(p&&!paths.includes(p))paths.push(p);
+      });
+    });
+    if(ids.length){const{error}=await sb.from('model_gallery').delete().in('id',ids);if(error)throw error}
+    if(paths.length)await sb.storage.from('simulations').remove(paths);
+    toast('✅ Gelöscht');
+    await loadCounts();renderGrid();
+    await loadExistingGallery();
+  }catch(e){toast('❌ Fehler: '+e.message,false)}
+}
+
+function storagePath(url){
+  if(!url)return'';
+  const m='/storage/v1/object/public/simulations/';
+  const i=String(url).indexOf(m);
+  if(i<0)return'';
+  return decodeURIComponent(String(url).slice(i+m.length).split('?')[0]);
+}
+
+function storageRef(url){
+  if(!url)return null;
+  const m=String(url).match(/\/storage\/v1\/object\/public\/([^/]+)\/(.+?)(?:\?.*)?$/);
+  if(!m)return null;
+  return{bucket:decodeURIComponent(m[1]),path:decodeURIComponent(m[2])};
+}
+
+/* ══ UPLOAD ══ */
+function galleryPathSegment(mode, modelId){
+  const code=parseInt(modelId)||0;
+  if(mode==='female')     return 'female/hair_cut';
+  if(mode==='male')       return 'male/hair_cut';
+  if(mode==='beard')      return 'male/beard_color';
+  if(mode==='behandlung') return 'female/keratin';
+  if(mode==='color'){
+    if(code>=368&&code<=371) return 'male/hair_color';
+    if(code>=372&&code<=377) return 'male/beard_color';
+    return 'female/hair_color';
+  }
+  return `${mode}/misc`;
+}
+
+async function doUpload(){
+  const cid=(document.getElementById('inpCustomer').value.trim())||new Date().toISOString().slice(0,10)+'_'+Math.random().toString(36).slice(2,5);
+  const btn=document.getElementById('btnUpload');
+  btn.disabled=true;
+  const pw=document.getElementById('progressWrap');pw.style.display='block';
+  setProgress(0);setStatus('Hochladen startet…');
+  const ts=Date.now();
+  const rand=Math.random().toString(36).slice(2,6);
+  const seg=galleryPathSegment(currentMode,currentModelId);
+  const base=`gallery/${seg}/${currentModelId}/${ts}_${rand}`;
+
+  // determine which slots are filled
+  const toUpload=activeAngles().flatMap(a=>{
+    const vor=slotFiles[`${a.id}-vor`];
+    const nach=slotFiles[`${a.id}-nach`];
+    const entries=[];
+    if(vor||nach)entries.push({angle:a.id,vorFile:vor||null,nachFile:nach||null});
+    return entries;
+  }).filter(x=>x.vorFile||x.nachFile);
+
+  const total=toUpload.length*2;let done=0;const inserts=[];
+  try{
+    // get max sort_order
+    const{data:exRaw}=await sb.from('model_gallery').select('model_id,mode,pair_label,sort_order');
+    const ex=(exRaw||[]).filter(rowMatchesCurrentUpload).sort((a,b)=>(b.sort_order||0)-(a.sort_order||0));
+    let sortBase=(ex&&ex[0]?Number(ex[0].sort_order||0)+1:0);
+
+    for(let i=0;i<toUpload.length;i++){
+      const{angle,vorFile,nachFile}=toUpload[i];
+      setStatus(`Winkel ${angle} (${i+1}/${toUpload.length})…`);
+      const ext=f=>f?f.name.split('.').pop()||'jpg':'jpg';
+      const [vu,nu]=await Promise.all([
+        vorFile  ? uploadFile(vorFile, `${base}_${angle}_before.${ext(vorFile)}`) : Promise.resolve(''),
+        nachFile ? uploadFile(nachFile,`${base}_${angle}_after.${ext(nachFile)}`): Promise.resolve(''),
+      ]);
+      done+=2;setProgress(done/total*100);
+      inserts.push({
+        model_id:currentModelId,
+        mode:currentModelMode,
+        before_url:vu||null,
+        after_url:nu||null,
+        image_url:nu||null,
+        customer_id:cid,
+        angle:angle,
+        sort_order:sortBase+i,
+        pair_label:currentModelName,
+      });
+    }
+    const{error}=await sb.from('model_gallery').insert(inserts);
+    if(error)throw new Error(error.message);
+    setStatus(`✅ ${inserts.length} Einträge gespeichert!`,'ok');
+    toast(`✅ ${inserts.length} Einträge hochgeladen`);
+    await loadCounts();clearSlots();
+    await loadExistingGallery();renderGrid();
+  }catch(e){
+    setStatus('❌ '+e.message,'err');btn.disabled=false;toast('❌ '+e.message,false);
+  }
+}
+
+async function uploadFile(file,path){
+  const{error}=await sb.storage.from('simulations').upload(path,file,{contentType:file.type,upsert:true});
+  if(error)throw new Error('Storage: '+error.message);
+  return sb.storage.from('simulations').getPublicUrl(path).data.publicUrl;
+}
+
+function setProgress(p){document.getElementById('progressFill').style.width=p+'%'}
+function setStatus(m,t=''){const e=document.getElementById('statusMsg');e.textContent=m;e.className='status-msg '+t}
+
+/* ══ BASIS BILDER ══ */
+let basisMode='female';
+let basisData={};   // {model_id: {id, model_id, mode, name, base_image_url, is_featured}}
+let basisCurrentModel=null;
+let bupFile=null;
+
+const BASIS_MODES=[
+  {mode:'female',   icon:'♀',  label:'Damen'},
+  {mode:'male',     icon:'♂',  label:'Herren'},
+  {mode:'beard',    icon:'✂',  label:'Bart'},
+  {mode:'color',    icon:'🎨', label:'Farbe'},
+  {mode:'behandlung',icon:'✨',label:'Keratin & Perm'},
+];
+
+let refMapData={};  // {style_code: {style_code, bucket, file_name}} — was die Simulation als Referenz nutzt
+
+async function loadBasisData(){
+  try{
+    const[{data},{data:refs}]=await Promise.all([
+      sb.from('model_base_images').select('*'),
+      sb.from('style_ref_map').select('style_code,bucket,file_name'),
+    ]);
+    basisData={};
+    (data||[]).forEach(r=>{basisData[r.model_id]=r});
+    refMapData={};
+    (refs||[]).forEach(r=>{refMapData[r.style_code]=r});
+  }catch(e){console.warn('loadBasisData:',e.message)}
+}
+
+/* Basis-Bild in model_base_images (Admin-UI) + style_ref_map (Simulation) speichern */
+async function upsertBasisRecord({modelId,mode,name,imageUrl,isFeat}){
+  const ref=storageRef(imageUrl);
+  if(!ref)throw new Error('Bild liegt nicht im Supabase Storage.');
+  const{error:e1}=await sb.from('model_base_images').upsert(
+    {model_id:String(modelId),mode,name,base_image_url:imageUrl,is_featured:!!isFeat,updated_at:new Date().toISOString()},
+    {onConflict:'model_id'});
+  if(e1)throw new Error('model_base_images: '+e1.message);
+  const{error:e2}=await sb.from('style_ref_map').upsert(
+    {style_code:String(modelId),bucket:ref.bucket,file_name:ref.path},
+    {onConflict:'style_code'});
+  if(e2)throw new Error('style_ref_map: '+e2.message);
+}
+
+/* Ein vorhandenes Galerie-Bild per Klick als Basis-Bild übernehmen */
+async function setBasisFromGallery(url){
+  if(!currentModelId)return;
+  if(!storageRef(url)){toast('❌ Dieses Bild liegt nicht im Supabase Storage.',false);return}
+  if(!confirm(`Dieses Bild als BASIS-Bild für "${currentModelName}" (#${currentModelId}) setzen?\n\nDie Simulation nutzt es dann als Stil-Referenz.`))return;
+  try{
+    await upsertBasisRecord({modelId:currentModelId,mode:currentModelMode,name:currentModelName,imageUrl:url,isFeat:basisData[currentModelId]?.is_featured||false});
+    await loadExistingGallery();
+    toast('⭐ Basis-Bild gesetzt — Simulation nutzt jetzt dieses Bild');
+  }catch(e){toast('❌ '+e.message,false)}
+}
+
+function toggleBasisPanel(){
+  const panel=document.getElementById('baseBilderPanel');
+  const isOpen=panel.classList.contains('open');
+  if(isOpen){
+    panel.classList.remove('open');
+    document.getElementById('btnBasisToggle').classList.remove('primary');
+    document.getElementById('btnBasisToggle').classList.add('light');
+  }else{
+    panel.classList.add('open');
+    document.getElementById('btnBasisToggle').classList.remove('light');
+    document.getElementById('btnBasisToggle').classList.add('primary');
+    loadBasisData().then(()=>renderBasisGrid());
+  }
+}
+
+function renderBasisModeNav(){
+  document.getElementById('basisModeNav').innerHTML=BASIS_MODES.map(m=>
+    `<button class="basis-mode-btn${m.mode===basisMode?' active':''}" onclick="setBasisMode('${m.mode}')">${m.icon} ${m.label}</button>`
+  ).join('');
+}
+
+function setBasisMode(mode){
+  basisMode=mode;
+  renderBasisModeNav();
+  renderBasisGrid();
+  const mObj=BASIS_MODES.find(m=>m.mode===mode)||{};
+  document.getElementById('basisHeroTitle').textContent=`${mObj.icon||''} Basis-Bilder · ${mObj.label||mode}`;
+  const total=(MODEL_DATA[mode]||[]).length;
+  const filled=Object.values(basisData).filter(r=>r.mode===mode&&r.base_image_url).length;
+  const refs=(MODEL_DATA[mode]||[]).filter(m=>refMapData[String(m.id)]).length;
+  document.getElementById('basisHeroMeta').textContent=`${filled} / ${total} Bilder hochgeladen · 🎯 ${refs} aktive Simulations-Referenzen`;
+}
+
+function renderBasisGrid(){
+  renderBasisModeNav();
+  const models=MODEL_DATA[basisMode]||[];
+  const grid=document.getElementById('basisGrid');
+  if(!models.length){grid.innerHTML='<div class="empty-state">Keine Modelle</div>';return}
+  grid.innerHTML=models.map(m=>{
+    const rec=basisData[m.id];
+    const imgUrl=rec?.base_image_url||'';
+    const isFeat=rec?.is_featured||false;
+    const hasImg=!!imgUrl;
+    return`<div class="basis-card${hasImg?' has-img':''}${isFeat?' is-featured':''}" onclick="openBasisUp('${m.id}','${m.mode||basisMode}',${JSON.stringify(m.name).replace(/"/g,'&quot;')})">
+      <div class="basis-thumb">
+        ${hasImg
+          ?`<img src="${imgUrl}" alt="${m.name}" loading="lazy">`
+          :`<div class="basis-thumb-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span style="font-size:9px;font-family:Space Mono,monospace">Kein Bild</span></div>`
+        }
+        ${isFeat?'<div class="basis-feat-badge">★ Featured</div>':''}
+        ${hasImg?'<div class="basis-has-badge">✓</div>':''}
+        ${refMapData[String(m.id)]?'<div class="basis-ref-badge">🎯 REF</div>':''}
+      </div>
+      <div class="basis-info">
+        <div class="basis-name">${m.name}</div>
+        <div class="basis-id">#${m.id}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openBasisUp(modelId,mode,name){
+  basisCurrentModel={modelId,mode,name};
+  const rec=basisData[modelId];
+  document.getElementById('bupTitle').textContent=name;
+  document.getElementById('bupBadge').textContent='#'+modelId;
+  const img=document.getElementById('bupPreviewImg');
+  const ph=document.getElementById('bupPreviewPh');
+  if(rec?.base_image_url){img.src=rec.base_image_url;img.style.display='block';ph.style.display='none';}
+  else{img.src='';img.style.display='none';ph.style.display='block';}
+  const feat=document.getElementById('bupFeatToggle');
+  if(rec?.is_featured)feat.classList.add('on');else feat.classList.remove('on');
+  const delBtn=document.getElementById('bupDeleteBtn');
+  delBtn.style.display=rec?.base_image_url?'flex':'none';
+  const st=document.getElementById('bupStatus');
+  st.className='status-msg';
+  st.textContent=refMapData[String(modelId)]?'🎯 Simulations-Referenz aktiv — die KI nutzt dieses Modell mit Basis-Bild.':'';
+  document.getElementById('bupProgress').style.display='none';
+  bupFile=null;
+  document.getElementById('bupFileInput').value='';
+  document.getElementById('basisUpPanel').classList.add('open');
+}
+
+function closeBasisUp(){
+  document.getElementById('basisUpPanel').classList.remove('open');
+  basisCurrentModel=null;bupFile=null;
+}
+
+function bupFileSelected(input){
+  const file=input.files[0];if(!file)return;
+  bupFile=file;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=document.getElementById('bupPreviewImg');
+    const ph=document.getElementById('bupPreviewPh');
+    img.src=e.target.result;img.style.display='block';ph.style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveBasisBild(){
+  if(!basisCurrentModel)return;
+  const {modelId,mode,name}=basisCurrentModel;
+  const isFeat=document.getElementById('bupFeatToggle').classList.contains('on');
+  const btn=document.getElementById('bupSaveBtn');
+  const statusEl=document.getElementById('bupStatus');
+  const prog=document.getElementById('bupProgress');
+  btn.disabled=true;btn.textContent='⏳ Speichern…';
+  prog.style.display='block';
+  document.getElementById('bupProgressFill').style.width='20%';
+  statusEl.className='status-msg';statusEl.textContent='';
+  try{
+    let imageUrl=basisData[modelId]?.base_image_url||'';
+    if(bupFile){
+      const ext=bupFile.name.split('.').pop()||'jpg';
+      const path=`basis/${mode}/${modelId}_base.${ext}`;
+      const{error:upErr}=await sb.storage.from('simulations').upload(path,bupFile,{contentType:bupFile.type,upsert:true});
+      if(upErr)throw new Error(upErr.message);
+      imageUrl=sb.storage.from('simulations').getPublicUrl(path).data.publicUrl;
+      document.getElementById('bupProgressFill').style.width='60%';
+    }
+    if(!imageUrl&&!bupFile){statusEl.className='status-msg err';statusEl.textContent='❌ Bitte zuerst ein Bild auswählen.';btn.disabled=false;btn.textContent='⬆ Hochladen & Speichern';return;}
+    // If featured, unfeature others in same mode
+    if(isFeat){
+      await sb.from('model_base_images').update({is_featured:false}).eq('mode',mode).eq('is_featured',true);
+    }
+    await upsertBasisRecord({modelId,mode,name,imageUrl,isFeat});
+    document.getElementById('bupProgressFill').style.width='100%';
+    statusEl.className='status-msg ok';statusEl.textContent='✅ Gespeichert';
+    await loadBasisData();
+    renderBasisGrid();
+    document.getElementById('bupDeleteBtn').style.display='flex';
+    const previewImg=document.getElementById('bupPreviewImg');
+    if(imageUrl){previewImg.src=imageUrl;previewImg.style.display='block';document.getElementById('bupPreviewPh').style.display='none';}
+    setBasisMode(basisMode);
+  }catch(e){
+    statusEl.className='status-msg err';statusEl.textContent='❌ '+e.message;
+  }finally{
+    btn.disabled=false;btn.textContent='⬆ Hochladen & Speichern';
+  }
+}
+
+async function deleteBasisBild(){
+  if(!basisCurrentModel)return;
+  if(!confirm('Basis-Bild löschen?'))return;
+  const{modelId}=basisCurrentModel;
+  const rec=basisData[modelId];if(!rec?.id)return;
+  const{error}=await sb.from('model_base_images').delete().eq('id',rec.id);
+  if(error){toast('Fehler: '+error.message,'err');return;}
+  try{await sb.from('style_ref_map').delete().eq('style_code',String(modelId));}catch(e){}
+  if(rec.base_image_url){
+    // Nur manuell hochgeladene Basis-Dateien löschen — Galerie-Bilder bleiben erhalten
+    try{
+      const ref=storageRef(rec.base_image_url);
+      if(ref&&ref.bucket==='simulations'&&ref.path.startsWith('basis/'))await sb.storage.from('simulations').remove([ref.path]);
+    }catch(e){}
+  }
+  await loadBasisData();
+  renderBasisGrid();
+  closeBasisUp();
+  toast('Basis-Bild gelöscht');
+  setBasisMode(basisMode);
+}
+
+/* ══ LIGHTBOX ══ */
+function openLb(url){if(!url)return;document.getElementById('lbImg').src=url;document.getElementById('lightbox').classList.add('open')}
+function closeLb(){document.getElementById('lightbox').classList.remove('open');document.getElementById('lbImg').src=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLb();closeUpload()}});
+
+/* ══ TOAST ══ */
+function toast(msg,ok=true){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.style.display='block';
+  el.style.background=ok?'rgba(74,222,128,0.12)':'rgba(248,113,113,0.12)';
+  el.style.border=ok?'1px solid rgba(74,222,128,0.3)':'1px solid rgba(248,113,113,0.3)';
+  el.style.color=ok?'#4ade80':'#f87171';
+  clearTimeout(window._tt);window._tt=setTimeout(()=>el.style.display='none',3200);
+}
+</script>
+
+<div id="ls-consent">
+  <div class="lsci">
+    <div class="lsct"><strong>Cookies</strong> — Technisch notwendig. <a href="https://logicstyle-salon.de/Datenschutz.html">Datenschutz</a> · <a href="https://logicstyle-salon.de/Impressum.html">Impressum</a></div>
+    <div class="lscbtns">
+      <button class="lscd" onclick="lsCon('decline')">Ablehnen</button>
+      <button class="lsca" onclick="lsCon('accept')">Akzeptieren ✓</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){if(!localStorage.getItem('ls_consent'))document.getElementById('ls-consent').classList.add('show')})();
+function lsCon(c){localStorage.setItem('ls_consent',c);document.getElementById('ls-consent').classList.remove('show')}
+</body>
+</html>
