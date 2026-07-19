@@ -271,7 +271,7 @@ function switchMode(mode){
 
 async function loadGalleryCounts(){
   try{
-    const{data}=await getSB().from('model_gallery').select('model_id,mode,pair_label,before_url,after_url,image_url,sort_order');
+    const{data}=await getSB().from('model_gallery').select('model_id,mode,pair_label,before_url,after_url,image_url,sort_order,customer_id');
     _galleryCounts={};
     _galleryThumbs={};
     const _nameToCode={};
@@ -288,6 +288,7 @@ async function loadGalleryCounts(){
       });
     });
     (data||[]).forEach(r=>{
+      if(String(r.customer_id||'')==='BASIS')return;  // Basis-Referenzbilder nie öffentlich zeigen
       const mid=r.model_id||'';
       const code=/^\d+$/.test(mid)?mid:(_nameToCode[normColorId(mid)]||mid);
       _galleryCounts[code]=(_galleryCounts[code]||0)+1;
@@ -953,6 +954,7 @@ async function saveToModels(){
       before_url:beforeUrl,after_url:afterUrl,
       pair_label:currentStyleName||modelId,
       review_status:'approved',is_public:true,
+      customer_id:_basisMode?'BASIS':null,
       sort_order:Math.floor(Date.now()/1000000)
     });
     if(error)throw new Error('model_gallery insert: '+error.message);
@@ -1035,6 +1037,7 @@ async function openGallery(modelId,modelName,event){
         if(rows4&&rows4.length)rows=rows4;
       }
     }
+    rows=(rows||[]).filter(r=>String(r.customer_id||'')!=='BASIS');  // Basis-Referenzbilder nie öffentlich zeigen
     if(!rows||!rows.length){
       imgs.innerHTML=`<div class="gallery-empty"><div class="gallery-empty-icon">🖼</div><p>Noch keine Beispielbilder</p><p style="font-size:11px;color:#475569;margin-top:6px">Bilder werden laufend hinzugefügt</p></div>`;
       return;
