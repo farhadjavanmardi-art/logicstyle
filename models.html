@@ -774,10 +774,11 @@ document.addEventListener('DOMContentLoaded', bootApp);
 async function loadCounts(){
   try{
     const{data}=await sb.from('model_gallery')
-      .select('model_id,mode,before_url,after_url,image_url,pair_label,created_at')
+      .select('model_id,mode,before_url,after_url,image_url,pair_label,created_at,customer_id')
       .order('created_at',{ascending:false});
     galleryCounts={};galleryThumbs={};galleryItems=[];
     (data||[]).forEach(r=>{
+      if(String(r.customer_id||'')==='BASIS')return;  // Basis-Referenzbilder nie öffentlich zeigen
       const top=topModeFromDb(r.mode,r.model_id);
       const key=`${r.mode||''}:${r.model_id||''}`;
       galleryCounts[key]=(galleryCounts[key]||0)+1;

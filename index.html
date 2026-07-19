@@ -1049,16 +1049,17 @@ async function loadGalleryGroups(){
       const mode=grid.dataset.mode;
       const limit=parseInt(grid.dataset.limit||2);
       const{data}=await SB.from('model_gallery')
-        .select('after_url,image_url,pair_label,model_id,before_url')
+        .select('after_url,image_url,pair_label,model_id,before_url,customer_id')
         .eq('mode',mode)
         .not('after_url','is',null)
         .order('sort_order',{ascending:true})
         .limit(limit);
-      if(!data||!data.length){
+      const rows=(data||[]).filter(r=>String(r.customer_id||'')!=='BASIS');  // Basis-Referenzbilder nie öffentlich zeigen
+      if(!rows.length){
         grid.innerHTML='<div class="gc"><div class="gc-ph">Demnächst</div></div>';
         continue;
       }
-      grid.innerHTML=data.map(r=>`
+      grid.innerHTML=rows.map(r=>`
         <div class="gc">
           ${r.before_url&&r.after_url
             ?`<div class="gc-pair"><img src="${r.before_url}" loading="lazy" alt="Vorher"><img src="${r.after_url||r.image_url}" loading="lazy" alt="Nachher"></div>`
