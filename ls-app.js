@@ -611,7 +611,7 @@ function getAdvancedModifierText(){
 function rebuildCurrentPrompt(){
  if(!_selectedAngle)return;
  const modifierText=getAdvancedModifierText();
- if(_basisMode&&currentUser?.is_admin){
+ if(_basisMode&&currentUser?.is_admin&&isAdminApp()){
   if(_farbeMode){
    const hairType=/beard hair only|bartfarbe|beard color|salt-and-pepper beard/i.test(_selectedFarbeService)?'beard and facial hair':'hair on the head';
    const clean=_selectedFarbeService.replace(/^(COLOR:|TECH:)/,'').trim();
@@ -635,10 +635,11 @@ function rebuildCurrentPrompt(){
  }
 }
 
-/* ── BASIS-MODUS (nur Admin) ── */
+/* ── BASIS-MODUS (nur Admin-Software, nie in der Kunden-App) ── */
+function isAdminApp(){const page=(location.pathname||'').split('/').pop().replace(/\.html$/i,'');return page==='Admin_Software'||page==='Admin_Gallery';}
 function ensureBasisToggle(){
  let wrap=document.getElementById('basisModeWrap');
- if(!currentUser?.is_admin){if(wrap)wrap.style.display='none';return null;}
+ if(!currentUser?.is_admin||!isAdminApp()){_basisMode=false;if(wrap)wrap.style.display='none';return null;}
  if(wrap){wrap.style.display='block';return wrap;}
  const upload=document.getElementById('uploadWrap');
  if(!upload||!upload.parentNode)return null;
