@@ -796,8 +796,11 @@ function slugify(email){return email.split('@')[0].toLowerCase().replace(/[^a-z0
 
 async function getClientIP(){try{const r=await fetch('https://api.ipify.org?format=json');const d=await r.json();return d.ip||'unknown'}catch(e){return 'unknown'}}
 
-async function sbInsert(table,payload){
-  const res=await fetch(`${SB_URL}/rest/v1/${table}`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=representation'},body:JSON.stringify(payload)});
+async function sbInsert(table,payload,selectCols){
+  // selectCols: anon darf auf "users" nur bestimmte Spalten lesen — die
+  // Rückgabe muss daher auf erlaubte Spalten (z.B. 'id') begrenzt werden.
+  const q=selectCols?`?select=${encodeURIComponent(selectCols)}`:'';
+  const res=await fetch(`${SB_URL}/rest/v1/${table}${q}`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=representation'},body:JSON.stringify(payload)});
   const text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch(e){}
   if(!res.ok)throw new Error(data?.message||data?.error_description||text||'Supabase error');
   return data;
@@ -919,11 +922,11 @@ async function validateAndShowPayPal(){
   const pp=await loadPayPalConfig();
   const planId=(pp&&pp.configured&&pp.plans)?pp.plans[_plan]:null;
   const paidOnline=!!planId;
-  let userId=null;
+  let userId=null,ref='';
   try{
     const cfg=PLANS[_plan];const f7=document.getElementById('f7')?.value.trim();const f8=document.getElementById('f8')?.value.trim();
-    const username=slugify(f3);const ref='LS-'+username.toUpperCase()+'-'+_plan.toUpperCase()+'-'+Date.now();
-    const inserted=await sbInsert('users',{full_name:f1+' '+f2,email:f3,username,phone:f4,salon_name:f5,salon_address:f6,salon_zip:f7,salon_city:f8,plan:_plan,requested_plan:_plan,requested_price:cfg.price,registration_type:paidOnline?'paypal_subscription':'test_signup',approval_status:'pending',payment_status:paidOnline?'pending':'not_required',simulations_limit:cfg.limit,simulations_used:0,is_active:false,password_hash:'',activation_code:ref,admin_note:'Software-Zugang: '+_selectedApp+(paidOnline?' | PayPal-Abo (wartet auf Zahlung)':' | Testversion · keine Online-Zahlung'),registration_ip:clientIP,temp_password:null,temp_password_expires_at:null,must_change_password:false,temp_password_sent_at:null});
+    const username=slugify(f3);ref='LS-'+username.toUpperCase()+'-'+_plan.toUpperCase()+'-'+Date.now();
+    const inserted=await sbInsert('users',{full_name:f1+' '+f2,email:f3,username,phone:f4,salon_name:f5,salon_address:f6,salon_zip:f7,salon_city:f8,plan:_plan,requested_plan:_plan,requested_price:cfg.price,registration_type:paidOnline?'paypal_subscription':'test_signup',approval_status:'pending',payment_status:paidOnline?'pending':'not_required',simulations_limit:cfg.limit,simulations_used:0,is_active:false,password_hash:'',activation_code:ref,admin_note:'Software-Zugang: '+_selectedApp+(paidOnline?' | PayPal-Abo (wartet auf Zahlung)':' | Testversion · keine Online-Zahlung'),registration_ip:clientIP,temp_password:null,temp_password_expires_at:null,must_change_password:false,temp_password_sent_at:null},'id');
     const userRow=Array.isArray(inserted)?inserted[0]:inserted;userId=userRow?.id||null;
     await sendAdminEmail('🆕 Logic Style '+(paidOnline?'Bestellung':'Testanfrage')+': '+f5+' ('+cfg.title+')',{Name:f1+' '+f2,Email:f3,Telefon:f4,Salon:f5,Adresse:f6+', '+f7+' '+f8,Tarif:cfg.title+' · '+cfg.price+'€/Monat','Software-Zugang':_selectedApp,Status:paidOnline?'Wartet auf PayPal-Zahlung':'Testanfrage gespeichert — keine Online-Zahlung',Referenz:ref});
     try{await sbInsert('store_orders',{package_code:_plan,billing_cycle:'monthly',customer_name:f1+' '+f2,salon_name:f5,email:f3,phone:f4,country:'DE',amount:cfg.price,currency:'EUR',status:'pending',payment_ref:ref,notes:'Software-Zugang: '+_selectedApp+' | '+(paidOnline?'PayPal':cfg.type)})}catch(e){console.warn('store_orders:',e.message)}
@@ -945,9 +948,26 @@ async function validateAndShowPayPal(){
       document.getElementById('paypal-status').textContent='PayPal konnte nicht geladen werden. Bitte Seite neu laden oder kontaktiere info@logicstyle-salon.de';
     }
   }else{
+    // Übergangslösung: Zahlung per PayPal-QR-Code (persönliches Konto).
+    // Sobald die PayPal-Business-Plan-IDs in app_config stehen, greift
+    // automatisch wieder der Online-Zahlungszweig oben.
     cont.innerHTML=`
-      <div style="padding:18px 16px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.22);border-radius:14px;font-size:13px;color:#facc15;line-height:1.7;text-align:center;font-weight:700">
-        ✅ Anfrage gespeichert.<br>Die Online-Zahlung wird gerade final aktiviert. Wir senden dir in Kürze per E-Mail den Zahlungslink und anschließend deine Zugangsdaten.
+      <div style="padding:14px 16px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:14px;font-size:13px;color:#4ade80;line-height:1.7;text-align:center;font-weight:700;margin-bottom:14px">
+        ✅ Anfrage gespeichert · Referenz: <span style="font-family:'Space Mono',monospace">${esc(ref)}</span>
+      </div>
+      <div style="padding:18px 16px;background:#fff;border-radius:16px;text-align:center">
+        <div style="font-size:14px;font-weight:800;color:#111;margin-bottom:10px">💳 Jetzt bezahlen — PayPal-QR-Code scannen</div>
+        <img src="paypal-qr.png" alt="PayPal QR-Code" style="width:230px;max-width:85%;border-radius:12px" onerror="this.parentElement.style.display='none';document.getElementById('qr-missing').style.display='block'">
+        <div style="font-size:13px;color:#111;margin-top:10px;line-height:1.7">
+          Betrag: <b>${Number(_price)}€</b><br>
+          Verwendungszweck: <b style="font-family:'Space Mono',monospace;font-size:11px">${esc(ref)}</b>
+        </div>
+      </div>
+      <div id="qr-missing" style="display:none;padding:14px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.22);border-radius:12px;font-size:12px;color:#facc15;text-align:center;line-height:1.6;margin-top:10px">
+        Wir senden dir in Kürze per E-Mail den Zahlungslink.
+      </div>
+      <div style="margin-top:12px;padding:12px 14px;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.22);border-radius:12px;font-size:12px;color:#93c5fd;line-height:1.7;text-align:center">
+        Bitte gib die Referenz bei der Zahlung im Verwendungszweck an.<br>Nach Zahlungseingang wird dein Zugang innerhalb von 24&nbsp;Stunden freigeschaltet — die Zugangsdaten kommen per E-Mail.
       </div>`;
   }
 }
@@ -995,7 +1015,7 @@ async function submitReg(){
   btn.textContent='⏳ Wird gespeichert…';
   const username=slugify(f3);const ref='LS-'+username.toUpperCase()+'-'+_plan.toUpperCase()+'-'+Date.now();
   try{
-    const inserted=await sbInsert('users',{full_name:f1+' '+f2,email:f3,username,phone:f4,salon_name:f5,salon_address:f6,salon_zip:f7,salon_city:f8,plan:_plan,requested_plan:_plan,requested_price:cfg.price,registration_type:cfg.type,approval_status:'pending',payment_status:'not_required',simulations_limit:cfg.limit,simulations_used:0,is_active:false,password_hash:'',activation_code:ref,admin_note:'Software-Zugang: '+_selectedApp+' | GPS-Standort',registration_ip:clientIP,temp_password:null,temp_password_expires_at:null,must_change_password:false,temp_password_sent_at:null});
+    const inserted=await sbInsert('users',{full_name:f1+' '+f2,email:f3,username,phone:f4,salon_name:f5,salon_address:f6,salon_zip:f7,salon_city:f8,plan:_plan,requested_plan:_plan,requested_price:cfg.price,registration_type:cfg.type,approval_status:'pending',payment_status:'not_required',simulations_limit:cfg.limit,simulations_used:0,is_active:false,password_hash:'',activation_code:ref,admin_note:'Software-Zugang: '+_selectedApp+' | GPS-Standort',registration_ip:clientIP,temp_password:null,temp_password_expires_at:null,must_change_password:false,temp_password_sent_at:null},'id');
     const userRow=Array.isArray(inserted)?inserted[0]:inserted;
     try{await sbInsert('admin_notifications',{event_type:'new_free_signup',user_id:userRow?.id||null,title:'Neue kostenlose Anmeldung',message:f1+' '+f2+' · '+f5+' · '+cfg.title,payload:{full_name:f1+' '+f2,email:f3,phone:f4,salon_name:f5,address:f6+', '+f7+' '+f8,plan:_plan,software_interest:_selectedApp,reference:ref},emailed_to_admin:false})}catch(e){console.warn('notification:',e.message)}
     try{await sbInsert('store_orders',{package_code:_plan,billing_cycle:'monthly',customer_name:f1+' '+f2,salon_name:f5,email:f3,phone:f4,country:'DE',amount:cfg.price,currency:'EUR',status:'pending',payment_ref:ref,notes:'Software-Zugang: '+_selectedApp+' | '+cfg.type})}catch(e){console.warn('store_orders:',e.message)}
