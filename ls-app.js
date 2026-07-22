@@ -400,6 +400,16 @@ function defaultModelPrompt(mode,id){
   if(mode==='color'||mode==='treatment'){const it=findServiceById(id);return it?.val||'';}
   return englishSpecs[mode]?.[id]||englishSpecs[id]||'';
 }
+/* reine Lese-Referenz auf Farsi (aus ls-prompts-fa.js, falls geladen) — wird NIE als
+   tatsächlicher KI-Prompt verwendet, nur im Editor angezeigt, damit man versteht was
+   der englische Prompt bedeutet, bevor man ihn ändert */
+function defaultModelPromptFa(mode,id){
+  const key=String(id);
+  if(mode==='color'||mode==='treatment'){
+    return(typeof PROMPT_FA_COLOR!=='undefined'&&PROMPT_FA_COLOR[key])||'';
+  }
+  return(typeof PROMPT_FA_HAIR!=='undefined'&&PROMPT_FA_HAIR[key])||'';
+}
 function effectiveModelName(mode,id,fallback){
   const ov=_modelOverrides[canonKey(mode,id)];
   return(ov&&ov.name)?ov.name:fallback;
@@ -428,6 +438,8 @@ function ensureModelEditModal(){
   .me-field input,.me-field textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:9px 11px;color:#fff;font-family:inherit;font-size:13px;box-sizing:border-box}
   .me-field textarea{resize:vertical;min-height:120px;font-family:'Space Mono',monospace;font-size:11.5px;line-height:1.5}
   .me-reset{font-size:10.5px;color:#60a5fa;cursor:pointer;text-decoration:underline;margin-top:4px;display:inline-block}
+  .me-fa-ref{background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.15);border-radius:9px;padding:9px 11px;font-size:12px;line-height:1.7;color:#cfd3dc;direction:rtl;text-align:right;font-family:'DM Sans',sans-serif;margin-top:8px}
+  .me-fa-ref b{display:block;color:#9a9aa5;font-size:10px;margin-bottom:4px;font-weight:700}
   .me-err{color:#f87171;font-size:11px;margin:6px 0}
   .me-actions{display:flex;gap:8px;margin-top:6px}
   .me-save{flex:1;padding:11px;border:none;border-radius:10px;background:#60a5fa;color:#000;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
@@ -441,6 +453,7 @@ function ensureModelEditModal(){
     <label class="me-field"><b>Name</b><input type="text" id="meName"></label>
     <label class="me-field"><b>Prompt (Englisch, für KI-Simulation)</b><textarea id="mePrompt"></textarea>
       <span class="me-reset" onclick="resetModelEditorField('prompt')">↺ Standard-Prompt einsetzen</span>
+      <div class="me-fa-ref" id="meFaRef" style="display:none"><b>📖 فارسی (فقط برای خواندن — این متن به هوش مصنوعی داده نمی‌شود)</b><span id="meFaRefText"></span></div>
     </label>
     <div class="me-err" id="meErr" style="display:none"></div>
     <div class="me-actions">
@@ -462,6 +475,10 @@ function openModelEditor(mode,id){
   document.getElementById('meName').value=ov.name||dName;
   document.getElementById('mePrompt').value=ov.prompt||dPrompt;
   document.getElementById('meErr').style.display='none';
+  const faRef=defaultModelPromptFa(mode,id);
+  const faBox=document.getElementById('meFaRef');
+  if(faRef){document.getElementById('meFaRefText').textContent=faRef;faBox.style.display='block';}
+  else{faBox.style.display='none';}
   document.getElementById('modelEditModal').classList.add('open');
 }
 function resetModelEditorField(field){
@@ -649,17 +666,8 @@ function findServiceById(id){
   return null;
 }
 function getAnglesForMode(mode, serviceVal=''){
-  const isBeard = mode==='beard' || /beard hair only|bartfarbe|beard color|salt-and-pepper beard/i.test(serviceVal||'');
-  if(isBeard)return [
-    {v:'FRONT VIEW',label:'Vorne',icon:'👤',hint:'Direkt zur Kamera, Bart vollständig sichtbar'},
-    {v:'45 DEGREE LEFT VIEW',label:'45° links',icon:'↖️',hint:'45 Grad links, Wange und Kontur sichtbar'},
-    {v:'45 DEGREE RIGHT VIEW',label:'45° rechts',icon:'↗️',hint:'45 Grad rechts, Wange und Kontur sichtbar'}
-  ];
   return [
-    {v:'FRONT VIEW',label:'Vorne',icon:'👤',hint:'Direkt zur Kamera, Haaransatz sichtbar'},
-    {v:'BACK VIEW',label:'Hinten',icon:'🔙',hint:'Kopfhöhe, Nacken und Längen sichtbar'},
-    {v:'LEFT SIDE PROFILE',label:'Links',icon:'⬅️',hint:'Linke Seite, Profil und Kontur sichtbar'},
-    {v:'RIGHT SIDE PROFILE',label:'Rechts',icon:'➡️',hint:'Rechte Seite, Profil und Kontur sichtbar'}
+    {v:'360°',label:'360°',icon:'🌀',hint:'Die KI erkennt den Winkel automatisch aus dem Foto'}
   ];
 }
 function openSim(modelId,event){
@@ -677,9 +685,9 @@ function openSim(modelId,event){
   _currentAngles=getAnglesForMode(currentMode);
   _selectedAngle=null;_selectedAdvancedOptions={};
   document.getElementById('genModalTitle').textContent=currentStyleName;
-  document.getElementById('genModalSub').textContent='Winkel wählen und Foto hochladen';
+  document.getElementById('genModalSub').textContent='Foto aus beliebigem Winkel hochladen';
   const intensityWrap=document.getElementById('intensityWrap');if(intensityWrap)intensityWrap.style.display='none';
-  buildAngleGrid();renderAdvancedOptions();document.getElementById('uploadWrap').style.display='none';document.getElementById('genModal').classList.add('open');
+  buildAngleGrid();renderAdvancedOptions();document.getElementById('genModal').classList.add('open');
 }
 function applyService(val,name,mode,event){
   if(event)event.stopPropagation();
@@ -691,9 +699,9 @@ function applyService(val,name,mode,event){
   _currentModelId=_svcItem?.id||serviceIdFromVal(_selectedFarbeService);currentStyleId=_currentModelId;currentStyleName=String(name||_selectedFarbeService.replace(/^(COLOR:|TECH:)/,'').split(',')[0].slice(0,50)).replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');
   _currentAngles=getAnglesForMode(currentMode,_selectedFarbeService);_selectedAngle=null;_selectedAdvancedOptions={};_selectedAdvancedOptions={};
   document.getElementById('genModalTitle').textContent=currentStyleName;
-  document.getElementById('genModalSub').textContent='Winkel wählen und Foto hochladen';
+  document.getElementById('genModalSub').textContent='Foto aus beliebigem Winkel hochladen';
   const intensityWrap=document.getElementById('intensityWrap');if(intensityWrap)intensityWrap.style.display='none';
-  buildAngleGrid();renderAdvancedOptions();document.getElementById('uploadWrap').style.display='none';document.getElementById('genModal').classList.add('open');
+  buildAngleGrid();renderAdvancedOptions();document.getElementById('genModal').classList.add('open');
 }
 
 /* Einzige verbliebene Option: Schnurrbart — unabhängig vom Bartmodell frei kombinierbar. */
@@ -793,7 +801,9 @@ function setBasisMode2(on){
 }
 
 function buildAngleGrid(){
-  document.getElementById('angleGrid').innerHTML=_currentAngles.map(a=>`<div class="angle-btn${_selectedAngle===a.v?' selected':''}" onclick="selectAngle('${a.v}',this)"><span class="angle-icon">${a.icon}</span><span class="angle-label">${a.label}</span><span class="angle-hint">${a.hint}</span></div>`).join('');
+  const a=_currentAngles[0]||{v:'360°',label:'360°',icon:'🌀'};
+  document.getElementById('angleGrid').innerHTML=`<div class="angle-btn selected" style="cursor:default"><span class="angle-icon">${a.icon}</span><span class="angle-label">${a.label}</span></div><div style="grid-column:1/-1;font-size:12.5px;color:#9a9aa5;line-height:1.65;text-align:center;padding:6px 8px 0">📸 Machen Sie das Foto aus einem beliebigen Winkel — vorne, hinten, seitlich oder dazwischen — und klicken Sie einfach auf „Simulation starten". Die KI erkennt den Winkel automatisch und simuliert genau diesen Winkel.</div>`;
+  selectAngle(a.v,null);
 }
 function selectAngle(val,btn){
   _selectedAngle=val;if(btn){document.querySelectorAll('.angle-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')}
