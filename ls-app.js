@@ -875,6 +875,7 @@ function loadPhotoFile(file){
   const reader=new FileReader();
   reader.onload=ev=>{
     capturedPhoto=ev.target.result;
+    _custConsentOk=false; // neues Kundenfoto → Einwilligung erneut bestätigen (DSGVO)
     const prev=document.getElementById('uploadPreviewImg');
     prev.src=capturedPhoto;prev.style.display='block';
     const ph=document.getElementById('beforePlaceholder');if(ph)ph.style.display='none';
@@ -936,9 +937,50 @@ function checkImageQuality(base64){
 }
 
 /* ── GENERATION ── */
+/* ── DSGVO: Kunden-Einwilligung zur KI-Foto-Verarbeitung (einmal pro hochgeladenem Foto) ── */
+let _custConsentOk=false;
+function ensureCustomerConsent(){
+  return new Promise(resolve=>{
+    if(_custConsentOk){resolve(true);return;}
+    let ov=document.getElementById('lsConsentGate');
+    if(!ov){
+      ov=document.createElement('div');
+      ov.id='lsConsentGate';
+      ov.style.cssText='position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit';
+      ov.innerHTML=`
+        <div style="max-width:440px;width:100%;background:#0a0a0c;border:1px solid rgba(255,31,110,.35);border-radius:18px;padding:24px 22px;color:#fff">
+          <div style="font-size:26px;margin-bottom:10px">🔒</div>
+          <div style="font-size:17px;font-weight:800;margin-bottom:10px;line-height:1.35">Einwilligung des Kunden</div>
+          <div style="font-size:13px;color:#cbd5e1;line-height:1.7;margin-bottom:14px">
+            Für die Simulation wird das Foto des Kunden verarbeitet und zur KI-Bildgenerierung an einen Dienstleister (Google, Verarbeitung ggf. in den USA) übermittelt.
+            Bitte bestätigen Sie, dass Ihr Kunde <strong>der KI-Verarbeitung seines Fotos zugestimmt</strong> hat.
+          </div>
+          <label style="display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:#e2e8f0;line-height:1.55;cursor:pointer;margin-bottom:16px">
+            <input type="checkbox" id="lsConsentChk" style="margin-top:2px;width:17px;height:17px;flex-shrink:0;accent-color:#ff1f6e;cursor:pointer">
+            <span>Der Kunde hat der Verarbeitung seines Fotos zur KI-Simulation zugestimmt. Details: <a href="Datenschutz.html" target="_blank" rel="noopener" style="color:#60a5fa;text-decoration:none">Datenschutz</a>.</span>
+          </label>
+          <div style="display:flex;gap:9px">
+            <button id="lsConsentCancel" style="flex:1;padding:12px;background:transparent;color:#cbd5e1;border:1px solid rgba(255,255,255,.14);border-radius:12px;font-weight:700;font-size:13px;cursor:pointer">Abbrechen</button>
+            <button id="lsConsentOk" style="flex:1.4;padding:12px;background:#ff1f6e;color:#000;border:none;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;opacity:.5" disabled>Bestätigen &amp; starten</button>
+          </div>
+        </div>`;
+      document.body.appendChild(ov);
+    }
+    const chk=ov.querySelector('#lsConsentChk');
+    const okB=ov.querySelector('#lsConsentOk');
+    const caB=ov.querySelector('#lsConsentCancel');
+    chk.checked=false;okB.disabled=true;okB.style.opacity='.5';
+    ov.style.display='flex';
+    chk.onchange=()=>{okB.disabled=!chk.checked;okB.style.opacity=chk.checked?'1':'.5'};
+    okB.onclick=()=>{if(!chk.checked)return;_custConsentOk=true;ov.style.display='none';resolve(true)};
+    caB.onclick=()=>{ov.style.display='none';resolve(false)};
+  });
+}
+
 async function startGeneration(isFreeRenew=false){
   if(!currentPrompt){showGenError('Bitte zuerst einen Winkel wählen.');return}
   if(!capturedPhoto){showGenError('Bitte zuerst ein Kundenfoto hochladen.');return}
+  if(!(await ensureCustomerConsent())){return}
   if(!isFreeRenew&&getRemaining()<1){showGenError('Keine Simulationen mehr — jetzt Credits kaufen oder Paket upgraden.');openCreditOffer();return}
 
   const genBtn=document.getElementById('genBtn');

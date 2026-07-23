@@ -783,6 +783,10 @@ function openModal(planKey,price,limit){
       </div>
       <div id="locErr" style="display:none;margin-top:8px;font-size:11px;color:#facc15;line-height:1.6;padding:8px 10px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.2);border-radius:8px"></div>
     </div>
+    <label style="display:flex;align-items:flex-start;gap:9px;margin:8px 0 4px;font-size:12px;color:#cbd5e1;line-height:1.55;cursor:pointer">
+      <input type="checkbox" id="regDs" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:#ff1f6e;cursor:pointer">
+      <span>Ich habe die <a href="Datenschutz.html" target="_blank" rel="noopener" style="color:#60a5fa;text-decoration:none">Datenschutzerklärung</a> gelesen und willige in die Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage bzw. zur Bereitstellung des Zugangs ein. *</span>
+    </label>
     <div class="msg-err" id="ferr"></div>
     ${isFree?`
       <button class="pay-btn" id="payBtn" onclick="submitReg()">🚀 Kostenlos anmelden</button>
@@ -1000,6 +1004,7 @@ async function validateAndShowPayPal(){
   if(!f4)return showErr('❌ Bitte Telefonnummer eingeben.');
   if(!f5)return showErr('❌ Bitte Salonname eingeben.');
   if(!f6)return showErr('❌ Bitte zuerst den Standort ermitteln (📍 Button).');
+  if(!document.getElementById('regDs')?.checked)return showErr('❌ Bitte bestätige die Datenschutzerklärung.');
   if(!_selectedApp)return showErr('❌ Bitte wähle eine Software.');
   btn.disabled=true;btn.textContent='⏳ Daten werden geprüft…';
   // Bezahlte Pakete: keine Duplikat-Sperre — E-Mail/Adresse dürfen mehrfach registriert werden.
@@ -1049,6 +1054,7 @@ async function submitReg(){
   if(!f4)return showErr('❌ Bitte Telefonnummer eingeben.');
   if(!f5)return showErr('❌ Bitte Salonname eingeben.');
   if(!f6)return showErr('❌ Bitte zuerst den Standort ermitteln (📍 Button).');
+  if(!document.getElementById('regDs')?.checked)return showErr('❌ Bitte bestätige die Datenschutzerklärung.');
   if(!_selectedApp)return showErr('❌ Bitte wähle eine Software (Herren oder Damen).');
   if(isFreeLocked())return showFreeLock();
   btn.disabled=true;btn.textContent='⏳ Wird geprüft…';
