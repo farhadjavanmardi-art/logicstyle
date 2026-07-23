@@ -26,6 +26,7 @@ let _currentGalleryModelId='', _currentGalleryModelName='';
 let _galleryCounts={};
 let _galleryThumbs={};  // model_id → {before, after} آخرین جفت شبیه‌سازی
 let _selectedAdvancedOptions={};
+let _selectedMustache='natural'; /* Schnurrbart: eigener Bereich, überlebt resetGenState */
 
 /* ── HELPERS ── */
 function getDeviceInfo(){return[navigator.platform,navigator.userAgent].join(' | ').slice(0,250)}
@@ -603,6 +604,7 @@ async function loadGalleryCounts(){
 }
 
 function renderCurrent(){
+  renderMustacheBar();
   if(currentMode==='color'){
     // فیلتر جنسیت: Dauerwelle Damen فقط زنان، Herren فقط مردان
     const secs=STYLE_FARBE_SECTIONS.filter(s=>{
@@ -773,13 +775,53 @@ const MUSTACHE_STYLES=[
  {id:'walrus',name:'Walrus',prompt:'Style the mustache as a Walrus — very thick, long and bushy, drooping naturally over the upper lip and clearly dominating the mouth area.'},
  {id:'horseshoe',name:'Horseshoe',prompt:'Style the mustache as a Horseshoe — a full mustache with vertical bars growing straight down past the corners of the mouth toward the jawline.'}
 ];
+const MUSTACHE_ICONS={natural:'🧔',chevron:'👨',pencil:'🙂',handlebar:'🤵',walrus:'🎅',horseshoe:'🤠'};
+/* Schnurrbart als eigener Bereich OBERHALB der Bartmodelle — unabhängig vom gewählten Bartmodell. */
+function ensureMustacheSection(){
+ let sec=document.getElementById('mustacheSection');
+ if(sec)return sec;
+ const grid=document.getElementById('catalogGrid');
+ if(!grid||!grid.parentNode)return null;
+ sec=document.createElement('div');sec.id='mustacheSection';sec.style.display='none';
+ grid.parentNode.insertBefore(sec,grid);
+ return sec;
+}
+function selectMustache(id){
+ _selectedMustache=id;
+ renderMustacheBar();
+ if(typeof _selectedAngle!=='undefined'&&_selectedAngle)rebuildCurrentPrompt();
+}
+function renderMustacheBar(){
+ const sec=ensureMustacheSection();if(!sec)return;
+ if(currentMode!=='beard'||_farbeMode){sec.style.display='none';sec.innerHTML='';return;}
+ const cur=_selectedMustache||'natural';
+ const chips=MUSTACHE_STYLES.map(m=>{
+  const on=m.id===cur;
+  const style=on
+   ?'border:1.5px solid #ff1f6e;background:rgba(255,31,110,.16);color:#fff'
+   :'border:1.5px solid #ffffff1f;background:#ffffff08;color:#cbd5e1';
+  return `<button type="button" onclick="selectMustache('${m.id}')" style="display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;${style}"><span style="font-size:16px">${MUSTACHE_ICONS[m.id]||'•'}</span>${htmlSafe(m.name)}</button>`;
+ }).join('');
+ sec.innerHTML=`<div style="margin:0 0 16px;padding:15px 16px;background:linear-gradient(180deg,#ffffff0a,#ffffff05);border:1px solid #ffffff1a;border-radius:18px">
+   <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+     <span style="font-size:22px;line-height:1">👨</span>
+     <div>
+       <div style="font-size:13px;font-weight:800;letter-spacing:.13em;color:#fff">SCHNURRBART</div>
+       <div style="font-size:11.5px;color:#9a9aa5;margin-top:1px">Separat wählbar — gilt für jedes Bartmodell · Standard: Natural</div>
+     </div>
+   </div>
+   <div style="display:flex;flex-wrap:wrap;gap:8px">${chips}</div>
+ </div>`;
+ sec.style.display='block';
+ if(window.LS_I18N&&typeof window.LS_I18N.translate==='function')window.LS_I18N.translate();
+}
 function getModelObjByCurrent(){return data[currentMode]?.models?.find(m=>String(m.id)===String(currentStyleId))||null;}
 function isBobModel(){const m=getModelObjByCurrent();return currentMode==='female' && /bob|bixie|lob/i.test((m?.name||'')+' '+(m?.cat||''));}
 function isMaleHair(){return currentMode==='male';}
 function optionDef(key,label,items,def){return {key,label,items,def:def||items[0]?.id};}
 function getAdvancedOptionDefs(){
- /* Ablauf: Modell wählen → (nur Bart: Schnurrbart wählen) → Winkel wählen → Foto hochladen → Simulation. */
- if(currentMode==='beard'&&!_farbeMode)return [optionDef('mustache','Schnurrbart',MUSTACHE_STYLES,'natural')];
+ /* Schnurrbart wird jetzt als eigener Bereich oberhalb der Bartmodelle gewählt (renderMustacheBar),
+    daher hier keine Optionen mehr im Simulations-Modal. */
  return [];
 }
 function ensureAdvancedWrap(){
@@ -799,8 +841,15 @@ function renderAdvancedOptions(){
 }
 function setAdvancedOption(key,val){_selectedAdvancedOptions[key]=val;rebuildCurrentPrompt();}
 function getAdvancedModifierText(){
- const defs=getAdvancedOptionDefs();const lines=[];
- defs.forEach(d=>{
+ const lines=[];
+ /* Schnurrbart-Auswahl (eigener Bereich) fließt unabhängig vom Bartmodell in den Prompt ein. */
+ if(currentMode==='beard'&&!_farbeMode){
+  const val=_selectedMustache||'natural';
+  const item=MUSTACHE_STYLES.find(x=>x.id===val);
+  if(item?.prompt)lines.push(`Schnurrbart / Mustache: ${item.name}. ${item.prompt}`);
+ }
+ /* eventuelle weitere Advanced-Optionen (aktuell keine) */
+ getAdvancedOptionDefs().forEach(d=>{
   const val=_selectedAdvancedOptions[d.key]||d.def;
   const item=d.items.find(x=>x.id===val);
   if(item?.prompt)lines.push(`${d.label}: ${item.name}. ${item.prompt}`);
