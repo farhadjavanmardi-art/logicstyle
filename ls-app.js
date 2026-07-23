@@ -1384,6 +1384,8 @@ async function startBatch(){
   if(_batchRunning)return;
   if(!isImageSaveAllowed()){alert('Batch nur auf der Admin-Seite verfügbar.');return;}
   if(!currentUser||!currentUser.is_admin){alert('Nur Admins können die Batch-Generierung starten.');return;}
+  await touchSession();
+  if(!currentSessionId){alert('Sitzung abgelaufen. Bitte neu anmelden und Batch erneut starten.');return;}
   const mode=currentMode;
   const models=(data[mode]?.models||[]).filter(m=>!_deletedModels.has(canonKey(mode,m.id)));
   if(!models.length){alert('Für diesen Bereich gibt es keine Modelle.');return;}
@@ -1412,7 +1414,7 @@ async function startBatch(){
     const prompt=buildHairPrompt(spec,hairType,'360°',modifierText);
     try{
       await touchSession();
-      const{data:fr,error}=await getSB().functions.invoke(IMAGE_FUNCTION_NAME,{body:{imageData,imageMime,prompt,meta:{styleId:m.id,styleName:name,mode:mode,angle:'360°',batch:true}}});
+      const{data:fr,error}=await getSB().functions.invoke(IMAGE_FUNCTION_NAME,{body:{imageData,imageMime,prompt,meta:{sessionId:currentSessionId||null,userId:currentUser?.id||null,styleId:m.id,styleName:name,mode:mode,angle:'360°',intensity:null,batch:true}}});
       if(error){
         let body='';try{if(error.context&&typeof error.context.json==='function'){const j=await error.context.json();body=j?.error||j?.message||'';}}catch(_e){}
         const comb=((error.message||'')+' '+body);
