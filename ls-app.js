@@ -199,13 +199,13 @@ async function openCreditOffer(){
     <div class="co-sub">Damit es nahtlos weitergeht: Jetzt auf ein größeres Paket upgraden — oder einmalig zusätzliche Simulationen kaufen.</div>
     ${next?`<div class="co-upgrade">💎 <b>Empfehlung: Upgrade auf ${next.label}</b><br>
       <span style="font-size:12px;color:#cfd3dc">${next.limit} Simulationen · €${next.price}/Monat — günstigster Preis pro Simulation</span>
-      <button class="co-up-btn" onclick="sendCreditRequest('upgrade_request',{requested_plan:'${plan.next}'})">📈 Upgrade auf ${next.label} · €${next.price}/Monat mit PayPal</button>
+      <button class="co-up-btn" onclick="sendCreditRequest('upgrade_request',{requested_plan:'${plan.next}'})">📈 Upgrade auf ${next.label} · €${next.price}/Monat mit Revolut</button>
     </div><div class="co-or">— oder einmalig Credits kaufen —</div>`:''}
     ${packs.map(p=>`<div class="co-pack">
       <div><div class="co-pack-name">+${Number(p.amount)} Simulationen</div><div class="co-pack-sub">€${perSim(p)} pro Simulation</div></div>
-      <button class="co-pack-btn" onclick="sendCreditRequest('credit_purchase_request',{pack_amount:${Number(p.amount)},pack_price:${Number(p.price)}})">€${Number(p.price)} mit PayPal</button>
+      <button class="co-pack-btn" onclick="sendCreditRequest('credit_purchase_request',{pack_amount:${Number(p.amount)},pack_price:${Number(p.price)}})">€${Number(p.price)} mit Revolut</button>
     </div>`).join('')}
-    <div class="co-note">💳 Sofort mit PayPal bezahlen — die Credits werden umgehend nach Zahlungseingang freigeschaltet.</div>
+    <div class="co-note">💳 Sofort mit Revolut bezahlen — die Credits werden umgehend nach Zahlungseingang freigeschaltet.</div>
     <button class="co-close" onclick="closeCreditOffer()">Später</button>`;
   document.getElementById('creditOfferModal').classList.add('open');
 }
@@ -263,20 +263,13 @@ function showRevolutPayment(label,amountLabel,url){
 }
 
 function showCreditPayment(label,amountLabel,ref){
+  // Fallback, solange Revolut noch nicht konfiguriert ist: Anfrage gespeichert,
+  // Zahlungslink folgt per E-Mail. (Kein PayPal mehr.)
   const box=document.getElementById('coBox');if(!box)return;
   box.innerHTML=`
-    <div class="co-head">💳 Jetzt mit PayPal bezahlen</div>
-    <div class="co-sub">${label} · <b style="color:#fff">${amountLabel}</b></div>
-    <div style="background:#fff;border-radius:14px;padding:16px 14px;text-align:center;margin:4px 0 12px">
-      <div style="font-size:13px;font-weight:800;color:#111;margin-bottom:10px">PayPal-QR-Code scannen</div>
-      <img src="paypal-qr.png" alt="PayPal QR-Code" style="width:200px;max-width:78%;border-radius:10px" onerror="this.style.display='none';var m=document.getElementById('coQrMiss');if(m)m.style.display='block'">
-      <div style="font-size:13px;color:#111;margin-top:12px;line-height:1.8">
-        Betrag: <b>${amountLabel}</b><br>
-        Verwendungszweck: <b style="font-family:'Space Mono',monospace;font-size:11px">${ref}</b>
-      </div>
-    </div>
-    <div id="coQrMiss" style="display:none;font-size:11px;color:#facc15;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.22);border-radius:10px;padding:10px;margin-bottom:8px;line-height:1.6">Wir senden Ihnen in Kürze den Zahlungslink per E-Mail.</div>
-    <div class="co-note">✅ Ihre Anfrage ist bei uns eingegangen. Bitte geben Sie die <b>Referenz</b> bei der Zahlung an — nach Zahlungseingang schalten wir die Credits umgehend frei.</div>
+    <div class="co-head">✅ Anfrage gespeichert</div>
+    <div class="co-sub">${label} · <b style="color:#fff">${amountLabel}</b><br>Referenz: <b style="font-family:'Space Mono',monospace;font-size:11px">${ref}</b></div>
+    <div class="co-note" style="margin-top:12px">Die Online-Zahlung wird gerade eingerichtet. Wir senden dir in Kürze den <b>Revolut-Zahlungslink</b> per E-Mail — direkt nach der Zahlung werden deine Credits automatisch freigeschaltet.</div>
     <button class="co-close" onclick="closeCreditOffer()">Schließen</button>`;
 }
 

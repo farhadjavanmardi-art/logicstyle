@@ -378,7 +378,7 @@ html,body,nav,section,.hero,.apps-section,.gallery-section,.gallery-section.alt,
   <div class="container">
     <div class="sec-eyebrow">Preise · monatlich kündbar</div>
     <h2 class="sec-title">Mehr Simulationen. Klarere Team-Pakete.</h2>
-    <p class="sec-desc">Wähle das passende Paket für deinen Salon. Pro ist für einzelne Stylisten, Elite für kleine Teams und Studio für größere Teams mit dem stärksten Preis-Leistungs-Verhältnis. Sichere Zahlung über PayPal, jederzeit monatlich kündbar.</p>
+    <p class="sec-desc">Wähle das passende Paket für deinen Salon. Pro ist für einzelne Stylisten, Elite für kleine Teams und Studio für größere Teams mit dem stärksten Preis-Leistungs-Verhältnis. Sichere Zahlung über Revolut, jederzeit monatlich kündbar.</p>
 
     <div class="free-plan">
       <div class="sec-eyebrow">🎁 Testversion · erst prüfen, dann entscheiden</div>
@@ -401,7 +401,7 @@ html,body,nav,section,.hero,.apps-section,.gallery-section,.gallery-section.alt,
           <li>Regelmäßige Updates</li>
         </ul>
         <button class="p-cta" onclick="openModal('Pro',66,200)">Pro auswählen →</button>
-        <div class="price-note">Monatlich kündbar · Zahlung über PayPal</div>
+        <div class="price-note">Monatlich kündbar · Zahlung über Revolut</div>
         <div style="padding:8px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);border-radius:8px;font-size:11px;color:#4ade80;text-align:center">✓ Steuerlich absetzbar</div>
       </div>
       <div class="price-card">
@@ -417,7 +417,7 @@ html,body,nav,section,.hero,.apps-section,.gallery-section,.gallery-section.alt,
           <li>Regelmäßige Updates</li>
         </ul>
         <button class="p-cta" onclick="openModal('Elite',122,400)">Elite auswählen →</button>
-        <div class="price-note">Monatlich kündbar · Zahlung über PayPal</div>
+        <div class="price-note">Monatlich kündbar · Zahlung über Revolut</div>
         <div style="padding:8px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);border-radius:8px;font-size:11px;color:#4ade80;text-align:center">✓ Steuerlich absetzbar</div>
       </div>
 
@@ -433,7 +433,7 @@ html,body,nav,section,.hero,.apps-section,.gallery-section,.gallery-section.alt,
           <li>Regelmäßige Updates</li>
         </ul>
         <button class="p-cta" onclick="openModal('Studio',290,1000)">Studio auswählen →</button>
-        <div class="price-note">Monatlich kündbar · Zahlung über PayPal</div>
+        <div class="price-note">Monatlich kündbar · Zahlung über Revolut</div>
         <div style="padding:8px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);border-radius:8px;font-size:11px;color:#4ade80;text-align:center">✓ Steuerlich absetzbar</div>
       </div>
     </div>
@@ -578,17 +578,6 @@ const PLANS={
 };
 let _plan='',_price=0,_limit=0,_selectedApp='haar';
 
-/* ── PAYPAL (dynamische Konfiguration aus Supabase) ── */
-let _ppConfig=null;
-async function loadPayPalConfig(){
-  if(_ppConfig)return _ppConfig;
-  try{
-    const r=await fetch(`${SB_URL}/functions/v1/paypal-config`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}});
-    _ppConfig=r.ok?await r.json():{configured:false};
-  }catch(e){_ppConfig={configured:false};}
-  return _ppConfig;
-}
-
 /* ── REVOLUT: Order erstellen (automatische Freischaltung nach Zahlung) ── */
 async function createRevolutOrder(purpose,userId,extra){
   try{
@@ -596,36 +585,6 @@ async function createRevolutOrder(purpose,userId,extra){
     const d=await r.json().catch(()=>({}));
     return (r.ok&&d.ok&&d.checkout_url)?d:null;
   }catch(e){return null;}
-}
-function loadPayPalSdk(clientId){
-  return new Promise((resolve,reject)=>{
-    if(window.paypal){resolve();return;}
-    const s=document.createElement('script');
-    s.src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(clientId)+'&vault=true&intent=subscription&currency=EUR';
-    s.onload=()=>resolve();
-    s.onerror=()=>reject(new Error('PayPal SDK konnte nicht geladen werden'));
-    document.head.appendChild(s);
-  });
-}
-function renderPayPalButton(planId,userId,subscriber){
-  const st=document.getElementById('paypal-status');
-  if(!window.paypal||!window.paypal.Buttons){if(st)st.textContent='PayPal ist gerade nicht verfügbar. Bitte Seite neu laden.';return;}
-  window.paypal.Buttons({
-    style:{shape:'pill',color:'gold',layout:'vertical',label:'subscribe'},
-    createSubscription:(data,actions)=>actions.subscription.create({
-      plan_id:planId,
-      custom_id:String(userId||''),
-      subscriber:{email_address:subscriber.email,name:{given_name:subscriber.given,surname:subscriber.surname}}
-    }),
-    onApprove:async(data)=>{
-      if(st)st.textContent='✅ Zahlung erfolgreich! Deine Zugangsdaten werden per E-Mail gesendet…';
-      // Best-effort: Subscription-ID speichern (Webhook nutzt zusätzlich custom_id)
-      try{await fetch(`${SB_URL}/rest/v1/users?id=eq.${encodeURIComponent(userId)}`,{method:'PATCH',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify({paypal_subscription_id:data.subscriptionID,payment_status:'paid'})});}catch(e){}
-      showPaymentSuccess(subscriber);
-    },
-    onError:(err)=>{if(st)st.textContent='❌ Zahlung fehlgeschlagen. Bitte erneut versuchen oder kontaktiere info@logicstyle-salon.de';console.warn('PayPal error:',err);},
-    onCancel:()=>{if(st)st.textContent='Zahlung abgebrochen. Du kannst es jederzeit erneut versuchen.';}
-  }).render('#paypal-btn');
 }
 function showPaymentSuccess(subscriber){
   document.getElementById('modalTitle').textContent='✅ Zahlung erfolgreich!';
@@ -791,7 +750,7 @@ function openModal(planKey,price,limit){
       <div style="font-size:13px;color:#cbd5e1;margin-top:4px;font-weight:600">Simulationen / Monat</div>
       <div style="margin:14px auto;height:1px;width:62%;background:rgba(255,255,255,0.13)"></div>
       <div style="font-size:36px;font-weight:900;color:#fff;line-height:1"><sup style="font-size:19px;font-weight:700;top:-0.5em">€</sup>${price}<span style="font-size:15px;color:#9ca3af;font-weight:600"> /Monat</span></div>
-      <div style="font-size:11.5px;color:#9ca3af;margin-top:8px;line-height:1.6">Monatlich kündbar · Sichere Zahlung über PayPal</div>
+      <div style="font-size:11.5px;color:#9ca3af;margin-top:8px;line-height:1.6">Monatlich kündbar · Sichere Zahlung über Revolut</div>
     </div>
   `;
   document.getElementById('modalBody').innerHTML=`
@@ -829,7 +788,7 @@ function openModal(planKey,price,limit){
       <button class="pay-btn" id="payBtn" onclick="submitReg()">🚀 Kostenlos anmelden</button>
     `:`
       <button class="pay-btn" id="payBtn" onclick="validateAndShowPayPal()">Weiter zur Zahlung → ${price} €/Monat</button>
-      <div style="text-align:center;font-size:12.5px;color:#cbd5e1;margin-top:10px;line-height:1.6">Betrag: <strong style="color:#fff">${price} €/Monat</strong> für <strong style="color:#fff">${limit} Simulationen</strong> · Zahlung über PayPal</div>
+      <div style="text-align:center;font-size:12.5px;color:#cbd5e1;margin-top:10px;line-height:1.6">Betrag: <strong style="color:#fff">${price} €/Monat</strong> für <strong style="color:#fff">${limit} Simulationen</strong> · Zahlung über Revolut</div>
       <div id="paypal-container" style="display:none;margin-top:16px"></div>
     `}
     <p class="dsgvo-note">🔒 Deine Daten werden nur zur Kontoerstellung verwendet. DSGVO-konform.</p>
@@ -1045,72 +1004,34 @@ async function validateAndShowPayPal(){
   btn.disabled=true;btn.textContent='⏳ Daten werden geprüft…';
   // Bezahlte Pakete: keine Duplikat-Sperre — E-Mail/Adresse dürfen mehrfach registriert werden.
   const clientIP=await getClientIP();
-  // PayPal-Konfiguration laden — bestimmt, ob echte Online-Zahlung möglich ist
-  const pp=await loadPayPalConfig();
-  const planId=(pp&&pp.configured&&pp.plans)?pp.plans[_plan]:null;
-  const paidOnline=!!planId;
+  const cfg=PLANS[_plan];
   let userId=null,ref='';
   try{
-    const cfg=PLANS[_plan];const f7=document.getElementById('f7')?.value.trim();const f8=document.getElementById('f8')?.value.trim();
+    const f7=document.getElementById('f7')?.value.trim();const f8=document.getElementById('f8')?.value.trim();
     const username=slugify(f3);ref='LS-'+username.toUpperCase()+'-'+_plan.toUpperCase()+'-'+Date.now();
-    const inserted=await sbInsert('users',{full_name:f1+' '+f2,email:f3,username,phone:f4,salon_name:f5,salon_address:f6,salon_zip:f7,salon_city:f8,plan:_plan,requested_plan:_plan,requested_price:cfg.price,registration_type:paidOnline?'paypal_subscription':'test_signup',approval_status:'pending',payment_status:paidOnline?'pending':'not_required',simulations_limit:cfg.limit,simulations_used:0,is_active:false,password_hash:'',activation_code:ref,admin_note:'Software-Zugang: '+_selectedApp+(paidOnline?' | PayPal-Abo (wartet auf Zahlung)':' | Testversion · keine Online-Zahlung'),registration_ip:clientIP,temp_password:null,temp_password_expires_at:null,must_change_password:false,temp_password_sent_at:null},'id');
+    const inserted=await sbInsert('users',{full_name:f1+' '+f2,email:f3,username,phone:f4,salon_name:f5,salon_address:f6,salon_zip:f7,salon_city:f8,plan:_plan,requested_plan:_plan,requested_price:cfg.price,registration_type:'revolut',approval_status:'pending',payment_status:'pending',simulations_limit:cfg.limit,simulations_used:0,is_active:false,password_hash:'',activation_code:ref,admin_note:'Software-Zugang: '+_selectedApp+' | Revolut (wartet auf Zahlung)',registration_ip:clientIP,temp_password:null,temp_password_expires_at:null,must_change_password:false,temp_password_sent_at:null},'id');
     const userRow=Array.isArray(inserted)?inserted[0]:inserted;userId=userRow?.id||null;
-    await sendAdminEmail('🆕 Logic Style '+(paidOnline?'Bestellung':'Testanfrage')+': '+f5+' ('+cfg.title+')',{Name:f1+' '+f2,Email:f3,Telefon:f4,Salon:f5,Adresse:f6+', '+f7+' '+f8,Tarif:cfg.title+' · '+cfg.price+'€/Monat','Software-Zugang':_selectedApp,Status:paidOnline?'Wartet auf PayPal-Zahlung':'Testanfrage gespeichert — keine Online-Zahlung',Referenz:ref});
-    try{await sbInsert('store_orders',{package_code:_plan,billing_cycle:'monthly',customer_name:f1+' '+f2,salon_name:f5,email:f3,phone:f4,country:'DE',amount:cfg.price,currency:'EUR',status:'pending',payment_ref:ref,notes:'Software-Zugang: '+_selectedApp+' | '+(paidOnline?'PayPal':cfg.type)})}catch(e){console.warn('store_orders:',e.message)}
+    await sendAdminEmail('🆕 Logic Style Bestellung: '+f5+' ('+cfg.title+')',{Name:f1+' '+f2,Email:f3,Telefon:f4,Salon:f5,Adresse:f6+', '+f7+' '+f8,Tarif:cfg.title+' · '+cfg.price+'€/Monat','Software-Zugang':_selectedApp,Status:'Wartet auf Revolut-Zahlung',Referenz:ref});
+    try{await sbInsert('store_orders',{package_code:_plan,billing_cycle:'monthly',customer_name:f1+' '+f2,salon_name:f5,email:f3,phone:f4,country:'DE',amount:cfg.price,currency:'EUR',status:'pending',payment_ref:ref,notes:'Software-Zugang: '+_selectedApp+' | Revolut'})}catch(e){console.warn('store_orders:',e.message)}
   }catch(e){console.warn('Save pending error:',e.message)}
-  // ── Revolut zuerst: automatische Freischaltung direkt nach Zahlung ──
-  if(userId){
-    const cfg=PLANS[_plan];
-    const rev=await createRevolutOrder('plan',userId,{plan:_plan});
-    if(rev&&rev.checkout_url){
-      btn.style.display='none';
-      const contR=document.getElementById('paypal-container');contR.style.display='block';
-      contR.innerHTML=`
-        <div style="padding:12px 14px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:12px;font-size:12.5px;color:#4ade80;line-height:1.6;text-align:center;font-weight:600;margin-bottom:14px">
-          💳 Betrag: <span style="color:#fff">${Number(cfg.price)} €/Monat</span> für <span style="color:#fff">${cfg.limit} Simulationen</span><br>🔒 Sichere Zahlung über Revolut
-        </div>
-        <a href="${rev.checkout_url}" target="_blank" rel="noopener" class="pay-btn" style="display:block;text-align:center;text-decoration:none">Jetzt mit Revolut bezahlen → ${Number(cfg.price)} €</a>
-        <p style="font-size:11.5px;color:#9ca3af;text-align:center;margin-top:10px;line-height:1.6">Nach erfolgreicher Zahlung wird dein Zugang <strong>automatisch</strong> freigeschaltet und die Zugangsdaten per E-Mail gesendet.</p>`;
-      return;
-    }
-  }
+
+  // ── Revolut: automatische Freischaltung direkt nach Zahlung ──
   btn.style.display='none';
-  const cont=document.getElementById('paypal-container');
-  cont.style.display='block';
-  if(paidOnline&&userId){
+  const cont=document.getElementById('paypal-container');cont.style.display='block';
+  const rev=userId?await createRevolutOrder('plan',userId,{plan:_plan}):null;
+  if(rev&&rev.checkout_url){
     cont.innerHTML=`
       <div style="padding:12px 14px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:12px;font-size:12.5px;color:#4ade80;line-height:1.6;text-align:center;font-weight:600;margin-bottom:14px">
-        💳 Betrag: <span style="color:#fff">${Number(cfg.price)} €/Monat</span> für <span style="color:#fff">${cfg.limit} Simulationen</span><br>🔒 Sichere Zahlung über PayPal · monatlich kündbar<br>Direkt nach der Zahlung erhältst du dein temporäres Passwort per E-Mail.
+        💳 Betrag: <span style="color:#fff">${Number(cfg.price)} €/Monat</span> für <span style="color:#fff">${cfg.limit} Simulationen</span><br>🔒 Sichere Zahlung über Revolut
       </div>
-      <div id="paypal-btn"></div>
-      <div id="paypal-status" style="margin-top:12px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6"></div>`;
-    try{
-      await loadPayPalSdk(pp.client_id);
-      renderPayPalButton(planId,userId,{email:f3,given:f1,surname:f2});
-    }catch(e){
-      document.getElementById('paypal-status').textContent='PayPal konnte nicht geladen werden. Bitte Seite neu laden oder kontaktiere info@logicstyle-salon.de';
-    }
+      <a href="${rev.checkout_url}" target="_blank" rel="noopener" class="pay-btn" style="display:block;text-align:center;text-decoration:none">Jetzt mit Revolut bezahlen → ${Number(cfg.price)} €</a>
+      <p style="font-size:11.5px;color:#9ca3af;text-align:center;margin-top:10px;line-height:1.6">Nach erfolgreicher Zahlung wird dein Zugang <strong>automatisch</strong> freigeschaltet und die Zugangsdaten per E-Mail gesendet.</p>`;
   }else{
-    // Übergangslösung: Zahlung per PayPal-QR-Code (persönliches Konto).
-    // Sobald die PayPal-Business-Plan-IDs in app_config stehen, greift
-    // automatisch wieder der Online-Zahlungszweig oben.
+    // Revolut noch nicht konfiguriert — Anfrage gespeichert, Zahlungslink folgt per E-Mail.
     cont.innerHTML=`
-      <div style="padding:14px 16px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:14px;font-size:13px;color:#4ade80;line-height:1.7;text-align:center;font-weight:700;margin-bottom:14px">
-        ✅ Anfrage gespeichert · Referenz: <span style="font-family:'Space Mono',monospace">${esc(ref)}</span>
-      </div>
-      <div style="padding:18px 16px;background:#fff;border-radius:16px;text-align:center">
-        <div style="font-size:14px;font-weight:800;color:#111;margin-bottom:10px">💳 Jetzt bezahlen — PayPal-QR-Code scannen</div>
-        <img src="paypal-qr.png" alt="PayPal QR-Code" style="width:230px;max-width:85%;border-radius:12px" onerror="this.parentElement.style.display='none';document.getElementById('qr-missing').style.display='block'">
-        <div style="font-size:13px;color:#111;margin-top:10px;line-height:1.7">
-          Betrag: <b>${Number(_price)}€</b><br>
-          Verwendungszweck: <b style="font-family:'Space Mono',monospace;font-size:11px">${esc(ref)}</b>
-        </div>
-      </div>
-      <div id="qr-missing" style="display:none;padding:14px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.22);border-radius:12px;font-size:12px;color:#facc15;text-align:center;line-height:1.6;margin-top:10px">
-        Wir senden dir in Kürze per E-Mail den Zahlungslink.
-      </div>
-      <div style="margin-top:12px;padding:12px 14px;background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.22);border-radius:12px;font-size:12px;color:#93c5fd;line-height:1.7;text-align:center">
-        Bitte gib die Referenz bei der Zahlung im Verwendungszweck an.<br>Nach Zahlungseingang wird dein Zugang innerhalb von 24&nbsp;Stunden freigeschaltet — die Zugangsdaten kommen per E-Mail.
+      <div style="padding:16px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.22);border-radius:14px;font-size:13px;color:#facc15;line-height:1.8;text-align:center">
+        ✅ Deine Anfrage ist gespeichert · Referenz: <span style="font-family:'Space Mono',monospace">${esc(ref)}</span><br>
+        Die Online-Zahlung wird gerade eingerichtet. Wir senden dir in Kürze den Zahlungslink per E-Mail an <strong style="color:#fff">${esc(f3)}</strong> — direkt nach der Zahlung wird dein Zugang automatisch freigeschaltet.
       </div>`;
   }
 }
