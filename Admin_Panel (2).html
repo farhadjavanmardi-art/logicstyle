@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Logic Style | Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000;--card:#000000;--card2:#000000;
+  --text:#ffffff;--muted:#94a3b8;
+  --pink:#ff2d78;--pink2:#ff5c96;--pink-border:rgba(255,45,120,0.35);--pink-dim:rgba(255,45,120,0.1);
+  --border:rgba(255,255,255,0.06);
+  --rowline:rgba(255,255,255,0.24);
+  --ok:#4ade80;--ok-bg:rgba(74,222,128,0.08);--ok-border:rgba(74,222,128,0.2);
+  --warn:#fb923c;--warn-bg:rgba(251,146,60,0.08);--warn-border:rgba(251,146,60,0.2);
+  --danger:#f87171;--danger-bg:rgba(248,113,113,0.08);--danger-border:rgba(248,113,113,0.2);
+  --blue:#60a5fa;--blue-bg:rgba(96,165,250,0.08);--blue-border:rgba(96,165,250,0.2);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.08);--purple-border:rgba(167,139,250,0.2);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100svh;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;z-index:9000;background:#000000;background-image:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(232,121,160,0.14) 0%,transparent 60%);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--pink-border);border-radius:22px;padding:32px 28px;box-shadow:0 0 60px rgba(232,121,160,0.08)}
+.login-logo{text-align:center;margin-bottom:18px}
+.login-logo img{height:72px;width:auto;object-fit:contain}
+.login-title{font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--pink);text-align:center;margin-bottom:18px;letter-spacing:1px;font-weight:700}
+.login-err{background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--danger);margin-bottom:12px;display:none}
+.f-lbl{display:block;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.f-inp{width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:#fff;font-size:14px;outline:none;transition:.2s;margin-bottom:10px}
+.f-inp:focus{border-color:var(--pink)}
+.f-inp::placeholder{color:var(--muted)}
+select.f-inp option{background:#000000;color:#fff}
+textarea.f-inp{min-height:110px;resize:vertical}
+.btn-login{width:100%;padding:13px;background:var(--pink);color:#000;border:none;border-radius:13px;font-weight:700;font-size:14px;cursor:pointer;transition:.2s}
+.btn-login:hover{background:var(--pink2)}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:#000000;border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-brand{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:1px}
+.nav-brand .l{color:var(--pink)}.nav-brand .s{color:#c8d4e0}
+.nav-sub{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.nav-right{display:flex;align-items:center;gap:7px;margin-left:auto;flex-wrap:wrap}
+.realtime-dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 6px var(--ok);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.realtime-label{font-size:11px;color:var(--ok);font-family:'Space Mono',monospace;font-weight:700}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 16px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;border:none;transition:.2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ok{background:var(--ok-bg);border:1px solid var(--ok-border);color:var(--ok)}
+.btn.ok:hover{background:rgba(74,222,128,0.15)}
+.btn.danger{background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger)}
+.btn.danger:hover{background:rgba(248,113,113,0.15)}
+.btn.blue{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)}
+.btn.blue:hover{background:rgba(96,165,250,0.15)}
+.btn.purple{background:var(--purple-bg);border:1px solid var(--purple-border);color:var(--purple)}
+.btn.purple:hover{background:rgba(167,139,250,0.15)}
+.btn.pink{background:var(--pink-dim);border:1px solid var(--pink-border);color:var(--pink)}
+.btn.pink:hover{background:rgba(232,121,160,0.18)}
+.btn.warn{background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn)}
+.btn.warn:hover{background:rgba(251,146,60,0.15)}
+.btn.light{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--muted)}
+.btn.light:hover{border-color:var(--pink-border);color:var(--pink)}
+
+/* ── WRAP & STATS ── */
+.wrap{max-width:1400px;margin:0 auto;padding:20px 20px 60px}
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:1200px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.stats-grid{display:flex;overflow-x:auto;gap:8px;padding-bottom:6px;scrollbar-width:none}}
+.stats-grid::-webkit-scrollbar{display:none}
+.stat-card{background:var(--card);border:1.5px solid var(--rowline);border-radius:16px;padding:14px 16px;min-width:110px;flex-shrink:0}
+.stat-card.alert{border-color:var(--warn-border);background:var(--warn-bg)}
+.stat-card.alert .sv{color:var(--warn)}
+.sv{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;line-height:1;color:var(--pink)}
+.sl{margin-top:5px;color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase;font-family:'Space Mono',monospace}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{padding:9px 18px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-weight:700;font-size:13px;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.tab:hover{border-color:var(--pink-border);color:var(--pink)}
+.tab.active{background:var(--pink);border-color:var(--pink);color:#000}
+.tab.active .tbadge{background:rgba(0,0,0,.2);color:#000}
+.tab.alert{border-color:var(--warn-border);color:var(--warn)}
+.tbadge{background:rgba(255,255,255,0.08);border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700}
+.view{display:none}
+.view.active{display:block}
+
+/* ── PANEL CARD ── */
+.panel-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:16px}
+.panel-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.panel-head h3{font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;flex:1;min-width:0}
+.cnt-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)}
+
+/* ── ROW ITEMS (jede Karte klar getrennt durch weißen Rahmen) ── */
+.row-item{background:#0a0a0a;border:1.5px solid var(--rowline);border-radius:16px;padding:18px 16px;margin:14px;transition:.15s}
+.row-item:hover{background:rgba(255,45,120,0.05);border-color:var(--pink);box-shadow:0 0 0 1px var(--pink)}
+.avatar{width:42px;height:42px;border-radius:12px;background:rgba(232,121,160,0.12);border:1px solid rgba(232,121,160,0.2);display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:var(--pink);flex-shrink:0}
+.user-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.user-sub{font-size:11px;color:var(--muted);line-height:1.8;font-family:'Space Mono',monospace}
+.badge{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:6px;display:inline-block}
+.info-box{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:11px;padding:12px 14px}
+.info-box-title{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:8px}
+.info-line{font-size:12px;color:var(--text);line-height:1.9}
+.info-line a{color:var(--blue);text-decoration:none}
+.info-line a.wa{color:var(--ok)}
+
+/* ── SEARCH + FILTERS ── */
+.filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--border)}
+.filter-input{padding:9px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:13px;outline:none;transition:.2s;min-width:0;flex:1}
+.filter-input:focus{border-color:var(--pink)}
+.filter-input::placeholder{color:var(--muted)}
+.filter-select{padding:9px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:13px;outline:none;cursor:pointer}
+.filter-select option{background:#000000}
+
+/* ── SIM BAR ── */
+.sim-bar-wrap{margin-bottom:6px}
+.sim-bar-bg{height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.sim-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+.sim-bar-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px}
+
+/* ── WORKFLOW ── */
+.wf-step{margin-top:10px}
+.wf-step-label{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.wf-inline{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.wf-inline .f-inp{flex:1;min-width:120px;margin-bottom:0;padding:9px 12px;font-size:13px}
+.wf-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+
+/* ── CREDIT TOP-UP ── */
+.credit-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.credit-btn{padding:7px 14px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);color:var(--ok)}
+.credit-btn:hover{background:rgba(74,222,128,0.16)}
+.credit-btn.sale{background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.3);color:#fbbf24}
+.credit-btn.sale:hover{background:rgba(251,191,36,0.16)}
+.pack-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.pack-amount{font-weight:800;font-size:14px;min-width:150px}
+.pack-persim{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;min-width:150px}
+
+/* ── EMAIL MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.88);backdrop-filter:blur(14px);display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal-box{width:100%;max-width:640px;background:#000000;border:1px solid rgba(232,121,160,0.2);border-radius:20px;margin:auto}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#000000;z-index:2;border-radius:20px 20px 0 0}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--pink)}
+.modal-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:18px 20px 24px}
+.mail-field{margin-bottom:12px}
+.mail-label{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block}
+.mail-value{font-size:13px;color:var(--text);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:10px 12px;word-break:break-all}
+.mail-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.mail-btn{flex:1;min-width:120px;padding:11px;border-radius:12px;font-weight:700;font-size:13px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.mail-btn.copy{background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);color:#60a5fa}
+.mail-btn.copy:hover{background:rgba(96,165,250,0.2)}
+.mail-btn.gmail{background:rgba(232,121,160,0.1);border:1px solid rgba(232,121,160,0.25);color:#e879a0}
+.mail-btn.gmail:hover{background:rgba(232,121,160,0.2)}
+.mail-btn.close-btn{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--muted)}
+
+/* ── FORM: ADD USER ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+
+/* ── SECTION TITLE ── */
+.sec-sep{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 0;margin:14px 0 6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+
+/* ── NOTIFICATIONS ── */
+.notif-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin:12px 14px;background:#0a0a0a;border:1.5px solid var(--rowline);border-radius:14px;transition:.15s}
+.notif-card.unread{background:rgba(255,45,120,0.06);border-color:var(--pink-border)}
+.notif-dot{width:8px;height:8px;min-width:8px;border-radius:50%;background:var(--pink);margin-top:5px}
+.notif-dot.read{background:rgba(232,121,160,0.2)}
+.notif-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.notif-msg{font-size:11px;color:var(--muted);line-height:1.6}
+.notif-date{font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:4px}
+
+/* ── EMPTY ── */
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
+
+/* ── SICHERHEITS-ABFRAGE (Bestätigung vor Aktionen) ── */
+.ask-overlay{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.82);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+.ask-overlay.open{display:flex}
+.ask-box{width:100%;max-width:410px;background:#000;border:2px solid var(--pink);border-radius:20px;padding:26px 24px;text-align:center;box-shadow:0 0 55px rgba(255,45,120,0.28)}
+.ask-box.danger{border-color:var(--danger);box-shadow:0 0 55px rgba(248,113,113,0.3)}
+.ask-icon{font-size:40px;line-height:1;margin-bottom:12px}
+.ask-title{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:10px;letter-spacing:.5px}
+.ask-msg{font-size:13.5px;color:#dbe4f0;line-height:1.75;margin-bottom:22px;white-space:pre-line}
+.ask-actions{display:flex;gap:10px}
+.ask-btn{flex:1;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:.2s;font-family:'DM Sans',sans-serif}
+.ask-btn.cancel{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.22)}
+.ask-btn.cancel:hover{background:rgba(255,255,255,0.16)}
+.ask-btn.confirm{background:var(--pink);color:#000}
+.ask-btn.confirm:hover{background:var(--pink2)}
+.ask-box.danger .ask-btn.confirm{background:var(--danger);color:#000}
+
+/* ── TOAST ── */
+#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:22px;font-weight:700;font-size:13px;z-index:9999;display:none;pointer-events:none;white-space:nowrap}
+
+/* ── COOKIE ── */
+#ls-consent{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#000000;border-top:1px solid var(--pink-border);padding:12px 16px;display:none}
+#ls-consent.show{display:block}
+.lsci{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lsct{flex:1;font-size:12px;color:#94a3b8;line-height:1.5}.lsct a{color:var(--blue);text-decoration:none}
+.lscbtns{display:flex;gap:8px;flex-shrink:0}
+.lsca{padding:8px 18px;background:var(--pink);color:#000;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+.lscd{padding:8px 18px;background:transparent;color:#64748b;border:1px solid var(--border);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#e879a022;border-radius:2px}
+@media(max-width:700px){.info-grid-2{grid-template-columns:1fr!important}}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo"><img src="logo.png" alt="Logic Style"></div>
+    <div class="login-title">Admin Panel</div>
+    <div class="login-err" id="loginErr"></div>
+    <div><label class="f-lbl">E-Mail</label>
+      <input class="f-inp" type="email" id="loginEmail" placeholder="admin@email.de" autocomplete="email"
+        onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+    </div>
+    <div><label class="f-lbl">Passwort</label>
+      <input class="f-inp" type="password" id="loginPass" placeholder="Passwort"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()">→ Anmelden</button>
+  </div>
+</div>
+
+<!-- ── MAIN PANEL ── -->
+<div id="adminRoot" style="display:none">
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="logo.png" alt="" style="height:52px;width:auto;object-fit:contain">
+      <div>
+        <div class="nav-brand"><span class="l">Logic</span> <span class="s">Style</span></div>
+        <div class="nav-sub">Admin Panel</div>
+      </div>
+    </a>
+    <div class="nav-right">
+      <div style="display:flex;align-items:center;gap:5px">
+        <div class="realtime-dot"></div>
+        <span class="realtime-label">Live</span>
+      </div>
+      <a href="admin.html" class="btn light">Admin</a>
+      <a href="Logic_Haare_Farbe_Bart.html" class="btn light" target="_blank">Kunde</a>
+      <button class="btn light" onclick="loadAll()">🔄</button>
+      <button class="btn danger" onclick="doLogout()">⏻ Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card" id="stPendingCard"><div class="sv" id="stPending">–</div><div class="sl">Ausstehend</div></div>
+    <div class="stat-card"><div class="sv" id="stActive">–</div><div class="sl">Aktiv</div></div>
+    <div class="stat-card"><div class="sv" id="stUsers">–</div><div class="sl">Kunden</div></div>
+    <div class="stat-card"><div class="sv" id="stOnline" style="color:var(--ok)">–</div><div class="sl">Online</div></div>
+    <div class="stat-card"><div class="sv" id="stMRR" style="color:var(--ok)">–</div><div class="sl">Planwert</div></div>
+    <div class="stat-card"><div class="sv" id="stNotif" style="color:var(--warn)">–</div><div class="sl">Benachricht.</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" id="tab-pending"  onclick="switchTab('pending',this)">⏳ Ausstehend <span class="tbadge" id="badgePending">0</span></button>
+    <button class="tab"        id="tab-users"    onclick="switchTab('users',this)">👥 Kunden <span class="tbadge" id="badgeUsers">0</span></button>
+    <button class="tab"        id="tab-sessions" onclick="switchTab('sessions',this)">🟢 Online <span class="tbadge" id="badgeSessions">0</span></button>
+    <button class="tab"        id="tab-notifs"   onclick="switchTab('notifs',this)">🔔 Benachricht. <span class="tbadge" id="badgeNotifs">0</span></button>
+    <button class="tab"        id="tab-credits"  onclick="switchTab('credits',this)">💳 Credits <span class="tbadge" id="badgeCredits">0</span></button>
+    <button class="tab"        id="tab-adduser"  onclick="switchTab('adduser',this)">➕ Kunde anlegen</button>
+  </div>
+
+  <!-- ══════ PENDING ══════ -->
+  <div class="view active" id="view-pending">
+    <div class="panel-card">
+      <div class="panel-head">
+        <h3>⏳ Neue Anmeldungen</h3>
+        <span class="cnt-label" id="cntPending">–</span>
+        <input class="filter-input" id="qPending" type="search" name="ls_pendingsuche" placeholder="Suchen…" oninput="renderPending()" style="max-width:200px;margin:0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" readonly onfocus="this.removeAttribute('readonly')">
+      </div>
+      <div id="listPending"><div class="empty">Wird geladen…</div></div>
+    </div>
+  </div>
+
+  <!-- ══════ USERS ══════ -->
+  <div class="view" id="view-users">
+    <div class="panel-card">
+      <div class="panel-head">
+        <h3>👥 Alle Kunden</h3>
+        <span class="cnt-label" id="cntUsers">–</span>
+      </div>
+      <div class="filter-bar">
+        <input class="filter-input" id="qUsers" type="search" name="ls_kundensuche" placeholder="Suchen: Name · Salon · Ort…" oninput="renderUsers()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" readonly onfocus="this.removeAttribute('readonly')">
+        <select class="filter-select" id="filterPlan" onchange="renderUsers()">
+          <option value="">Alle Pakete</option>
+          <option value="probe">Probe / Test</option>
+          <option value="pro">Pro</option>
+          <option value="elite">Elite</option>
+          <option value="studio">Studio</option>
+        </select>
+        <select class="filter-select" id="filterStatus" onchange="renderUsers()">
+          <option value="">Alle Status</option>
+          <option value="active">Aktiv</option>
+          <option value="inactive">Inaktiv</option>
+          <option value="pending">Ausstehend</option>
+        </select>
+      </div>
+      <div id="listUsers"><div class="empty">Wird geladen…</div></div>
+    </div>
+  </div>
+
+  <!-- ══════ SESSIONS ══════ -->
+  <div class="view" id="view-sessions">
+    <div class="panel-card">
+      <div class="panel-head">
+        <h3>🟢 Aktive Sitzungen</h3>
+        <span class="cnt-label" id="cntSessions">–</span>
+        <button class="btn danger" style="margin-left:auto" onclick="killAllSessions()">🛑 Alle beenden</button>
+      </div>
+      <div id="listSessions"><div class="empty">Keine aktiven Sitzungen</div></div>
+    </div>
+  </div>
+
+  <!-- ══════ NOTIFICATIONS ══════ -->
+  <div class="view" id="view-notifs">
+    <div class="panel-card">
+      <div class="panel-head">
+        <h3>🔔 Benachrichtigungen</h3>
+        <span class="cnt-label" id="cntNotifs">–</span>
+        <button class="btn blue" style="margin-left:auto" onclick="markAllRead()">✓ Alle gelesen</button>
+      </div>
+      <div id="listNotifs"><div class="empty">Keine Benachrichtigungen</div></div>
+    </div>
+  </div>
+
+  <!-- ══════ CREDITS ══════ -->
+  <div class="view" id="view-credits">
+    <div class="panel-card">
+      <div class="panel-head">
+        <h3>💳 Offene Credit- & Upgrade-Anfragen</h3>
+        <span class="cnt-label" id="cntCreditReq">–</span>
+      </div>
+      <div id="listCreditReq"><div class="empty">Keine offenen Anfragen</div></div>
+    </div>
+    <div class="panel-card" style="margin-top:14px">
+      <div class="panel-head">
+        <h3>💰 Preise für Credit-Pakete</h3>
+        <span class="cnt-label">Diese Preise sehen die Kunden in der Software</span>
+      </div>
+      <div id="creditPackEditor" style="padding:16px"><div class="empty">Wird geladen…</div></div>
+    </div>
+  </div>
+
+  <!-- ══════ ADD USER ══════ -->
+  <div class="view" id="view-adduser">
+    <div class="panel-card">
+      <div class="panel-head"><h3>➕ Neuen Kunden anlegen</h3></div>
+      <div style="padding:18px 16px">
+        <div class="sec-sep">👤 Persönliche Daten</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Name *</label><input class="f-inp" id="nuName" placeholder="Vollständiger Name" style="margin-bottom:0"></div>
+          <div class="form-group"><label>E-Mail *</label><input class="f-inp" id="nuEmail" type="email" placeholder="email@salon.de" style="margin-bottom:0"></div>
+          <div class="form-group"><label>Telefon</label><input class="f-inp" id="nuPhone" placeholder="+49 …" style="margin-bottom:0"></div>
+          <div class="form-group"><label>Salon-Name</label><input class="f-inp" id="nuSalon" placeholder="z.B. Salon Bella" style="margin-bottom:0"></div>
+          <div class="form-group"><label>Adresse</label><input class="f-inp" id="nuAddress" placeholder="Straße + Hausnr." style="margin-bottom:0"></div>
+          <div class="form-group"><label>PLZ</label><input class="f-inp" id="nuZip" placeholder="76133" style="margin-bottom:0"></div>
+          <div class="form-group"><label>Stadt</label><input class="f-inp" id="nuCity" placeholder="Karlsruhe" style="margin-bottom:0"></div>
+          <div class="form-group"><label>Paket</label>
+            <select class="f-inp" id="nuPlan" onchange="updateNuFields()" style="margin-bottom:0">
+              <option value="probe">Probe / Test — 20 Sim. · 1 Benutzer</option>
+              <option value="pro" selected>Pro — 200 Sim. · 1 Benutzer</option>
+              <option value="elite">Elite — 400 Sim. · 5 Benutzer</option>
+              <option value="studio">Studio — 1000 Sim. · 10 Benutzer</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Software-Zugang</label>
+            <select class="f-inp" id="nuSoftware" style="margin-bottom:0">
+              <option value="kombiniert">👥 Herren + Damen — Komplett</option>
+              <option value="herren">👨 Herren — Haare · Bart · Farbe</option>
+              <option value="damen">👩 Damen — Haare · Farbe · Behandlung</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Geteiltes Sim. Budget</label><input class="f-inp" id="nuSimLimit" type="number" value="200" min="1" style="margin-bottom:0"></div>
+          <div class="form-group"><label>Sofort aktivieren</label>
+            <select class="f-inp" id="nuActive" style="margin-bottom:0">
+              <option value="true">Ja — sofort aktiv</option>
+              <option value="false">Nein — Pending</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn blue" onclick="addUser()">➕ Anlegen & E-Mail vorbereiten</button>
+          <button class="btn light" onclick="previewUsers()">👁 Vorschau</button>
+        </div>
+        <div id="nuPreview" style="display:none;margin-top:12px"></div>
+        <div id="addMsg" style="margin-top:10px;font-size:13px;min-height:20px;font-family:'Space Mono',monospace"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+</div><!-- /adminRoot -->
+
+<!-- ── EMAIL MODAL ── -->
+<div class="modal-overlay" id="mailModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">✉️ E-Mail vorbereitet</div>
+      <button class="modal-close" onclick="closeMailModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="mail-field">
+        <span class="mail-label">An</span>
+        <div class="mail-value" id="mailTo"></div>
+      </div>
+      <div class="mail-field">
+        <span class="mail-label">Betreff</span>
+        <div class="mail-value" id="mailSubject"></div>
+      </div>
+      <div class="mail-field">
+        <span class="mail-label">Nachricht (bearbeiten möglich)</span>
+        <textarea class="f-inp" id="mailBody" style="min-height:260px;margin-bottom:0;font-family:'Space Mono',monospace;font-size:11px;line-height:1.7"></textarea>
+      </div>
+      <div class="mail-btn-row">
+        <button class="mail-btn copy" onclick="copyMailBody()">📋 Nachricht kopieren</button>
+        <button class="mail-btn gmail" onclick="openGmail()">📧 In Gmail öffnen</button>
+        <button class="mail-btn close-btn" onclick="closeMailModal()">✕ Schließen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- SICHERHEITS-ABFRAGE: erscheint vor jeder wichtigen Aktion -->
+<div id="askModal" class="ask-overlay">
+  <div class="ask-box">
+    <div class="ask-icon" id="askIcon">⚠️</div>
+    <div class="ask-title" id="askTitle">Bist du sicher?</div>
+    <div class="ask-msg" id="askMsg"></div>
+    <div class="ask-actions">
+      <button class="ask-btn cancel" id="askCancel">Abbrechen</button>
+      <button class="ask-btn confirm" id="askOk">Ja, fortfahren</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ CONFIG ══ */
+const SB_URL='https://owgfhhkmlkdpjqlwavsx.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93Z2ZoaGttbGtkcGpxbHdhdnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MTUyNDgsImV4cCI6MjA5MDA5MTI0OH0.arQzSmczsZX6re-mfC6EcvAs9p3Uf1LdG3AfjjgsZvM';
+const SENDER_EMAIL='info@logicstyle-salon.de';
+const SOFTWARE_URL_MAIN  ='https://logicstyle-salon.de/Logic_Haare_Farbe_Bart.html';
+const SOFTWARE_URL_MODELS='https://logicstyle-salon.de/models.html';
+const SOFTWARE_URL_HOME  ='https://logicstyle-salon.de/index.html';
+
+const PLAN_LIMIT={probe:20,pro:200,elite:400,studio:1000,starter:20}; // starter = Legacy-Fallback
+// 0.33 EUR/Simulation; Elite ~7% Rabatt, Studio ~11% Rabatt
+const PLAN_PRICE={probe:0,pro:66,elite:122,studio:290,starter:0};
+const PLAN_USERS={probe:1,pro:1,elite:5,studio:10,starter:1};
+const PLAN_CONCURRENT=PLAN_USERS;
+const PLAN_LABEL={probe:'Probe / Test',pro:'Pro',elite:'Elite',studio:'Studio',starter:'Starter Legacy'};
+
+let _sb=null;
+const getSB=()=>{if(!_sb)_sb=window.supabase.createClient(SB_URL,SB_KEY);return _sb};
+let allUsers=[],allSessions=[],allNotifs=[],creditPacks=[];
+const CREDIT_PACK_FALLBACK=[{amount:50,price:28},{amount:100,price:48}];
+const CREDIT_REQ_TYPES=['credit_purchase_request','upgrade_request'];
+let preparedMail=null;
+
+/* ══ HELPERS ══ */
+const byId=id=>document.getElementById(id);
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function js(s){return String(s??'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+function fmtDate(v){if(!v)return'—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleString('de-DE')}
+function randomTempPw(len=10){const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';let o='';for(let i=0;i<len;i++)o+=c[Math.floor(Math.random()*c.length)];return o}
+function initials(n=''){const p=String(n).trim().split(/\s+/).filter(Boolean);if(!p.length)return'?';return p.slice(0,2).map(x=>x[0]?.toUpperCase()||'').join('')}
+function planColor(plan){return{probe:'#60a5fa',starter:'#4ade80',pro:'#ff2d78',elite:'#f59e0b',studio:'#a78bfa'}[plan]||'#60a5fa'}
+function simPct(used,limit){return limit>0?Math.min(100,Math.round(used/limit*100)):0}
+function planLabel(plan){return PLAN_LABEL[plan]||String(plan||'probe').toUpperCase()}
+function planUsers(plan){return PLAN_USERS[plan]||1}
+const SOFTWARE_URL_BASE='https://logicstyle-salon.de/';
+const SOFTWARE_CHOICES={
+  herren:{file:'Logic_Maenner.html',label:'Herren · Haare · Bart · Farbe',short:'👨 Herren'},
+  damen:{file:'Logic_Frauen.html',label:'Damen · Haare · Farbe · Behandlung',short:'👩 Damen'},
+  kombiniert:{file:'Logic_Haare_Farbe_Bart.html',label:'Herren + Damen · Komplett',short:'👥 Kombiniert'}
+};
+// Normalisiert die Software-Wahl aus Freitext (admin_note / Formular) auf einen Schlüssel.
+function normSoftwareChoice(v){
+  const k=String(v||'').toLowerCase().trim();
+  if(SOFTWARE_CHOICES[k])return k;
+  if(/herr|m[aä]nn|maenn|\bmen\b|male/.test(k))return 'herren';
+  if(/dame|frau|women|female/.test(k))return 'damen';
+  if(/kombi|beide|both|komplett|style/.test(k))return 'kombiniert';
+  return '';
+}
+// Ermittelt, welche Software der Kunde bei der Anmeldung gewählt hat.
+function getSoftwareChoice(user){
+  if(!user)return 'kombiniert';
+  let k=normSoftwareChoice(user.software_choice);
+  if(k)return k;
+  const m=String(user.admin_note||'').match(/Software-Zugang:\s*([^|\n]+)/i);
+  k=normSoftwareChoice(m?m[1]:'');
+  return k||'kombiniert';
+}
+function softwareChoiceLabel(user){return SOFTWARE_CHOICES[getSoftwareChoice(user)].label}
+function softwareChoiceShort(user){return SOFTWARE_CHOICES[getSoftwareChoice(user)].short}
+function normalizeSoftwareAccess(){return 'kombiniert'}
+function softwareAccessLabel(user){return softwareChoiceLabel(user)}
+function getSoftwareAccess(user){return getSoftwareChoice(user)}
+function buildSoftwareLinks(user){
+  const c=SOFTWARE_CHOICES[getSoftwareChoice(user)];
+  const lines=[];
+  lines.push(`✂️ ${c.label}:
+${SOFTWARE_URL_BASE}${c.file}`);
+  lines.push(`🖼 Beispiele / Modellgalerie:
+${SOFTWARE_URL_MODELS}`);
+  lines.push(`🌐 Website:
+${SOFTWARE_URL_HOME}`);
+  return lines.join('\n\n');
+}
+function cleanBaseName(v){return String(v||'logicstyle').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,18)||'logicstyle'}
+
+// Styled Ja/Nein-Abfrage. Gibt ein Promise<boolean> zurück.
+function lsAsk(opts){
+  opts=opts||{};
+  return new Promise(resolve=>{
+    const ov=byId('askModal');if(!ov){resolve(window.confirm(opts.message||opts.title||'Sicher?'));return}
+    const box=ov.querySelector('.ask-box');
+    byId('askIcon').textContent=opts.icon||'⚠️';
+    byId('askTitle').textContent=opts.title||'Bist du sicher?';
+    byId('askMsg').textContent=opts.message||'';
+    byId('askOk').textContent=opts.confirmLabel||'Ja, fortfahren';
+    byId('askCancel').textContent=opts.cancelLabel||'Abbrechen';
+    box.classList.toggle('danger',!!opts.danger);
+    ov.classList.add('open');document.body.style.overflow='hidden';
+    const done=v=>{ov.classList.remove('open');document.body.style.overflow='';byId('askOk').onclick=null;byId('askCancel').onclick=null;ov.onclick=null;document.onkeydown=null;resolve(v)};
+    byId('askOk').onclick=()=>done(true);
+    byId('askCancel').onclick=()=>done(false);
+    ov.onclick=e=>{if(e.target===ov)done(false)};
+    document.onkeydown=e=>{if(e.key==='Escape')done(false)};
+  });
+}
+
+function toast(msg,ok=true){
+  const el=byId('toast');if(!el)return;
+  el.textContent=msg;el.style.display='block';
+  el.style.background=ok?'rgba(74,222,128,0.14)':'rgba(248,113,113,0.14)';
+  el.style.border=ok?'1px solid rgba(74,222,128,0.35)':'1px solid rgba(248,113,113,0.35)';
+  el.style.color=ok?'#4ade80':'#f87171';
+  clearTimeout(window.__tt);window.__tt=setTimeout(()=>el.style.display='none',2800);
+}
+
+/* ══ AUTH ══ */
+async function doLogin(){
+  const email=(byId('loginEmail')?.value||'').trim().toLowerCase();
+  const pass=(byId('loginPass')?.value||'');
+  const errEl=byId('loginErr');errEl.style.display='none';
+  if(!email||!pass){errEl.textContent='❌ Bitte E-Mail und Passwort eingeben.';errEl.style.display='block';return}
+  try{
+    const{data:authData,error:authErr}=await getSB().auth.signInWithPassword({email,password:pass});
+    if(authErr||!authData?.user){errEl.textContent='❌ Anmeldung fehlgeschlagen.';errEl.style.display='block';return}
+    if(!authData.user.user_metadata?.is_admin){await getSB().auth.signOut();errEl.textContent='❌ Kein Admin-Zugang.';errEl.style.display='block';return}
+    byId('loginScreen').style.display='none';
+    bootAdmin();
+  }catch(e){errEl.textContent='❌ '+e.message;errEl.style.display='block'}
+}
+function doLogout(){getSB().auth.signOut();location.reload()}
+byId('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+(function(){getSB().auth.getSession().then(({data})=>{if(!data?.session)return;if(data.session.user.user_metadata?.is_admin){byId('loginScreen').style.display='none';bootAdmin()}})})();
+
+/* ══ BOOT ══ */
+async function bootAdmin(){
+  byId('adminRoot').style.display='block';
+  // Browser-Autofill der Suchfelder (Admin-E-Mail) verhindern
+  ['qUsers','qPending'].forEach(id=>{const el=byId(id);if(el)el.value='';});
+  await loadAll();
+  startRealtime();
+}
+
+async function loadAll(){
+  try{
+    const[u,s,n,cp]=await Promise.all([
+      getSB().from('users').select('*').order('created_at',{ascending:false}),
+      getSB().from('sessions').select('*').order('last_ping',{ascending:false}),
+      getSB().from('admin_notifications').select('*').order('created_at',{ascending:false}).limit(80),
+      getSB().from('credit_packs').select('*').order('amount'),
+    ]);
+    allUsers=u.data||[];allSessions=s.data||[];allNotifs=n.data||[];
+    creditPacks=(cp.data&&cp.data.length)?cp.data:CREDIT_PACK_FALLBACK.map(x=>({...x,active:true}));
+    updateStats();renderPending();renderUsers();renderSessions();renderNotifs();renderCreditRequests();renderPackEditor();
+  }catch(e){toast('Ladefehler: '+e.message,false)}
+}
+
+function startRealtime(){
+  getSB().channel('admin-live')
+    .on('postgres_changes',{event:'*',schema:'public',table:'users'},()=>loadAll())
+    .on('postgres_changes',{event:'*',schema:'public',table:'sessions'},()=>loadAll())
+    .on('postgres_changes',{event:'*',schema:'public',table:'admin_notifications'},()=>loadAll())
+    .subscribe();
+}
+
+/* ══ STATS ══ */
+function updateStats(){
+  const salons=allUsers.filter(x=>!x.is_admin&&!x.master_user_id);
+  const active=salons.filter(x=>x.is_active);
+  const pending=salons.filter(x=>!x.is_active||x.approval_status==='pending');
+  const mrr=active.reduce((s,u)=>s+(PLAN_PRICE[u.plan]||0),0);
+  const unread=allNotifs.filter(n=>!n.read_at).length;
+  byId('stPending').textContent=pending.length;
+  byId('stActive').textContent=active.length;
+  byId('stUsers').textContent=salons.length;
+  byId('stOnline').textContent=allSessions.length;
+  byId('stMRR').textContent='€'+mrr;
+  byId('stNotif').textContent=unread;
+  byId('badgePending').textContent=pending.length;
+  byId('badgeUsers').textContent=salons.length;
+  byId('badgeSessions').textContent=allSessions.length;
+  byId('badgeNotifs').textContent=unread||'';
+  const openReq=allNotifs.filter(n=>CREDIT_REQ_TYPES.includes(n.event_type)&&!n.read_at).length;
+  const bc=byId('badgeCredits');if(bc)bc.textContent=openReq||'';
+  byId('tab-credits')?.classList.toggle('alert',openReq>0);
+  byId('cntPending').textContent=pending.length+' Einträge';
+  byId('cntUsers').textContent=salons.length+' Einträge';
+  byId('cntSessions').textContent=allSessions.length+' Einträge';
+  byId('cntNotifs').textContent=allNotifs.length+' Einträge';
+  byId('stPendingCard').classList.toggle('alert',pending.length>0);
+}
+
+/* ══ TAB SWITCH ══ */
+function switchTab(name,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  byId(`view-${name}`)?.classList.add('active');
+  btn?.classList.add('active');
+}
+
+/* ══ RENDER PENDING ══ */
+function renderPending(){
+  const host=byId('listPending');
+  const q=(byId('qPending')?.value||'').toLowerCase();
+  let rows=allUsers.filter(x=>!x.is_admin&&!x.master_user_id&&(!x.is_active||x.approval_status==='pending'));
+  if(q)rows=rows.filter(x=>[x.full_name,x.email,x.phone,x.salon_name,x.salon_city].filter(Boolean).some(v=>String(v).toLowerCase().includes(q)));
+  byId('cntPending').textContent=rows.length+' Einträge';
+  if(!rows.length){host.innerHTML='<div class="empty">✅ Keine ausstehenden Anfragen</div>';return}
+  host.innerHTML=rows.map(u=>buildUserCard(u,true)).join('');
+}
+
+/* ══ RENDER USERS ══ */
+function renderUsers(){
+  const host=byId('listUsers');
+  const q=(byId('qUsers')?.value||'').toLowerCase();
+  const fp=byId('filterPlan')?.value||'';
+  const fs=byId('filterStatus')?.value||'';
+  let rows=allUsers.filter(x=>!x.is_admin&&!x.master_user_id);
+  if(fp)rows=rows.filter(x=>x.plan===fp);
+  if(fs==='active')rows=rows.filter(x=>x.is_active);
+  if(fs==='inactive')rows=rows.filter(x=>!x.is_active);
+  if(fs==='pending')rows=rows.filter(x=>x.approval_status==='pending');
+  if(q)rows=rows.filter(x=>[x.full_name,x.email,x.phone,x.salon_name,x.salon_city,x.username].filter(Boolean).some(v=>String(v).toLowerCase().includes(q)));
+  byId('cntUsers').textContent=rows.length+' Einträge';
+  if(!rows.length){host.innerHTML='<div class="empty">Keine Kunden gefunden</div>';return}
+  host.innerHTML=rows.map(u=>buildUserCard(u,false)).join('');
+}
+
+/* ══ BUILD USER CARD ══ */
+function buildUserCard(u,isPending){
+  const isActive=u.is_active;
+  const used=Number(u.simulations_used||0);
+  const limit=Number(u.simulations_limit||0);
+  const pct=simPct(used,limit);
+  const pColor=planColor(u.plan);
+  const fullAddress=[u.salon_address,u.salon_zip,u.salon_city].filter(Boolean).join(', ');
+  const mapsUrl='https://www.google.com/maps/search/'+encodeURIComponent((u.salon_name?u.salon_name+' ':'')+fullAddress);
+  const regDate=u.created_at?new Date(u.created_at).toLocaleDateString('de-DE'):'—';
+  const subs=allUsers.filter(x=>x.master_user_id===u.id);
+
+  const barColor=pct>=90?'var(--danger)':pct>=70?'var(--warn)':'var(--ok)';
+
+  return`<div class="row-item">
+    <!-- HEADER -->
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+      <div class="avatar">${esc(initials(u.full_name||u.username))}</div>
+      <div style="flex:1;min-width:0">
+        <div class="user-name">${esc(u.full_name||'Ohne Namen')}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px">
+          <span class="badge" style="background:${isActive?'var(--ok-bg)':'var(--danger-bg)'};border:1px solid ${isActive?'var(--ok-border)':'var(--danger-border)'};color:${isActive?'var(--ok)':'var(--danger)'}">${isActive?'AKTIV':'INAKTIV'}</span>
+          <span class="badge" style="background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);color:${pColor}">${esc(planLabel(u.plan))}</span>
+          <span class="badge" style="background:rgba(232,121,160,0.12);border:1px solid rgba(232,121,160,0.3);color:var(--pink)">${softwareChoiceShort(u)}</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted)">📅 ${regDate}</span>
+          ${u.approval_status==='pending'?'<span class="badge" style="background:var(--warn-bg);border:1px solid var(--warn-border);color:var(--warn)">AUSSTEHEND</span>':''}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${isPending
+          ?`<button class="btn ok" onclick="approveUser('${js(u.id)}')">✅ Aktivieren</button>
+             <button class="btn danger" onclick="rejectUser('${js(u.id)}')">⛔ Ablehnen</button>`
+          :`<button class="btn ${isActive?'warn':'ok'}" onclick="toggleActive('${js(u.id)}',${!isActive})">${isActive?'⏸ Deaktivieren':'▶ Aktivieren'}</button>`}
+        <button class="btn purple" onclick="prepareEmail('${js(u.id)}')">✉️ E-Mail</button>
+        <button class="btn danger" onclick="deleteUser('${js(u.id)}')">🗑</button>
+      </div>
+    </div>
+
+    <!-- INFO GRID -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px" class="info-grid-2">
+      <div class="info-box">
+        <div class="info-box-title">Kontakt</div>
+        <div class="info-line">
+          <a href="mailto:${esc(u.email)}" style="color:var(--blue)">📧 ${esc(u.email||'—')}</a><br>
+          <a href="https://wa.me/${(u.phone||'').replace(/[^0-9]/g,'')}" target="_blank" class="wa">📱 ${esc(u.phone||'—')}</a>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Salon</div>
+        <div class="info-line">
+          <strong style="color:var(--pink)">${esc(u.salon_name||'—')}</strong><br>
+          ${esc(u.salon_address||'')} ${esc(u.salon_zip||'')} ${esc(u.salon_city||'')}<br>
+          <a href="${esc(mapsUrl)}" target="_blank" style="font-size:11px;display:inline-flex;align-items:center;gap:4px;margin-top:4px;padding:3px 9px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:7px;color:var(--blue);text-decoration:none">🗺 Maps</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIM USAGE -->
+    <div class="info-box" style="margin-bottom:12px">
+      <div class="info-box-title">Geteiltes Simulationsbudget</div>
+      <div class="sim-bar-label">${used} / ${limit} genutzt (${pct}%) · alle Benutzer teilen dieses Budget</div>
+      <div class="sim-bar-bg"><div class="sim-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+    </div>
+
+    <!-- ADMIN NOTE -->
+    ${u.admin_note?`<div style="background:rgba(251,146,60,0.06);border:1px solid var(--warn-border);border-radius:9px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:var(--warn);font-family:'Space Mono',monospace;line-height:1.6">🗺 ${esc(u.admin_note)}</div>`:''}
+
+    <!-- SUB USERS -->
+    ${subs.length?`<div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:12px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:8px">👥 ${subs.length} Weitere Zugänge</div>
+      ${subs.map((s,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:11px">
+        <div style="width:24px;height:24px;border-radius:7px;background:rgba(232,121,160,0.12);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--pink);flex-shrink:0">${i+2}</div>
+        <div style="flex:1;font-family:'Space Mono',monospace;font-size:10px">${esc(s.username||s.email)}</div>
+        <span style="font-size:9px;padding:2px 7px;border-radius:5px;background:${s.is_active?'var(--ok-bg)':'var(--danger-bg)'};color:${s.is_active?'var(--ok)':'var(--danger)'}">${s.is_active?'aktiv':'inaktiv'}</span>
+      </div>`).join('')}
+    </div>`:''}
+
+    <!-- WORKFLOW -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px" class="info-grid-2">
+      <div>
+        <div class="wf-step-label">Paket ändern</div>
+        <div class="wf-inline">
+          <select class="f-inp" id="plan-${esc(u.id)}" style="margin-bottom:0;padding:8px 10px;font-size:12px">
+            <option value="probe" ${u.plan==='probe'?'selected':''}>Probe/Test — 20 · 1 User</option>
+            <option value="pro" ${u.plan==='pro'?'selected':''}>Pro — 200 · 1 User</option>
+            <option value="elite" ${u.plan==='elite'?'selected':''}>Elite — 400 · 5 User</option>
+            <option value="studio" ${u.plan==='studio'?'selected':''}>Studio — 1000 · 10 User</option>
+            ${u.plan==='starter'?'<option value="starter" selected>Starter Legacy — 20 · 1 User</option>':''}
+          </select>
+          <button class="btn blue" onclick="savePlan('${js(u.id)}')">💾</button>
+        </div>
+      </div>
+      <div>
+        <div class="wf-step-label">Admin-Notiz</div>
+        <div class="wf-inline">
+          <input class="f-inp" id="note-${esc(u.id)}" value="${esc(u.admin_note||'')}" placeholder="Notiz…" style="margin-bottom:0;padding:8px 10px;font-size:12px">
+          <button class="btn blue" onclick="saveNote('${js(u.id)}')">💾</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREDIT TOP-UP -->
+    <div>
+      <div class="wf-step-label">Credits auffüllen (aktuell: ${used}/${limit})</div>
+      <div class="credit-actions">
+        <button class="credit-btn" onclick="topUp('${js(u.id)}',20)">+20</button>
+        <button class="credit-btn" onclick="topUp('${js(u.id)}',50)">+50</button>
+        <button class="credit-btn" onclick="topUp('${js(u.id)}',100)">+100</button>
+        <button class="credit-btn" onclick="topUp('${js(u.id)}',200)">+200</button>
+        <button class="credit-btn" onclick="resetCredits('${js(u.id)}')">🔄 Reset</button>
+        <input class="f-inp" id="topup-custom-${esc(u.id)}" type="number" min="1" placeholder="Beliebig" style="width:100px;margin-bottom:0;padding:7px 10px;font-size:12px">
+        <button class="credit-btn" onclick="topUpCustom('${js(u.id)}')">+</button>
+      </div>
+      <div class="wf-step-label" style="margin-top:10px">💰 Credit-Verkauf buchen (bezahlt · Preis lt. Credit-Tab)</div>
+      <div class="credit-actions">
+        ${creditPacks.filter(p=>p.active!==false).map(p=>`<button class="credit-btn sale" onclick="bookCreditSale('${js(u.id)}',${Number(p.amount)})">+${Number(p.amount)} · €${Number(p.price)}</button>`).join('')||'<span style="font-size:11px;color:var(--muted)">Keine Credit-Pakete aktiv</span>'}
+      </div>
+    </div>
+
+  </div>`;
+}
+
+/* ══ RENDER SESSIONS ══ */
+function renderSessions(){
+  const host=byId('listSessions');
+  byId('cntSessions').textContent=allSessions.length+' Einträge';
+  if(!allSessions.length){host.innerHTML='<div class="empty">Keine aktiven Sitzungen</div>';return}
+  host.innerHTML=allSessions.map(s=>{
+    const u=allUsers.find(x=>x.id===s.user_id);
+    const name=u?.salon_name||u?.full_name||s.user_id||'?';
+    return`<div class="row-item">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="avatar" style="background:rgba(74,222,128,0.12);border-color:rgba(74,222,128,0.25);color:var(--ok)">🟢</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700">${esc(name)}</div>
+          <div class="user-sub">Ping: ${fmtDate(s.last_ping)} · Läuft bis: ${fmtDate(s.expires_at)}<br>${esc(s.device_info||'—')}</div>
+        </div>
+        <button class="btn danger" onclick="killSession('${js(s.id)}')">🛑 Beenden</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ══ RENDER NOTIFS ══ */
+function renderNotifs(){
+  const host=byId('listNotifs');
+  byId('cntNotifs').textContent=allNotifs.length+' Einträge';
+  if(!allNotifs.length){host.innerHTML='<div class="empty">Keine Benachrichtigungen</div>';return}
+  host.innerHTML=allNotifs.map(n=>{
+    const u=allUsers.find(x=>x.id===n.user_id);
+    const unread=!n.read_at;
+    return`<div class="notif-card${unread?' unread':''}">
+      <div class="notif-dot${unread?'':' read'}"></div>
+      <div style="flex:1;min-width:0">
+        <div class="notif-title">${esc(n.title||'')}</div>
+        <div class="notif-msg">${esc(n.message||'')}${u?` · <strong>${esc(u.salon_name||u.email)}</strong>`:''}</div>
+        <div class="notif-date">${fmtDate(n.created_at)}</div>
+      </div>
+      ${u?`<button class="btn purple" onclick="prepareEmail('${js(n.user_id)}')">✉️</button>`:''}
+      <button class="btn danger" onclick="deleteNotif('${js(n.id)}')">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+/* ══ CREDIT SHOP ══ */
+function packPrice(amount){const p=creditPacks.find(x=>Number(x.amount)===Number(amount));return p?Number(p.price):null}
+
+function renderCreditRequests(){
+  const host=byId('listCreditReq');if(!host)return;
+  const reqs=allNotifs.filter(n=>CREDIT_REQ_TYPES.includes(n.event_type)&&!n.read_at);
+  byId('cntCreditReq').textContent=reqs.length+' offen';
+  if(!reqs.length){host.innerHTML='<div class="empty">✅ Keine offenen Anfragen</div>';return}
+  host.innerHTML=reqs.map(n=>{
+    const u=allUsers.find(x=>x.id===n.user_id);
+    const p=n.payload||{};
+    const isUp=n.event_type==='upgrade_request';
+    return`<div class="row-item">
+      <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
+        <div class="avatar">${isUp?'📈':'💳'}</div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-weight:800;font-size:13px">${esc(n.title||'')}</div>
+          <div style="font-size:11px;color:var(--muted);margin:3px 0">${esc(n.message||'')}</div>
+          <div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace">${fmtDate(n.created_at)}${u?` · ${esc(u.salon_name||u.email||'')}`:''}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${!isUp&&u?`<button class="btn ok" onclick="bookCreditSale('${js(u.id)}',${Number(p.pack_amount)||0},'${js(n.id)}')">💰 +${Number(p.pack_amount)||'?'} buchen</button>`:''}
+          ${isUp&&u?`<button class="btn blue" onclick="switchToUser('${js(u.id)}')">👥 Zum Kunden</button>`:''}
+          ${u?`<button class="btn purple" onclick="prepareEmail('${js(n.user_id)}')">✉️</button>`:''}
+          <button class="btn warn" onclick="markReqDone('${js(n.id)}')">✓ Erledigt</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function switchToUser(id){
+  const u=allUsers.find(x=>x.id===id);
+  switchTab('users',byId('tab-users'));
+  const q=byId('qUsers');if(q&&u){q.value=u.email||u.full_name||'';renderUsers()}
+}
+
+async function markReqDone(id){
+  try{await getSB().from('admin_notifications').update({read_at:new Date().toISOString()}).eq('id',id);await loadAll()}
+  catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function bookCreditSale(userId,amount,notifId){
+  amount=Number(amount||0);if(!amount){toast('Ungültige Menge',false);return}
+  const user=allUsers.find(x=>x.id===userId);if(!user)return;
+  const master=allUsers.find(x=>x.id===user.master_user_id)||user;
+  const price=packPrice(amount);
+  const priceTxt=price!=null?` für €${price}`:'';
+  if(!await lsAsk({icon:'💰',title:'Credit-Verkauf buchen?',message:`+${amount} Simulationen${priceTxt}\nKunde: ${master.salon_name||master.email}\n\n✅ Nur buchen, wenn die BEZAHLUNG bereits erhalten wurde.`,confirmLabel:'Ja, Zahlung erhalten'}))return;
+  try{
+    const newLimit=Number(master.simulations_limit||0)+amount;
+    const{error}=await getSB().from('users').update({simulations_limit:newLimit}).eq('id',master.id);
+    if(error)throw error;
+    try{await getSB().from('credit_transactions').insert({user_id:master.id,amount:amount,type:'purchase',description:`Credit-Kauf: +${amount} Simulationen${priceTxt} · gebucht via Admin-Panel`})}catch(e){}
+    if(notifId)try{await getSB().from('admin_notifications').update({read_at:new Date().toISOString()}).eq('id',notifId)}catch(e){}
+    await loadAll();toast(`✅ +${amount} Credits${priceTxt} gebucht · Neu: ${newLimit}`);
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+function renderPackEditor(){
+  const host=byId('creditPackEditor');if(!host)return;
+  const proPerSim=(PLAN_PRICE.pro/PLAN_LIMIT.pro).toFixed(2);
+  host.innerHTML=`
+    <div style="font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px">Credits sind bewusst teurer pro Simulation als die Pakete (z.B. Pro: €${proPerSim}/Sim.) — so bleibt das Paket-Upgrade attraktiver. Kunden sehen diese Preise beim Credit-Alarm (unter 10 Credits) direkt in der Software.</div>
+    ${creditPacks.map(p=>{
+      const per=Number(p.amount)>0?(Number(p.price)/Number(p.amount)).toFixed(2):'—';
+      return`<div class="pack-row">
+        <div class="pack-amount">+${Number(p.amount)} Simulationen</div>
+        <div style="display:flex;align-items:center;gap:6px">€ <input class="f-inp" id="packPrice-${Number(p.amount)}" type="number" min="1" step="0.5" value="${Number(p.price)}" style="width:90px;margin-bottom:0;padding:8px 10px;font-size:13px" oninput="renderPackPerSim(${Number(p.amount)})"></div>
+        <div class="pack-persim" id="packPer-${Number(p.amount)}">= €${per} pro Simulation</div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)"><input type="checkbox" id="packActive-${Number(p.amount)}" ${p.active!==false?'checked':''}> aktiv</label>
+      </div>`;
+    }).join('')}
+    <div style="margin-top:14px"><button class="btn ok" onclick="savePackPrices()">💾 Preise speichern</button></div>`;
+}
+
+function renderPackPerSim(amount){
+  const v=Number(byId('packPrice-'+amount)?.value||0);
+  const el=byId('packPer-'+amount);
+  if(el)el.textContent=v>0?`= €${(v/amount).toFixed(2)} pro Simulation`:'—';
+}
+
+async function savePackPrices(){
+  try{
+    const rows=creditPacks.map(p=>{
+      const amount=Number(p.amount);
+      return{amount:amount,price:Number(byId('packPrice-'+amount)?.value||0),active:!!byId('packActive-'+amount)?.checked,updated_at:new Date().toISOString()};
+    });
+    if(rows.some(r=>!r.price||r.price<=0)){toast('Bitte gültige Preise eingeben',false);return}
+    const{error}=await getSB().from('credit_packs').upsert(rows,{onConflict:'amount'});
+    if(error)throw error;
+    await loadAll();toast('✅ Credit-Preise gespeichert');
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+
+async function fetchSalonUsers(masterId){
+  const {data,error}=await getSB().from('users').select('*').or(`id.eq.${masterId},master_user_id.eq.${masterId}`).order('created_at',{ascending:true});
+  if(error)throw error;
+  return (data||[]).filter(x=>!x.is_admin);
+}
+
+async function syncSubUsers(user,totalUsers,baseUsername,plan,isActive=true){
+  if(!user||!user.id)throw new Error('Master-Benutzer fehlt.');
+  const expectedLimit=PLAN_LIMIT[plan]||20;
+  const expectedPrice=PLAN_PRICE[plan]||0;
+  const domain=(user.email||'logicstyle-salon.de').split('@')[1]||'logicstyle-salon.de';
+  const now=new Date().toISOString();
+
+  await getSB().from('users').update({
+    plan,
+    requested_plan:plan,
+    requested_price:expectedPrice,
+    registration_type:user.registration_type||'test_signup',
+    approval_status:isActive?'approved':'pending',
+    payment_status:'not_required',
+    simulations_limit:expectedLimit,
+    simulations_used:Number(user.simulations_used||0),
+    is_active:isActive,
+    can_login:true,
+    concurrent_user_limit:totalUsers,
+    role:user.role||'staff',
+    updated_at:now
+  }).eq('id',user.id);
+
+  let fresh=await fetchSalonUsers(user.id);
+  let existingSubs=fresh.filter(x=>x.master_user_id===user.id).sort((a,b)=>String(a.created_at||'').localeCompare(String(b.created_at||''))||String(a.username||'').localeCompare(String(b.username||'')));
+  const neededSubs=Math.max(0,totalUsers-1);
+
+  if(existingSubs.length<neededSubs){
+    for(let i=existingSubs.length+2;i<=totalUsers;i++){
+      let suffix=i;
+      let uI=baseUsername+suffix;
+      let eI=uI+'@'+domain;
+      let tries=0;
+      while(allUsers.some(x=>x.username===uI||x.email===eI) && tries<8){
+        tries++;
+        uI=baseUsername+i+String.fromCharCode(96+tries);
+        eI=uI+'@'+domain;
+      }
+      const pwI=randomTempPw(10);
+      const {error}=await getSB().from('users').insert({
+        full_name:(user.full_name||user.salon_name||user.username||'Logic Style')+' (User '+i+')',
+        email:eI,
+        username:uI,
+        phone:user.phone||'',
+        salon_name:user.salon_name||user.full_name||'',
+        salon_address:user.salon_address||'',
+        salon_zip:user.salon_zip||'',
+        salon_city:user.salon_city||'',
+        plan,
+        requested_plan:plan,
+        requested_price:expectedPrice,
+        registration_type:user.registration_type||'test_signup',
+        approval_status:isActive?'approved':'pending',
+        payment_status:'not_required',
+        simulations_limit:0,
+        simulations_used:0,
+        is_active:isActive,
+        is_admin:false,
+        password_hash:pwI,
+        activation_code:null,
+        admin_note:'Shared salon user · Master: '+(user.username||user.email||user.id),
+        temp_password:pwI,
+        temp_password_expires_at:null,
+        must_change_password:true,
+        temp_password_sent_at:null,
+        role:'staff',
+        can_login:true,
+        master_user_id:user.id,
+        concurrent_user_limit:totalUsers,
+        registration_ip:null,
+        updated_at:now
+      });
+      if(error)throw new Error('Zusatzbenutzer '+i+' konnte nicht angelegt werden: '+error.message);
+    }
+  }
+
+  fresh=await fetchSalonUsers(user.id);
+  existingSubs=fresh.filter(x=>x.master_user_id===user.id).sort((a,b)=>String(a.created_at||'').localeCompare(String(b.created_at||''))||String(a.username||'').localeCompare(String(b.username||'')));
+  if(existingSubs.length>neededSubs){
+    const extras=existingSubs.slice(neededSubs).map(x=>x.id);
+    if(extras.length)await getSB().from('users').update({is_active:false,approval_status:'inactive',can_login:false,updated_at:now}).in('id',extras);
+  }
+  const keep=existingSubs.slice(0,neededSubs).map(x=>x.id);
+  if(keep.length)await getSB().from('users').update({
+    plan,
+    requested_plan:plan,
+    requested_price:expectedPrice,
+    is_active:isActive,
+    approval_status:isActive?'approved':'pending',
+    payment_status:'not_required',
+    concurrent_user_limit:totalUsers,
+    simulations_limit:0,
+    simulations_used:0,
+    role:'staff',
+    can_login:true,
+    updated_at:now
+  }).in('id',keep);
+
+  fresh=await fetchSalonUsers(user.id);
+  const activeUsers=fresh.filter(x=>(x.id===user.id||x.master_user_id===user.id)&&x.is_active!==false&&x.approval_status!=='inactive');
+  if(activeUsers.length!==totalUsers){
+    throw new Error(`Benutzer-Synchronisation unvollständig: ${activeUsers.length} von ${totalUsers}. E-Mail wurde nicht erstellt.`);
+  }
+  return activeUsers;
+}
+
+/* ══ USER ACTIONS ══ */
+async function approveUser(id){
+  const user=allUsers.find(x=>x.id===id);
+  if(!user)return toast('Kunde nicht gefunden',false);
+  const plan=user.plan||user.requested_plan||'probe';
+  if(!await lsAsk({danger:true,icon:'🔓',title:'Zugang aktivieren?',message:`Kunde: ${user.salon_name||user.full_name||user.email}\nPaket: ${planLabel(plan)}\n\n⚠️ Der Zugang wird OHNE Online-Zahlung freigeschaltet und Zugangsdaten werden erstellt.`,confirmLabel:'Ja, aktivieren'}))return;
+  try{
+    const simLimit=PLAN_LIMIT[plan]||20;
+    const totalUsers=planUsers(plan);
+    const baseUsername=cleanBaseName(user.salon_name||user.username||user.email.split('@')[0]);
+    const{data:upd,error:updErr}=await getSB().from('users').update({
+      is_active:true,
+      approval_status:'approved',
+      payment_status:'not_required',
+      simulations_limit:simLimit,
+      simulations_used:Number(user.simulations_used||0),
+      concurrent_user_limit:totalUsers,
+      username:user.username||baseUsername+'1'
+    }).eq('id',id).select('id');
+    if(updErr)throw updErr;
+    if(!upd||!upd.length){toast('⚠️ Aktivierung fehlgeschlagen — bitte als Admin (farhadjavanmardi@icloud.com) neu anmelden.',false);return}
+    await syncSubUsers(user,totalUsers,baseUsername,plan,true);
+    await loadAll();
+    toast('✅ Testzugang aktiviert — E-Mail wird vorbereitet…');
+    setTimeout(()=>prepareEmail(id,true),1200);
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function rejectUser(id){
+  if(!await lsAsk({danger:true,icon:'⛔',title:'Anfrage ablehnen?',message:'Die Anmeldung wird als „abgelehnt" markiert.',confirmLabel:'Ja, ablehnen'}))return;
+  try{const{data,error}=await getSB().from('users').update({is_active:false,approval_status:'rejected'}).eq('id',id).select('id');
+    if(error)throw error;
+    if(!data||!data.length){toast('⚠️ Keine Änderung — bitte als Admin (farhadjavanmardi@icloud.com) neu anmelden.',false);return}
+    await loadAll();toast('Abgelehnt')}
+  catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function toggleActive(id,state){
+  const u=allUsers.find(x=>x.id===id);
+  const who=u?(u.salon_name||u.full_name||u.email)+'\n\n':'';
+  if(!await lsAsk({danger:!!state,icon:state?'▶️':'⏸️',title:state?'Kunde aktivieren?':'Kunde deaktivieren?',message:who+(state?'⚠️ Der Zugang wird freigeschaltet (ohne Zahlung).':'Der Zugang wird gesperrt.'),confirmLabel:state?'Ja, aktivieren':'Ja, deaktivieren'}))return;
+  try{const{data,error}=await getSB().from('users').update({is_active:state,approval_status:state?'approved':'pending'}).eq('id',id).select('id');
+    if(error)throw error;
+    if(!data||!data.length){toast('⚠️ Keine Änderung — bitte als Admin (farhadjavanmardi@icloud.com) neu anmelden.',false);return}
+    await loadAll();toast(state?'Aktiviert':'Deaktiviert')}
+  catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function savePlan(id){
+  const user=allUsers.find(x=>x.id===id);if(!user)return toast('Kunde nicht gefunden',false);
+  const plan=byId(`plan-${id}`)?.value||'probe';
+  const newLimit=PLAN_LIMIT[plan]||20;
+  const totalUsers=planUsers(plan);
+  if(!await lsAsk({icon:'📦',title:'Paket ändern?',message:`Neues Paket: ${planLabel(plan)}\n${newLimit} Simulationen · ${totalUsers} Benutzer\n\nBudget und Benutzerzahl werden angepasst.`,confirmLabel:'Ja, ändern'}))return;
+  try{
+    const baseUsername=cleanBaseName(user.salon_name||user.username||user.email?.split('@')[0]);
+    await getSB().from('users').update({
+      plan,
+      requested_plan:plan,
+      requested_price:PLAN_PRICE[plan]||0,
+      payment_status:'not_required',
+      simulations_limit:newLimit,
+      concurrent_user_limit:totalUsers
+    }).eq('id',id);
+    await syncSubUsers({...user,plan},totalUsers,baseUsername,plan,!!user.is_active);
+    await loadAll();toast(`✅ Paket: ${planLabel(plan)} · ${newLimit} geteilte Simulationen · ${totalUsers} Benutzer`);
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function saveNote(id){
+  try{const value=byId(`note-${id}`)?.value||'';await getSB().from('users').update({admin_note:value}).eq('id',id);toast('Notiz gespeichert')}
+  catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function topUp(id,amount){
+  const user=allUsers.find(x=>x.id===id);if(!user)return;
+  const master=allUsers.find(x=>x.id===user.master_user_id)||user;
+  if(!await lsAsk({danger:true,icon:'🎁',title:'Gratis-Credits gutschreiben?',message:`+${amount} Simulationen GRATIS (ohne Bezahlung) für:\n${master.salon_name||master.email}\n\n⚠️ Nur für Kulanz/Test. Für BEZAHLTE Credits nutze „💰 Credit-Verkauf buchen".`,confirmLabel:'Ja, gutschreiben'}))return;
+  try{
+    const newLimit=Number(master.simulations_limit||0)+amount;
+    await getSB().from('users').update({simulations_limit:newLimit}).eq('id',master.id);
+    await loadAll();toast(`✅ +${amount} Credits · Neu: ${newLimit}`);
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function topUpCustom(id){
+  const amount=Number(byId(`topup-custom-${id}`)?.value||0);
+  if(!amount||amount<1){toast('Ungültiger Wert',false);return}
+  await topUp(id,amount);
+}
+
+async function resetCredits(id){
+  if(!await lsAsk({danger:true,icon:'🔄',title:'Credits zurücksetzen?',message:'Verbrauch wird auf 0 gesetzt und das Limit auf den Paketwert zurückgesetzt.',confirmLabel:'Ja, zurücksetzen'}))return;
+  try{
+    const user=allUsers.find(x=>x.id===id);if(!user)return;
+    const master=allUsers.find(x=>x.id===user.master_user_id)||user;
+    const plan=master.plan||'probe';const newLimit=PLAN_LIMIT[plan]||20;
+    await getSB().from('users').update({simulations_used:0,simulations_limit:newLimit}).eq('id',master.id);
+    await loadAll();toast('✅ Credits zurückgesetzt auf '+newLimit);
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function deleteUser(id){
+  const _du=allUsers.find(x=>x.id===id);
+  if(!await lsAsk({danger:true,icon:'🗑️',title:'Kunde wirklich löschen?',message:(_du?(_du.salon_name||_du.full_name||_du.email)+'\n\n':'')+'Alle Haupt- und Zusatzbenutzer sowie zugehörige Daten werden UNWIDERRUFLICH gelöscht.',confirmLabel:'Ja, löschen'}))return;
+  try{
+    const ids=[id,...allUsers.filter(x=>x.master_user_id===id).map(x=>x.id)];
+    // sessions + credit_transactions werden per FK CASCADE gelöscht, simulations per SET NULL.
+    // admin_notifications hat keine FK → explizit löschen.
+    await getSB().from('admin_notifications').delete().in('user_id',ids);
+    const{data:del,error}=await getSB().from('users').delete().in('id',ids).select('id');
+    if(error)throw error;
+    if(!del||!del.length){toast('⚠️ Nichts gelöscht — bitte als Admin (farhadjavanmardi@icloud.com) neu anmelden.',false);return}
+    await loadAll();toast('✅ Kunde gelöscht ('+del.length+')');
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function killSession(id){
+  if(!await lsAsk({icon:'🛑',title:'Sitzung beenden?',message:'Der Benutzer wird aus dieser Sitzung abgemeldet.',confirmLabel:'Ja, beenden'}))return;
+  try{await getSB().from('sessions').delete().eq('id',id);await loadAll();toast('Sitzung beendet')}
+  catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function killAllSessions(){
+  if(!await lsAsk({danger:true,icon:'🛑',title:'ALLE Sitzungen beenden?',message:'Alle aktiven Benutzer werden sofort abgemeldet.',confirmLabel:'Ja, alle beenden'}))return;
+  try{await getSB().from('sessions').delete().neq('id','00000000-0000-0000-0000-000000000000');await loadAll();toast('Alle Sitzungen beendet')}
+  catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function deleteNotif(id){
+  try{await getSB().from('admin_notifications').delete().eq('id',id);await loadAll()}
+  catch(e){toast('Fehler: '+e.message,false)}
+}
+
+async function markAllRead(){
+  try{await getSB().from('admin_notifications').update({read_at:new Date().toISOString()}).is('read_at',null);await loadAll();toast('Alle als gelesen markiert')}
+  catch(e){toast('Fehler: '+e.message,false)}
+}
+
+/* ══ EMAIL GENERATION ══ */
+async function prepareEmail(id,skipConfirm){
+  const selectedUser=allUsers.find(x=>x.id===id);
+  if(!selectedUser)return toast('Kunde nicht gefunden',false);
+  if(!skipConfirm&&!await lsAsk({icon:'✉️',title:'Zugangsdaten erstellen?',message:'Für alle Benutzer dieses Salons werden neue Einmal-Passwörter gesetzt und eine Zugangs-E-Mail vorbereitet.',confirmLabel:'Ja, erstellen'}))return;
+  const masterId=selectedUser.master_user_id||selectedUser.id;
+  let user=allUsers.find(x=>x.id===masterId)||selectedUser;
+  const plan=user.plan||user.requested_plan||'probe';
+  const totalUsers=planUsers(plan);
+  const simLimit=PLAN_LIMIT[plan]||Number(user.simulations_limit||20);
+  const softwareAccess=getSoftwareAccess(user);
+  const planName=planLabel(plan);
+
+  try{
+    const baseUsername=cleanBaseName(user.username||user.salon_name||user.full_name||user.email||'logicstyle');
+    await syncSubUsers(user,totalUsers,baseUsername,plan,true);
+
+    let freshUsers=await fetchSalonUsers(masterId);
+    user=freshUsers.find(x=>x.id===masterId)||user;
+    let salonUsers=freshUsers.filter(x=>!x.is_admin&&(x.id===masterId||x.master_user_id===masterId)&&x.is_active!==false&&x.approval_status!=='inactive');
+    salonUsers.sort((a,b)=>Number(a.master_user_id?1:0)-Number(b.master_user_id?1:0)||String(a.created_at||'').localeCompare(String(b.created_at||''))||String(a.username||'').localeCompare(String(b.username||'')));
+
+    if(salonUsers.length!==totalUsers){
+      throw new Error(`Nur ${salonUsers.length} von ${totalUsers} Benutzern gefunden. E-Mail wurde gestoppt, damit kein falscher Zugang verschickt wird.`);
+    }
+
+    const expires=new Date(Date.now()+72*60*60*1000).toISOString();
+    const sentAt=new Date().toISOString();
+    const loginData=[];
+    for(const u of salonUsers){
+      const pw=randomTempPw(10);
+      const {error}=await getSB().from('users').update({temp_password:pw,password_hash:pw,temp_password_expires_at:expires,temp_password_sent_at:sentAt,must_change_password:true,payment_status:'not_required'}).eq('id',u.id);
+      if(error)throw new Error('Passwort für '+(u.username||u.email)+' konnte nicht gesetzt werden: '+error.message);
+      loginData.push({email:u.email,username:u.username||u.email.split('@')[0],pw,num:loginData.length+1});
+    }
+
+    const softwareLinks=buildSoftwareLinks(user);
+    const loginBlock=loginData.map(u=>`Benutzer ${u.num}:
+  Benutzername: ${u.username}
+  Passwort (einmalig): ${u.pw}`).join('\n\n');
+
+    const body=`Hallo ${user.full_name||user.salon_name||''},
+
+Ihr Logic Style Testzugang wurde freigeschaltet.
+
+Dies ist eine Testversion ohne Online-Zahlung. Die Freischaltung wurde manuell im Admin Panel bestätigt.
+
+Paket: ${planName}
+Geteiltes Simulationsbudget: ${simLimit} Simulationen
+Benutzer: ${loginData.length} von ${totalUsers}
+Software-Zugang: ${softwareChoiceLabel(user)}
+
+Wichtig zum Budget:
+Alle Benutzer dieses Salons greifen auf dasselbe Simulationsbudget zu. Wenn ein Benutzer eine Simulation erzeugt, wird sie vom gemeinsamen Budget von ${simLimit} Simulationen abgezogen.
+
+Software-Zugang:
+${softwareLinks}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ZUGANGSDATEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${loginBlock}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ Wichtig:
+• Das Passwort ist nur einmal verwendbar.
+• Bitte nach dem ersten Login ein neues Passwort setzen.
+• Das temporäre Passwort gilt 72 Stunden.
+• Diese Zugangsdaten sind für die interne Nutzung im Salon gedacht.
+
+Viele Grüße
+Logic Style Team
+logicstyle-salon.de
+Support: ${SENDER_EMAIL}`;
+
+    preparedMail={
+      to:user.email,
+      subject:`Ihr Logic Style ${planName}-Testzugang wurde freigeschaltet`,
+      body
+    };
+    byId('mailTo').textContent=user.email;
+    byId('mailSubject').textContent=preparedMail.subject;
+    byId('mailBody').value=body;
+    byId('mailModal').classList.add('open');
+    document.body.style.overflow='hidden';
+    toast(`✅ E-Mail vorbereitet · ${loginData.length} von ${totalUsers} Benutzern`);
+    await loadAll();
+  }catch(e){toast('Fehler: '+e.message,false)}
+}
+
+function closeMailModal(){byId('mailModal').classList.remove('open');document.body.style.overflow=''}
+async function copyMailBody(){try{await navigator.clipboard.writeText(byId('mailBody').value);toast('Nachricht kopiert')}catch(e){toast('Fehler beim Kopieren',false)}}
+function openGmail(){
+  if(!preparedMail)return;
+  const href=`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(preparedMail.to)}&su=${encodeURIComponent(preparedMail.subject)}&body=${encodeURIComponent(byId('mailBody').value)}`;
+  window.open(href,'_blank');
+}
+
+/* ══ ADD USER ══ */
+function updateNuFields(){
+  const plan=byId('nuPlan')?.value||'pro';
+  const inp=byId('nuSimLimit');if(inp)inp.value=PLAN_LIMIT[plan]||200;
+}
+
+function previewUsers(){
+  const plan=byId('nuPlan')?.value||'probe';
+  const slots=planUsers(plan);
+  const salon=(byId('nuSalon')?.value||'Salon').trim();
+  const prev=byId('nuPreview');if(!prev)return;
+  let html=`<div style="background:var(--ok-bg);border:1px solid var(--ok-border);border-radius:12px;padding:14px;font-size:12px">
+    <div style="font-weight:700;color:var(--ok);margin-bottom:10px">Es werden ${slots} User angelegt:</div>`;
+  for(let i=1;i<=slots;i++){
+    const base=salon.toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,'');
+    html+=`<div style="padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-family:'Space Mono',monospace;font-size:11px">
+      User ${i}: <span style="color:var(--blue)">${base}${i}</span> · PW: <span style="color:#f59e0b">${randomTempPw()}</span></div>`;
+  }
+  html+=`<div style="margin-top:8px;font-size:10px;color:var(--muted)">Echte Passwörter werden beim Anlegen generiert</div></div>`;
+  prev.innerHTML=html;prev.style.display='block';
+}
+
+async function addUser(){
+  const name=byId('nuName')?.value.trim();
+  const email=byId('nuEmail')?.value.trim().toLowerCase();
+  const phone=byId('nuPhone')?.value.trim();
+  const salon=byId('nuSalon')?.value.trim();
+  const addr=byId('nuAddress')?.value.trim();
+  const zip=byId('nuZip')?.value.trim();
+  const city=byId('nuCity')?.value.trim();
+  const plan=byId('nuPlan')?.value||'pro';
+  const simLimit=Math.max(1,Number(byId('nuSimLimit')?.value||PLAN_LIMIT[plan]||200));
+  const isActive=byId('nuActive')?.value==='true';
+  const softwareChoice=normSoftwareChoice(byId('nuSoftware')?.value)||'kombiniert';
+  const slots=planUsers(plan);
+  const msg=byId('addMsg');
+  if(!name||!email){msg.style.color='var(--danger)';msg.textContent='Name und E-Mail sind Pflichtfelder.';return}
+  if(!await lsAsk({danger:isActive,icon:'➕',title:'Kunde anlegen?',message:`${slots} Benutzer für „${salon||name}"\nPaket: ${planLabel(plan)} · ${simLimit} Simulationen\nStatus: ${isActive?'⚠️ SOFORT AKTIV (ohne Zahlung)':'Pending (nicht aktiv)'}`,confirmLabel:'Ja, anlegen'}))return;
+  msg.style.color='var(--muted)';msg.textContent=`Lege ${slots} User an…`;
+  try{
+    const{data:emailExists}=await getSB().from('users').select('id').eq('email',email).maybeSingle();
+    if(emailExists){msg.style.color='var(--danger)';msg.textContent='E-Mail bereits registriert.';return}
+    const pw1=randomTempPw(10);
+    const base=cleanBaseName(salon||name);
+    const{data:master,error:e1}=await getSB().from('users').insert({full_name:name+(slots>1?' (User 1)':''),email,username:base+'1',password_hash:pw1,temp_password:pw1,must_change_password:true,phone,salon_name:salon,salon_address:addr,salon_zip:zip,salon_city:city,plan,requested_plan:plan,requested_price:PLAN_PRICE[plan]||0,registration_type:'admin_created',simulations_limit:simLimit,simulations_used:0,is_active:isActive,is_admin:false,approval_status:isActive?'approved':'pending',payment_status:'not_required',concurrent_user_limit:slots,master_user_id:null,role:'staff',can_login:true,admin_note:'Software-Zugang: '+softwareChoice}).select().single();
+    if(e1)throw new Error('User 1: '+e1.message);
+    const activeUsers=await syncSubUsers(master,slots,base,plan,true);
+    if(simLimit!==(PLAN_LIMIT[plan]||20))await getSB().from('users').update({simulations_limit:simLimit}).eq('id',master.id);
+    if(!isActive){const ids=activeUsers.map(x=>x.id);await getSB().from('users').update({is_active:false,approval_status:'pending'}).in('id',ids);}
+    activeUsers.sort((a,b)=>Number(a.master_user_id?1:0)-Number(b.master_user_id?1:0)||String(a.created_at||'').localeCompare(String(b.created_at||'')));
+    const expires=new Date(Date.now()+72*60*60*1000).toISOString();
+    const sentAt=new Date().toISOString();
+    const loginData=[];
+    for(const u of activeUsers){
+      const pw=randomTempPw(10);
+      const{error:pwErr}=await getSB().from('users').update({temp_password:pw,password_hash:pw,temp_password_expires_at:expires,temp_password_sent_at:sentAt,must_change_password:true,payment_status:'not_required'}).eq('id',u.id);
+      if(pwErr)throw new Error('Passwort für '+(u.username||u.email)+' konnte nicht gesetzt werden: '+pwErr.message);
+      loginData.push({email:u.email,username:u.username||u.email.split('@')[0],pw,num:loginData.length+1});
+    }
+
+    const currentPlanLabel=planLabel(plan);
+    const softwareLinks=buildSoftwareLinks({software_choice:softwareChoice});
+    const loginBlock=loginData.map(u=>`Benutzer ${u.num}:
+  Benutzername: ${u.username}
+  Passwort (einmalig): ${u.pw}`).join('\n\n');
+
+    preparedMail={
+      to:email,
+      subject:`Ihr Logic Style ${currentPlanLabel}-Testzugang wurde freigeschaltet`,
+      body:`Hallo ${name},
+
+Ihr Logic Style Testzugang wurde freigeschaltet.
+
+Dies ist eine Testversion ohne Online-Zahlung. Die Freischaltung wurde manuell im Admin Panel angelegt.
+
+Paket: ${currentPlanLabel}
+Geteiltes Simulationsbudget: ${simLimit} Simulationen
+Benutzer: ${loginData.length} von ${slots}
+Software-Zugang: ${softwareChoiceLabel({software_choice:softwareChoice})}
+
+Wichtig zum Budget:
+Alle Benutzer dieses Salons greifen auf dasselbe Simulationsbudget zu. Wenn ein Benutzer eine Simulation erzeugt, wird sie vom gemeinsamen Budget von ${simLimit} Simulationen abgezogen.
+
+Software-Zugang:
+${softwareLinks}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ZUGANGSDATEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${loginBlock}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ Wichtig:
+• Das Passwort ist nur einmal verwendbar.
+• Bitte nach dem ersten Login ein neues Passwort setzen.
+• Das temporäre Passwort gilt 72 Stunden.
+• Diese Zugangsdaten sind für die interne Nutzung im Salon gedacht.
+
+Viele Grüße
+Logic Style Team
+logicstyle-salon.de
+Support: ${SENDER_EMAIL}`
+    };
+
+    ['nuName','nuEmail','nuPhone','nuSalon','nuAddress','nuZip','nuCity'].forEach(i=>{const el=byId(i);if(el)el.value=''});
+    byId('nuPreview').style.display='none';
+    msg.style.color='var(--ok)';msg.textContent='✅ '+slots+' User angelegt';
+    await loadAll();
+    byId('mailTo').textContent=email;
+    byId('mailSubject').textContent=preparedMail.subject;
+    byId('mailBody').value=preparedMail.body;
+    byId('mailModal').classList.add('open');
+    document.body.style.overflow='hidden';
+  }catch(e){msg.style.color='var(--danger)';msg.textContent='Fehler: '+e.message}
+}
+</script>
+
+<div id="ls-consent">
+  <div class="lsci">
+    <div class="lsct"><strong>Cookies</strong> — Technisch notwendig. <a href="Datenschutz.html">Datenschutz</a> · <a href="Impressum.html">Impressum</a></div>
+    <div class="lscbtns">
+      <button class="lscd" onclick="lsCon('decline')">Ablehnen</button>
+      <button class="lsca" onclick="lsCon('accept')">Akzeptieren ✓</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){if(!localStorage.getItem('ls_consent'))document.getElementById('ls-consent').classList.add('show')})();
+function lsCon(c){localStorage.setItem('ls_consent',c);document.getElementById('ls-consent').classList.remove('show')}
+</script>
+</body>
+</html>
