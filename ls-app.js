@@ -232,10 +232,34 @@ async function sendCreditRequest(type,extra){
       payload:{...extra,amount:amount,payment_ref:ref,current_plan:master.plan||currentUser.plan||null,remaining:getRemaining(),salon_name:master.salon_name||null,email:master.email||currentUser.email||null}
     });
     if(error)throw error;
+    // Revolut zuerst: automatische Gutschrift/Freischaltung nach Zahlung
+    const rev=isUp
+      ? await createRevolutOrder('plan',master.id,{plan:extra.requested_plan})
+      : await createRevolutOrder('credit',master.id,{pack_amount:extra.pack_amount});
+    if(rev&&rev.checkout_url){showRevolutPayment(label,amountLabel,rev.checkout_url);return;}
+    // Fallback: manueller QR (bis Revolut-Key gesetzt ist)
     showCreditPayment(label,amountLabel,ref);
   }catch(e){
     document.getElementById('coBox').insertAdjacentHTML('beforeend',`<div style="color:#f87171;font-size:11px;margin-top:8px">❌ Anfrage fehlgeschlagen: ${e.message||e}. Bitte kontaktieren Sie uns direkt.</div>`);
   }
+}
+
+/* Revolut-Order erstellen — gibt {checkout_url,...} oder null (nicht konfiguriert). */
+async function createRevolutOrder(purpose,userId,extra){
+  try{
+    const r=await fetch(`${SB_URL}/functions/v1/revolut-create-order`,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify({purpose,user_id:userId,...(extra||{})})});
+    const d=await r.json().catch(()=>({}));
+    return (r.ok&&d.ok&&d.checkout_url)?d:null;
+  }catch(e){return null;}
+}
+function showRevolutPayment(label,amountLabel,url){
+  const box=document.getElementById('coBox');if(!box)return;
+  box.innerHTML=`
+    <div class="co-head">💳 Mit Revolut bezahlen</div>
+    <div class="co-sub">${label} · <b style="color:#fff">${amountLabel}</b></div>
+    <a href="${url}" target="_blank" rel="noopener" class="co-up-btn" style="display:block;text-align:center;text-decoration:none;margin:16px 0 6px">Jetzt bezahlen →</a>
+    <div class="co-note">✅ Nach erfolgreicher Zahlung werden deine Credits <b>automatisch</b> freigeschaltet — meist innerhalb weniger Sekunden. Kein Warten auf manuelle Freischaltung.</div>
+    <button class="co-close" onclick="closeCreditOffer()">Schließen</button>`;
 }
 
 function showCreditPayment(label,amountLabel,ref){
