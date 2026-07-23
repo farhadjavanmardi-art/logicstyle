@@ -194,7 +194,104 @@
     "Beispiele ansehen": "View examples",
     "Beispiele": "Examples",
     "Warum Logic Style?": "Why Logic Style?",
-    "Fotomodell werden": "Become a photo model"
+    "Fotomodell werden": "Become a photo model",
+
+    /* ============ Software (Shells Logic_*.html) ============ */
+    "— Technisch notwendig.": "— Technically necessary.",
+    "10 – 30 Sekunden": "10 – 30 seconds",
+    "10 – 30 Sekunden…": "10 – 30 seconds…",
+    "AUFNAHMEWINKEL WÄHLEN": "CHOOSE CAMERA ANGLE",
+    "BEHANDLUNGSINTENSITÄT": "TREATMENT INTENSITY",
+    "Damen": "Women",
+    "Herren": "Men",
+    "E-Mail-Adresse": "Email address",
+    "Echte Simulationen aus Logic Style": "Real simulations from Logic Style",
+    "Foto": "Photo",
+    "Fotorealistische KI-Simulation für Haare, Bart, Farbe und Behandlung": "Photorealistic AI simulation for hair, beard, color and treatment",
+    "Für die beste Simulation bitte diese Anleitung befolgen:": "For the best simulation please follow this guide:",
+    "Galerie": "Gallery",
+    "Haare · Farbe · Bart · KI-Software": "Hair · Color · Beard · AI Software",
+    "Kamera": "Camera",
+    "Klinik-Login": "Login",
+    "Logic Style · Damen": "Logic Style · Women",
+    "Logic Style · KI-Software": "Logic Style · AI Software",
+    "Logic Style · Nur für verifizierte Kunden": "Logic Style · For verified customers only",
+    "NACHHER": "AFTER",
+    "VORHER": "BEFORE",
+    "Neues Passwort eingeben — mindestens 6 Zeichen.": "Enter a new password — at least 6 characters.",
+    "Passwort": "Password",
+    "Passwort vergessen?": "Forgot password?",
+    "Winkel wählen und Foto hochladen": "Choose angle and upload photo",
+    "Wird geladen…": "Loading…",
+    "und starten": "and start",
+    "• Gegenlicht (Fenster hinter dem Kunden) • Unscharfe Fotos • Brille • Zu dunkle Aufnahmen • Extreme Nahaufnahmen • Starkes Make-up oder Filter": "• Backlight (window behind the customer) • Blurry photos • Glasses • Too dark shots • Extreme close-ups • Heavy make-up or filters",
+    "→ Anmelden": "→ Sign in",
+    "① Frontansicht": "① Front view",
+    "② Dreiviertelansicht (45°)": "② Three-quarter view (45°)",
+    "③ Keine Rückansicht nötig": "③ No back view needed",
+    "▸ Simulation starten": "▸ Start simulation",
+    "✓ Passwort speichern": "✓ Save password",
+    "✓ Verstanden": "✓ Understood",
+    "✨ Simulation": "✨ Simulation",
+    "❌ BITTE VERMEIDEN": "❌ PLEASE AVOID",
+    "⬇ Auf Gerät": "⬇ To device",
+    "👤 Für Bart reicht Front und 45° links/rechts · 🔙 Für Haare, Farbe und Behandlung ist auch Rückansicht sinnvoll · ✨ Haare, Ansatz, Längen und Konturen sichtbar halten": "👤 For beards, front and 45° left/right is enough · 🔙 For hair, color and treatment a back view is also useful · ✨ Keep hair, roots, lengths and contours visible",
+    "📏 50–70 cm Abstand · 📐 Augenhöhe · 💡 Gleichmäßiges Licht · 👤 Kopf/Haar/Bart vollständig · 🎯 Neutraler Hintergrund": "📏 50–70 cm distance · 📐 Eye level · 💡 Even light · 👤 Head/hair/beard fully visible · 🎯 Neutral background",
+    "📐 45-Grad-Winkel · 💡 Gutes Licht auf Haar oder Bart · 🎯 Kontur und Länge sichtbar": "📐 45-degree angle · 💡 Good light on hair or beard · 🎯 Contour and length visible",
+    "📸 Foto-Anleitung": "📸 Photo guide",
+    "🔑 Passwort ändern": "🔑 Change password",
+    "🚀 Dieses Modell simulieren": "🚀 Simulate this model",
+    /* Software Platzhalter / Titel */
+    "E-Mail oder Benutzername": "Email or username",
+    "Modell oder Service suchen…": "Search model or service…",
+    "Neues Passwort": "New password",
+    "Passwort bestätigen": "Confirm password",
+    "Passwort eingeben…": "Enter password…",
+    "Abmelden": "Log out",
+    "Foto-Tipps": "Photo tips",
+
+    /* ============ Software (ls-app.js, dynamisch) ============ */
+    "✏️ Modell bearbeiten": "✏️ Edit model",
+    "Noch keine Beispielbilder": "No example images yet",
+    "Auflösung zu niedrig": "Resolution too low",
+    "Bart Fade & Übergang": "Beard fade & transition",
+    "Bildformat ungewöhnlich — bitte ein klares Salonfoto verwenden": "Unusual image format — please use a clear salon photo",
+    "Bitte verwenden Sie ein stärkeres Passwort: mindestens 10 Zeichen, Groß- und Kleinbuchstaben, Zahl und Sonderzeichen.": "Please use a stronger password: at least 10 characters, upper and lower case, a number and a special character.",
+    "Bitte zuerst einen Winkel wählen.": "Please choose an angle first.",
+    "Bitte zuerst ein Kundenfoto hochladen.": "Please upload a customer photo first.",
+    "Keine Simulationen mehr — jetzt Credits kaufen oder Paket upgraden.": "No simulations left — buy credits now or upgrade your package.",
+    "Kein Bild zurückgegeben.": "No image returned.",
+    "Keratin & Glätten": "Keratin & straightening",
+    "Keratin · Glätten · Dauerwelle · Pflege": "Keratin · Straightening · Perm · Care",
+    "Natürlich": "Natural",
+    "Nur Admins können in die Galerie speichern": "Only admins can save to the gallery",
+    "Passwörter stimmen nicht überein.": "Passwords do not match.",
+    "Supabase Function hat keinen Erfolg zurückgegeben.": "The function did not return success.",
+    "Temporäres Passwort abgelaufen.": "Temporary password expired.",
+    "Ungültiges Bildformat. Bitte Foto erneut hochladen.": "Invalid image format. Please upload the photo again.",
+    "⏳ Wird geprüft…": "⏳ Checking…",
+    "✅ Als Download gespeichert": "✅ Saved as download",
+    "✅ Auf Gerät gespeichert": "✅ Saved to device",
+    "✅ Erfolgreich in Galerie gespeichert": "✅ Successfully saved to gallery",
+    "✅ Falls ein Konto existiert, wurde eine E-Mail mit einem temporären Passwort gesendet. Bitte prüfe dein Postfach.": "✅ If an account exists, an email with a temporary password has been sent. Please check your inbox.",
+    "✅ In Galerie": "✅ In gallery",
+    "✅ In Photos gespeichert": "✅ Saved to Photos",
+    "✅ Passwort geändert!": "✅ Password changed!",
+    "⤓ oder Foto per Drag & Drop hier ablegen": "⤓ or drop a photo here via drag & drop",
+    "💳 Credit-Kauf-Anfrage": "💳 Credit purchase request",
+    "📁 In Galerie": "📁 In gallery",
+    "📈 Upgrade-Anfrage": "📈 Upgrade request",
+    "📸 In Photos speichern": "📸 Save to Photos",
+    "📸 Machen Sie das Foto aus einem beliebigen Winkel — vorne, hinten, seitlich oder dazwischen — und klicken Sie einfach auf „Simulation starten\". Die KI erkennt den Winkel automatisch und simuliert genau diesen Winkel.": "📸 Take the photo from any angle — front, back, side or in between — and simply click „Start simulation“. The AI detects the angle automatically and simulates exactly that angle.",
+
+    /* ============ Kunden-Einwilligung (Consent-Dialog) ============ */
+    "Einwilligung des Kunden": "Customer consent",
+    "Für die Simulation wird das Foto des Kunden verarbeitet und zur KI-Bildgenerierung an einen Dienstleister (Google, Verarbeitung ggf. in den USA) übermittelt. Bitte bestätigen Sie, dass Ihr Kunde": "For the simulation the customer's photo is processed and transmitted to a service provider (Google, processing possibly in the USA) for AI image generation. Please confirm that your customer",
+    "der KI-Verarbeitung seines Fotos zugestimmt": "has consented to the AI processing of their photo",
+    "hat.": "has done so.",
+    "Der Kunde hat der Verarbeitung seines Fotos zur KI-Simulation zugestimmt. Details:": "The customer has consented to the processing of their photo for AI simulation. Details:",
+    "Abbrechen": "Cancel",
+    "Bestätigen & starten": "Confirm & start"
   };
 
   var ATTRS = ['placeholder', 'title', 'aria-label', 'alt'];
@@ -320,9 +417,9 @@
     b.id = 'lsLangToggle';
     b.type = 'button';
     b.setAttribute('aria-label', 'Sprache umschalten / Switch language');
-    b.style.cssText = 'position:fixed;top:12px;right:12px;z-index:100001;width:44px;height:44px;border-radius:50%;' +
-      'background:rgba(0,0,0,.72);color:#fff;border:1px solid rgba(255,31,110,.55);font:700 13px/1 system-ui,sans-serif;' +
-      'cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,.4)';
+    b.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:100001;width:46px;height:46px;border-radius:50%;' +
+      'background:rgba(0,0,0,.78);color:#fff;border:1px solid rgba(255,31,110,.6);font:700 14px/1 system-ui,sans-serif;' +
+      'cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 6px 20px rgba(0,0,0,.45)';
     b.onclick = function () { setLang(currentLang() === 'en' ? 'de' : 'en'); };
     (document.body || document.documentElement).appendChild(b);
   }
