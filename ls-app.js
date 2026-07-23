@@ -1357,19 +1357,57 @@ function onBatchPhoto(input){
   r.onload=e=>{_batchPhoto=e.target.result;const p=document.getElementById('batchPreview');if(p){p.src=_batchPhoto;p.style.display='block';}renderBatchPanel();};
   r.readAsDataURL(f);
 }
+const BATCH_LABELS={male:'Herren',beard:'Bart',female:'Damen',color:'Farbe',treatment:'Behandlung'};
+/* Sammelt alle Modelle/Services des aktuellen Bereichs für den Batch — genau das,
+   was renderCurrent für diesen Modus + Geschlecht anzeigt. withPrompts=true baut
+   zusätzlich den KI-Prompt (identisch zum normalen Simulationspfad). */
+function _batchCollect(withPrompts){
+  const mode=currentMode;const out=[];
+  if(mode==='female'||mode==='male'||mode==='beard'){
+    const hairType=mode==='beard'?'beard and facial hair':'hair on the head';
+    let modifier='';
+    if(mode==='beard'){const it=MUSTACHE_STYLES.find(x=>x.id===(_selectedMustache||'natural'));if(it)modifier=`Schnurrbart / Mustache: ${it.name}. ${it.prompt}`;}
+    (data[mode]?.models||[]).forEach(m=>{
+      if(_deletedModels.has(canonKey(mode,m.id)))return;
+      const name=effectiveModelName(mode,m.id,m.name);
+      const o={id:m.id,name:name};
+      if(withPrompts){const spec=effectiveModelPrompt(mode,m.id,englishSpecs[mode]?.[m.id]||englishSpecs[m.id]||name);o.prompt=buildHairPrompt(spec,hairType,'360°',modifier);}
+      out.push(o);
+    });
+    return out;
+  }
+  if(mode==='color'||mode==='treatment'){
+    const canonMode=mode==='treatment'?'behandlung':mode;
+    const sections=(mode==='color'?STYLE_FARBE_SECTIONS:STYLE_BEHANDLUNG_SECTIONS).filter(s=>{
+      if(s.title==='Dauerwelle Damen')return currentGender==='female';
+      if(s.title==='Dauerwelle Herren')return currentGender==='male';
+      return true;
+    });
+    sections.forEach(sec=>{(sec.items||[]).forEach(it=>{
+      const id=it.id||serviceIdFromVal(it.val);
+      if(_deletedModels.has(`${canonMode}|${String(id)}`))return;
+      const name=effectiveModelName(mode,id,it.name);
+      const o={id:id,name:name};
+      if(withPrompts){const val=effectiveModelPrompt(mode,id,it.val);const hairType=/beard hair only|bartfarbe|beard color|salt-and-pepper beard/i.test(val)?'beard and facial hair':'hair on the head';o.prompt=buildColorPrompt(val,hairType,'360°','');}
+      out.push(o);
+    })});
+    return out;
+  }
+  return out;
+}
 function renderBatchPanel(){
   const host=document.getElementById('batchPanel');if(!host)return;
-  const models=data[currentMode]?.models;
-  if(!isImageSaveAllowed()||!models){host.style.display='none';return;}
+  const supported=['female','male','beard','color','treatment'].includes(currentMode);
+  if(!isImageSaveAllowed()||!supported){host.style.display='none';return;}
   host.style.display='block';
-  const active=models.filter(m=>!_deletedModels.has(canonKey(currentMode,m.id)));
-  const cnt=document.getElementById('batchCount');if(cnt)cnt.textContent=String(active.length);
+  const list=_batchCollect(false);
+  const cnt=document.getElementById('batchCount');if(cnt)cnt.textContent=String(list.length);
   const lbl=document.getElementById('batchModeLbl');
-  if(lbl)lbl.textContent=currentMode==='male'?'Herren':currentMode==='beard'?'Bart':currentMode==='female'?'Damen':currentMode;
+  if(lbl)lbl.textContent=BATCH_LABELS[currentMode]||currentMode;
 }
 function stopBatch(){_batchStop=true;_batchSetStatus('⏹ Wird gestoppt…');}
 async function _batchSaveGallery(mode,modelId,modelName,beforeB64,afterB64){
-  const segMap={female:'female/hair_cut',male:'male/hair_cut',beard:'male/beard_color'};
+  const segMap={female:'female/hair_cut',male:'male/hair_cut',beard:'male/beard_color',color:'color/service',treatment:'behandlung/service'};
   const seg=segMap[mode]||'male/hair_cut';const ts=Date.now();
   const beforeUrl=await uploadBase64ToStorage(beforeB64,`gallery/${seg}/${modelId}/${ts}_before`);
   const afterUrl=await uploadBase64ToStorage(afterB64,`gallery/${seg}/${modelId}/${ts}_after`);
@@ -1387,31 +1425,27 @@ async function startBatch(){
   await touchSession();
   if(!currentSessionId){alert('Sitzung abgelaufen. Bitte neu anmelden und Batch erneut starten.');return;}
   const mode=currentMode;
-  const models=(data[mode]?.models||[]).filter(m=>!_deletedModels.has(canonKey(mode,m.id)));
-  if(!models.length){alert('Für diesen Bereich gibt es keine Modelle.');return;}
+  const list=_batchCollect(true);
+  if(!list.length){alert('Für diesen Bereich gibt es keine Modelle.');return;}
   if(!_batchPhoto){alert('Bitte zuerst ein Foto hochladen.');return;}
   const photoParts=_batchPhoto.match(/^data:([^;]+);base64,(.+)$/);
   if(!photoParts){alert('Ungültiges Bildformat.');return;}
-  if(!confirm(`Batch startet für ${models.length} ${mode==='male'?'Herren':mode==='beard'?'Bart':mode==='female'?'Damen':mode}-Modelle.\nJede Generierung verbraucht 1 Simulation/Credit. Fortfahren?`))return;
+  if(!confirm(`Batch startet für ${list.length} ${BATCH_LABELS[mode]||mode}-Modelle.\nJede Generierung verbraucht 1 Simulation/Credit. Fortfahren?`))return;
   const imageMime=photoParts[1], imageData=photoParts[2];
-  const hairType=mode==='beard'?'beard and facial hair':'hair on the head';
   const skipExisting=document.getElementById('batchSkip')?.checked;
-  let modifierText='';
-  if(mode==='beard'){const it=MUSTACHE_STYLES.find(x=>x.id===(_selectedMustache||'natural'));if(it)modifierText=`Schnurrbart / Mustache: ${it.name}. ${it.prompt}`;}
   _batchRunning=true;_batchStop=false;
   const startBtn=document.getElementById('batchStart'),stopBtn=document.getElementById('batchStop');
   if(startBtn){startBtn.disabled=true;startBtn.textContent='⏳ Läuft…';}
   if(stopBtn)stopBtn.disabled=false;
   const progWrap=document.getElementById('batchProgWrap');if(progWrap)progWrap.style.display='block';
   const logEl=document.getElementById('batchLog');if(logEl)logEl.innerHTML='';
-  const total=models.length;let done=0,ok=0,fail=0,skip=0;
-  for(const m of models){
+  const total=list.length;let done=0,ok=0,fail=0,skip=0;
+  for(const m of list){
     if(_batchStop)break;
-    const name=effectiveModelName(mode,m.id,m.name);
+    const name=m.name;
     _batchSetStatus(`${done}/${total} · ${ok} ✓ · ${skip} übersprungen · ${fail} ✗ — aktuell: ${name}`);
     if(skipExisting&&(_galleryCounts[m.id]||0)>0){skip++;done++;_batchSetBar(done/total*100);_batchLog(`↷ ${name} (hat bereits ein Bild)`);continue;}
-    const spec=effectiveModelPrompt(mode,m.id,englishSpecs[mode]?.[m.id]||englishSpecs[m.id]||name);
-    const prompt=buildHairPrompt(spec,hairType,'360°',modifierText);
+    const prompt=m.prompt;
     try{
       await touchSession();
       const{data:fr,error}=await getSB().functions.invoke(IMAGE_FUNCTION_NAME,{body:{imageData,imageMime,prompt,meta:{sessionId:currentSessionId||null,userId:currentUser?.id||null,styleId:m.id,styleName:name,mode:mode,angle:'360°',intensity:null,batch:true}}});
