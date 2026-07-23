@@ -341,6 +341,8 @@
     "Wellig": "Wavy",
     "Lockig": "Curly",
     "Sehr lockig / Afro": "Very curly / Afro",
+    "Locken & Afro-Haar": "Curls & Afro Hair",
+    "Braut & Event": "Bridal & Event",
     "Nicht relevant": "Not relevant",
     "PFLICHT": "REQUIRED",
     "Nächste →": "Next →",
