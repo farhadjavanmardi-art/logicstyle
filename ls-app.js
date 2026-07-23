@@ -605,6 +605,7 @@ async function loadGalleryCounts(){
 
 function renderCurrent(){
   renderMustacheBar();
+  renderBatchPanel();
   if(currentMode==='color'){
     // فیلتر جنسیت: Dauerwelle Damen فقط زنان، Herren فقط مردان
     const secs=STYLE_FARBE_SECTIONS.filter(s=>{
@@ -1338,6 +1339,103 @@ async function saveToModels(){
     if(btn){btn.textContent='📁 In Galerie';btn.disabled=false;}
     if(statusEl){statusEl.style.display='block';statusEl.style.background='rgba(248,113,113,0.08)';statusEl.style.color='#f87171';statusEl.textContent='❌ Fehler: '+e.message;}
   }
+}
+
+/* ── BATCH-GENERIERUNG (nur Admin) — ein Foto durch alle Modelle eines Bereichs ── */
+let _batchPhoto=null, _batchRunning=false, _batchStop=false;
+function _batchSleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function _batchLog(msg,ok){
+  const el=document.getElementById('batchLog');if(!el)return;
+  const line=document.createElement('div');line.textContent=msg;line.style.color=ok?'#4ade80':(ok===false?'#f87171':'#cbd5e1');
+  el.insertBefore(line,el.firstChild);
+}
+function _batchSetStatus(msg){const el=document.getElementById('batchStatus');if(el)el.textContent=msg;}
+function _batchSetBar(pct){const el=document.getElementById('batchBar');if(el)el.style.width=Math.max(0,Math.min(100,pct))+'%';}
+function onBatchPhoto(input){
+  const f=input&&input.files&&input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{_batchPhoto=e.target.result;const p=document.getElementById('batchPreview');if(p){p.src=_batchPhoto;p.style.display='block';}renderBatchPanel();};
+  r.readAsDataURL(f);
+}
+function renderBatchPanel(){
+  const host=document.getElementById('batchPanel');if(!host)return;
+  const models=data[currentMode]?.models;
+  if(!isImageSaveAllowed()||!models){host.style.display='none';return;}
+  host.style.display='block';
+  const active=models.filter(m=>!_deletedModels.has(canonKey(currentMode,m.id)));
+  const cnt=document.getElementById('batchCount');if(cnt)cnt.textContent=String(active.length);
+  const lbl=document.getElementById('batchModeLbl');
+  if(lbl)lbl.textContent=currentMode==='male'?'Herren':currentMode==='beard'?'Bart':currentMode==='female'?'Damen':currentMode;
+}
+function stopBatch(){_batchStop=true;_batchSetStatus('⏹ Wird gestoppt…');}
+async function _batchSaveGallery(mode,modelId,modelName,beforeB64,afterB64){
+  const segMap={female:'female/hair_cut',male:'male/hair_cut',beard:'male/beard_color'};
+  const seg=segMap[mode]||'male/hair_cut';const ts=Date.now();
+  const beforeUrl=await uploadBase64ToStorage(beforeB64,`gallery/${seg}/${modelId}/${ts}_before`);
+  const afterUrl=await uploadBase64ToStorage(afterB64,`gallery/${seg}/${modelId}/${ts}_after`);
+  const{error}=await getSB().from('model_gallery').insert({
+    model_id:String(modelId),mode:mode,image_url:afterUrl,before_url:beforeUrl,after_url:afterUrl,
+    pair_label:modelName||String(modelId),review_status:'approved',is_public:true,customer_id:null,
+    sort_order:Math.floor(Date.now()/1000000)
+  });
+  if(error)throw new Error('model_gallery: '+error.message);
+}
+async function startBatch(){
+  if(_batchRunning)return;
+  if(!isImageSaveAllowed()){alert('Batch nur auf der Admin-Seite verfügbar.');return;}
+  if(!currentUser||!currentUser.is_admin){alert('Nur Admins können die Batch-Generierung starten.');return;}
+  const mode=currentMode;
+  const models=(data[mode]?.models||[]).filter(m=>!_deletedModels.has(canonKey(mode,m.id)));
+  if(!models.length){alert('Für diesen Bereich gibt es keine Modelle.');return;}
+  if(!_batchPhoto){alert('Bitte zuerst ein Foto hochladen.');return;}
+  const photoParts=_batchPhoto.match(/^data:([^;]+);base64,(.+)$/);
+  if(!photoParts){alert('Ungültiges Bildformat.');return;}
+  if(!confirm(`Batch startet für ${models.length} ${mode==='male'?'Herren':mode==='beard'?'Bart':mode==='female'?'Damen':mode}-Modelle.\nJede Generierung verbraucht 1 Simulation/Credit. Fortfahren?`))return;
+  const imageMime=photoParts[1], imageData=photoParts[2];
+  const hairType=mode==='beard'?'beard and facial hair':'hair on the head';
+  const skipExisting=document.getElementById('batchSkip')?.checked;
+  let modifierText='';
+  if(mode==='beard'){const it=MUSTACHE_STYLES.find(x=>x.id===(_selectedMustache||'natural'));if(it)modifierText=`Schnurrbart / Mustache: ${it.name}. ${it.prompt}`;}
+  _batchRunning=true;_batchStop=false;
+  const startBtn=document.getElementById('batchStart'),stopBtn=document.getElementById('batchStop');
+  if(startBtn){startBtn.disabled=true;startBtn.textContent='⏳ Läuft…';}
+  if(stopBtn)stopBtn.disabled=false;
+  const progWrap=document.getElementById('batchProgWrap');if(progWrap)progWrap.style.display='block';
+  const logEl=document.getElementById('batchLog');if(logEl)logEl.innerHTML='';
+  const total=models.length;let done=0,ok=0,fail=0,skip=0;
+  for(const m of models){
+    if(_batchStop)break;
+    const name=effectiveModelName(mode,m.id,m.name);
+    _batchSetStatus(`${done}/${total} · ${ok} ✓ · ${skip} übersprungen · ${fail} ✗ — aktuell: ${name}`);
+    if(skipExisting&&(_galleryCounts[m.id]||0)>0){skip++;done++;_batchSetBar(done/total*100);_batchLog(`↷ ${name} (hat bereits ein Bild)`);continue;}
+    const spec=effectiveModelPrompt(mode,m.id,englishSpecs[mode]?.[m.id]||englishSpecs[m.id]||name);
+    const prompt=buildHairPrompt(spec,hairType,'360°',modifierText);
+    try{
+      await touchSession();
+      const{data:fr,error}=await getSB().functions.invoke(IMAGE_FUNCTION_NAME,{body:{imageData,imageMime,prompt,meta:{styleId:m.id,styleName:name,mode:mode,angle:'360°',batch:true}}});
+      if(error){
+        let body='';try{if(error.context&&typeof error.context.json==='function'){const j=await error.context.json();body=j?.error||j?.message||'';}}catch(_e){}
+        const comb=((error.message||'')+' '+body);
+        if(comb.includes('credit_exhausted')){_batchLog('✗ Keine Credits mehr — Batch gestoppt.',false);_batchSetStatus('❌ Keine Credits mehr. Batch gestoppt.');break;}
+        if(comb.includes('account_inactive')){_batchLog('✗ Konto deaktiviert — Batch gestoppt.',false);break;}
+        fail++;done++;_batchSetBar(done/total*100);_batchLog(`✗ ${name}: ${body||error.message||'Fehler'}`,false);await _batchSleep(800);continue;
+      }
+      const gj=fr?.data||fr;const parts=gj?.candidates?.[0]?.content?.parts||[];
+      const imgPart=parts.find(p=>{const inl=p.inlineData||p.inline_data;return (inl?.mimeType||inl?.mime_type||'').startsWith('image/');});
+      if(fr?.simulations_used!=null){const master=currentUser._masterUser||currentUser;master.simulations_used=fr.simulations_used;updateCredits();}
+      if(!imgPart){fail++;done++;_batchSetBar(done/total*100);_batchLog(`✗ ${name}: kein Bild zurückgegeben`,false);await _batchSleep(800);continue;}
+      const inl=imgPart.inlineData||imgPart.inline_data;
+      const after=`data:${inl.mimeType||inl.mime_type||'image/png'};base64,${inl.data}`;
+      await _batchSaveGallery(mode,m.id,name,_batchPhoto,after);
+      ok++;done++;_batchSetBar(done/total*100);_batchLog(`✓ ${name}`,true);
+    }catch(e){fail++;done++;_batchSetBar(done/total*100);_batchLog(`✗ ${name}: ${e.message||e}`,false);}
+    await _batchSleep(700);
+  }
+  _batchRunning=false;
+  if(startBtn){startBtn.disabled=false;startBtn.textContent='▶ Starten';}
+  if(stopBtn)stopBtn.disabled=true;
+  try{await loadGalleryCounts();renderCurrent();}catch(_e){}
+  _batchSetStatus(`Fertig: ${ok} erstellt · ${skip} übersprungen · ${fail} Fehler${_batchStop?' · (gestoppt)':''}`);
 }
 
 /* ── CAMERA GUIDE ── */
