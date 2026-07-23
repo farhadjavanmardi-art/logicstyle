@@ -38,6 +38,21 @@ function normColorId(v){return String(v||'').slice(0,50).toLowerCase().replace(/
 async function cleanupSessions(){try{await getSB().from('sessions').delete().lt('expires_at',new Date().toISOString())}catch(e){}}
 function startHeartbeat(){stopHeartbeat();if(!currentSessionId)return;heartbeatTimer=setInterval(async()=>{try{await getSB().from('sessions').update({last_ping:new Date().toISOString(),expires_at:new Date(Date.now()+30*60*1000).toISOString()}).eq('id',currentSessionId)}catch(e){}},60000)}
 function stopHeartbeat(){if(heartbeatTimer){clearInterval(heartbeatTimer);heartbeatTimer=null}}
+/* Sitzung sofort auffrischen (verlängert expires_at). Gibt false zurück, wenn die
+   Sitzungszeile nicht mehr existiert (dann ist echtes Neu-Anmelden nötig). */
+async function touchSession(){
+  if(!currentSessionId)return false;
+  try{
+    const{data}=await getSB().from('sessions').update({last_ping:new Date().toISOString(),expires_at:new Date(Date.now()+30*60*1000).toISOString()}).eq('id',currentSessionId).select('id').maybeSingle();
+    return !!data;
+  }catch(e){return false;}
+}
+/* Bei Rückkehr in den Tab die Sitzung sofort auffrischen — verhindert „abgelaufene
+   Sitzung" nach Idle/Schlaf, wenn der 60s-Heartbeat vom Browser gedrosselt wurde. */
+if(typeof window!=='undefined'&&!window._lsSessRevive){window._lsSessRevive=true;
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)touchSession();});
+  window.addEventListener('focus',()=>touchSession());
+}
 
 /* ── TOPBAR ── */
 function updateTopbarPad(){
@@ -962,6 +977,15 @@ async function startGeneration(isFreeRenew=false){
 
     genLoadingText.textContent='Wird generiert… (10–30 Sek.)';
 
+    // Sitzung frisch halten, sonst schlägt die Generierung nach Leerlauf mit 401 fehl.
+    const _alive=await touchSession();
+    if(currentSessionId&&!_alive){
+      genLoading.style.display='none';
+      showGenError('Deine Sitzung ist abgelaufen. Bitte melde dich neu an.');
+      setTimeout(()=>doLogout(),1600);
+      return;
+    }
+
     const { data:functionResponse, error:functionError } = await getSB().functions.invoke(IMAGE_FUNCTION_NAME, {
       body: {
         imageData,
@@ -980,18 +1004,28 @@ async function startGeneration(isFreeRenew=false){
     });
 
     if(functionError){
-      if(String(functionError?.message||'').includes('credit_exhausted')){
+      // supabase-js liefert bei non-2xx nur eine generische message — echten Fehler aus dem Body lesen
+      let _body='';
+      try{ if(functionError.context&&typeof functionError.context.json==='function'){const _j=await functionError.context.json();_body=_j?.error||_j?.message||'';} }catch(_e){}
+      const _combined=((functionError.message||'')+' '+_body);
+      if(_combined.includes('credit_exhausted')){
         genLoading.style.display='none';
         showGenError('Keine Simulationen mehr — jetzt Credits kaufen oder Paket upgraden.');
         openCreditOffer();
         return;
       }
-      if(String(functionError?.message||'').includes('account_inactive')){
+      if(_combined.includes('account_inactive')){
         genLoading.style.display='none';
         showGenError('Dieses Konto ist deaktiviert. Bitte Admin kontaktieren.');
         return;
       }
-      throw new Error('Supabase Function: '+(functionError.message||JSON.stringify(functionError)));
+      if(/Sitzung|abgelaufen|session/i.test(_combined)){
+        genLoading.style.display='none';
+        showGenError('Deine Sitzung ist abgelaufen. Bitte melde dich neu an.');
+        setTimeout(()=>doLogout(),1600);
+        return;
+      }
+      throw new Error(_body?('Fehler: '+_body):('Supabase Function: '+(functionError.message||JSON.stringify(functionError))));
     }
 
     if(functionResponse?.success===false){
