@@ -38,14 +38,11 @@ function normColorId(v){return String(v||'').slice(0,50).toLowerCase().replace(/
 async function cleanupSessions(){try{await getSB().from('sessions').delete().lt('expires_at',new Date().toISOString())}catch(e){}}
 function startHeartbeat(){stopHeartbeat();if(!currentSessionId)return;heartbeatTimer=setInterval(async()=>{try{await getSB().from('sessions').update({last_ping:new Date().toISOString(),expires_at:new Date(Date.now()+30*60*1000).toISOString()}).eq('id',currentSessionId)}catch(e){}},60000)}
 function stopHeartbeat(){if(heartbeatTimer){clearInterval(heartbeatTimer);heartbeatTimer=null}}
-/* Sitzung sofort auffrischen (verlängert expires_at). Gibt false zurück, wenn die
-   Sitzungszeile nicht mehr existiert (dann ist echtes Neu-Anmelden nötig). */
+/* Sitzung auffrischen (verlängert expires_at) — best effort, wie der Heartbeat.
+   Kein SELECT (RLS erlaubt anon evtl. kein Lesen der sessions) → niemals abmelden. */
 async function touchSession(){
-  if(!currentSessionId)return false;
-  try{
-    const{data}=await getSB().from('sessions').update({last_ping:new Date().toISOString(),expires_at:new Date(Date.now()+30*60*1000).toISOString()}).eq('id',currentSessionId).select('id').maybeSingle();
-    return !!data;
-  }catch(e){return false;}
+  if(!currentSessionId)return;
+  try{await getSB().from('sessions').update({last_ping:new Date().toISOString(),expires_at:new Date(Date.now()+30*60*1000).toISOString()}).eq('id',currentSessionId);}catch(e){}
 }
 /* Bei Rückkehr in den Tab die Sitzung sofort auffrischen — verhindert „abgelaufene
    Sitzung" nach Idle/Schlaf, wenn der 60s-Heartbeat vom Browser gedrosselt wurde. */
@@ -978,13 +975,7 @@ async function startGeneration(isFreeRenew=false){
     genLoadingText.textContent='Wird generiert… (10–30 Sek.)';
 
     // Sitzung frisch halten, sonst schlägt die Generierung nach Leerlauf mit 401 fehl.
-    const _alive=await touchSession();
-    if(currentSessionId&&!_alive){
-      genLoading.style.display='none';
-      showGenError('Deine Sitzung ist abgelaufen. Bitte melde dich neu an.');
-      setTimeout(()=>doLogout(),1600);
-      return;
-    }
+    await touchSession();
 
     const { data:functionResponse, error:functionError } = await getSB().functions.invoke(IMAGE_FUNCTION_NAME, {
       body: {
