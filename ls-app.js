@@ -603,6 +603,14 @@ function buildRefLinks(name){
   return`<a class="btn-ref btn-pin" href="https://www.pinterest.com/search/pins/?q=${q}" target="_blank" rel="noopener" title="Pinterest">📌</a><a class="btn-ref btn-goo" href="https://www.google.com/search?q=${qFrisur}&tbm=isch" target="_blank" rel="noopener" title="Google Bilder">🔍</a>`;
 }
 
+/* Galerie-Verwaltung (Upload/Download) — nur Admin (LS_ADMIN_REFS). Öffnet das
+   eingebettete Galerie-Panel in Admin_Software.html via window.openGalleryManage. */
+function buildGalleryBtn(mode,id,name){
+  if(!window.LS_ADMIN_REFS)return'';
+  const n=String(name||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  return`<button class="btn-ref btn-gal" style="color:#e879a0;border-color:rgba(232,121,160,.3)" title="Galerie verwalten (Upload / Download)" onclick="event.stopPropagation();window.openGalleryManage&&window.openGalleryManage('${mode}','${id}','${n}')">📁</button>`;
+}
+
 /* thumbnail کوچک عکس نمونه جلوی هر مدل (آخرین شبیه‌سازی) */
 function buildThumb(id){
   const t=_galleryThumbs[id];
@@ -650,7 +658,7 @@ function render(){
     items.forEach(m=>{
       const safeName=htmlSafe(m.name);const gc=_galleryCounts[m.id]||0;
       const row=document.createElement('div');row.className='model-row';
-      row.innerHTML=`${buildThumb(m.id)||'<div class="model-dot"></div>'}<div class="model-info"><div class="model-name"><span class="model-num">#${m.id}</span>${m.name}</div></div><div class="model-row-right">${buildRefLinks(m.name)}${buildEditIcon(currentMode,m.id)}<button class="btn-simulate" onclick="openSim('${m.id}',event)">Simulieren ▸</button></div>`;
+      row.innerHTML=`${buildThumb(m.id)||'<div class="model-dot"></div>'}<div class="model-info"><div class="model-name"><span class="model-num">#${m.id}</span>${m.name}</div></div><div class="model-row-right">${buildRefLinks(m.name)}${buildEditIcon(currentMode,m.id)}${buildGalleryBtn(currentMode,m.id,m.name)}<button class="btn-simulate" onclick="openSim('${m.id}',event)">Simulieren ▸</button></div>`;
       list.appendChild(row);
     });
     block.appendChild(list);grid.appendChild(block);
@@ -674,7 +682,7 @@ function renderServiceMode(sections, mode){
     items.forEach(item=>{
       const id=item.id||serviceIdFromVal(item.val);const gc=(_galleryCounts[id]||0)+(_galleryCounts[serviceIdFromVal(item.val)]||0);const safeName=htmlSafe(item.name);const safeVal=htmlSafe(item.val);
       const row=document.createElement('div');row.className='model-row';
-      row.innerHTML=`${buildThumb(id)||(item.icon?`<div class="model-icon-box">${item.icon}</div>`:'<div class="model-dot"></div>')}<div class="model-info"><div class="model-name"><span class="model-num">#${item.id||''}</span>${item.name}</div></div><div class="model-row-right">${buildRefLinks(item.name)}${buildEditIcon(mode,item.id||id)}<button class="btn-simulate" onclick="openSim('${item.id||id}',event)">Simulieren ▸</button></div>`;
+      row.innerHTML=`${buildThumb(id)||(item.icon?`<div class="model-icon-box">${item.icon}</div>`:'<div class="model-dot"></div>')}<div class="model-info"><div class="model-name"><span class="model-num">#${item.id||''}</span>${item.name}</div></div><div class="model-row-right">${buildRefLinks(item.name)}${buildEditIcon(mode,item.id||id)}${buildGalleryBtn(mode,item.id||id,item.name)}<button class="btn-simulate" onclick="openSim('${item.id||id}',event)">Simulieren ▸</button></div>`;
       list.appendChild(row);
     });
     block.appendChild(list);grid.appendChild(block);
