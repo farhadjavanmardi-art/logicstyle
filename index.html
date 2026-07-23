@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic Style für Friseursalons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000;--card:#000000;--card2:#000000;
+  --text:#ffffff;--muted:#ffffff;
+  --pink:#ff1f6e;--pink2:#ff5089;
+  --pink-dim:rgba(255,31,110,0.12);--pink-border:rgba(255,31,110,0.38);
+  --border:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;width:100%;z-index:1000;background:#000000;border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:8px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-brand{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.4rem;letter-spacing:1px}
+.nav-brand .l{color:var(--pink)}.nav-brand .s{color:#fff}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{padding:7px 14px;border-radius:20px;text-decoration:none;font-size:13px;font-weight:600;color:var(--muted);transition:.2s;border:1px solid transparent}
+.nav-link:hover{color:var(--pink);border-color:var(--pink-border)}
+.nav-cta{background:var(--pink);color:#000;padding:9px 20px;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;transition:.2s;cursor:pointer;border:none}
+.nav-cta:hover{background:var(--pink2)}
+@media(max-width:640px){.nav-links .nav-link{display:none}}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;background:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(255,31,110,0.15) 0%,transparent 60%)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,31,110,0.08);border:1px solid rgba(255,31,110,0.22);border-radius:30px;padding:7px 18px;margin-bottom:28px;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--pink);text-transform:uppercase;font-family:'Space Mono',monospace}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--pink);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Rajdhani',sans-serif;font-size:clamp(2.8rem,7vw,5.2rem);font-weight:700;line-height:1.02;margin-bottom:20px;letter-spacing:-.5px}
+h1 em{color:var(--pink);font-style:normal}
+.hero-sub{font-size:clamp(1rem,2vw,1.15rem);color:#ffffff;max-width:600px;margin:0 auto 16px;line-height:1.7}
+.hero-honest{display:inline-block;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--muted);margin-bottom:40px;font-style:italic}
+.hero-honest strong{color:var(--text);font-style:normal}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.btn-primary{background:var(--pink);color:#000;padding:15px 34px;border-radius:50px;text-decoration:none;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:.25s;display:inline-block;box-shadow:0 0 40px rgba(255,31,110,0.3)}
+.btn-primary:hover{background:var(--pink2);transform:translateY(-2px)}
+.btn-secondary{background:transparent;color:var(--text);padding:15px 34px;border-radius:50px;text-decoration:none;font-weight:600;font-size:15px;border:1px solid var(--border);transition:.2s;display:inline-block}
+.btn-secondary:hover{border-color:rgba(255,31,110,0.3);color:var(--pink)}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);border-radius:18px;overflow:hidden;max-width:640px;margin:0 auto}
+.hero-stat{background:var(--card);padding:18px 12px;text-align:center}
+.stat-num{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;color:var(--pink);line-height:1}
+.stat-label{font-size:10px;color:var(--muted);margin-top:4px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+@media(max-width:480px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+
+/* ── TRUST STRIP ── */
+.trust-strip{background:var(--card);border-top:1px solid rgba(255,31,110,0.1);border-bottom:1px solid rgba(255,31,110,0.1);padding:16px 24px;display:flex;justify-content:center;flex-wrap:wrap;gap:20px}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.trust-item strong{color:var(--text)}
+
+/* ── SECTION COMMONS ── */
+section{padding:80px 24px}
+.container{max-width:1200px;margin:0 auto}
+.sec-eyebrow{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink);margin-bottom:14px;border:1px solid rgba(255,31,110,0.2);border-radius:20px;padding:4px 14px}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;text-align:center;margin-bottom:14px}
+.sec-desc{font-size:15px;color:#ffffff;text-align:center;max-width:640px;margin:0 auto 48px;line-height:1.7}
+
+/* ── APP CARDS ── */
+.apps-section{background:var(--bg);text-align:center}
+.apps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+@media(max-width:900px){.apps-grid{grid-template-columns:1fr}}
+.app-card{background:var(--card);border:1px solid var(--border);border-radius:22px;overflow:hidden;transition:.2s;display:flex;flex-direction:column}
+.app-card:hover{border-color:rgba(255,31,110,0.3);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.app-card-top{padding:32px 28px 24px;flex:1}
+.app-icon{font-size:3rem;margin-bottom:16px;display:block}
+.app-name{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;margin-bottom:8px}
+.app-desc{font-size:14px;color:#ffffff;line-height:1.7;margin-bottom:18px}
+.app-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:18px}
+.app-tag{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1px solid rgba(255,31,110,0.2);color:var(--muted);background:rgba(255,31,110,0.04)}
+.app-card-footer{padding:0 28px 28px}
+.app-cta{display:block;width:100%;padding:13px;background:var(--pink);color:#000;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;border-radius:14px;text-decoration:none;text-align:center;transition:.2s}
+.app-cta:hover{background:var(--pink2)}
+.app-cta.secondary{background:rgba(255,31,110,0.1);color:var(--pink);border:1px solid rgba(255,31,110,0.3)}
+.app-cta.secondary:hover{background:rgba(255,31,110,0.2)}
+
+/* ── GALLERY SECTIONS ── */
+.gallery-section{padding:72px 24px;text-align:center}
+.gallery-section.alt{background:var(--card2)}
+.gallery-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.gtab{padding:9px 20px;border-radius:20px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
+.gtab.active,.gtab:hover{border-color:rgba(255,31,110,0.3);color:var(--pink);background:rgba(255,31,110,0.06)}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:24px}
+.gallery-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative}
+.gallery-pair{display:grid;grid-template-columns:1fr 1fr;gap:2px;height:200px}
+.gallery-pair img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-label{position:absolute;top:8px;left:8px;font-size:8px;font-weight:700;padding:3px 8px;border-radius:5px;font-family:'Space Mono',monospace}
+.gallery-label.vor{background:rgba(96,165,250,0.9);color:#fff}
+.gallery-label.nach{position:absolute;top:8px;right:8px;left:auto;background:rgba(255,31,110,0.9);color:#000}
+.gallery-footer-bar{padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.gallery-style-name{font-size:12px;font-weight:700;color:var(--text)}
+.gallery-style-cat{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace}
+.gallery-placeholder{background:#000000;border:1px solid rgba(255,31,110,0.12);border-radius:16px;height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted)}
+.gallery-ph-icon{font-size:2.5rem;opacity:.4}
+.gallery-ph-text{font-size:11px;font-family:'Space Mono',monospace;letter-spacing:1px;text-align:center;line-height:1.7;padding:0 20px}
+.app-link-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--pink);color:#000;border-radius:50px;text-decoration:none;font-weight:700;font-size:14px;transition:.2s;margin-top:4px}
+.app-link-btn:hover{background:var(--pink2)}
+
+/* ── HOW IT WORKS ── */
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px}
+@media(max-width:800px){.how-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.how-grid{grid-template-columns:1fr}}
+.how-step{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px 20px;text-align:center}
+.how-num{font-family:'Rajdhani',sans-serif;font-size:2.5rem;font-weight:700;color:var(--pink);opacity:.5;line-height:1;margin-bottom:8px}
+.how-icon{font-size:2rem;margin-bottom:12px;display:block}
+.how-title{font-weight:700;font-size:15px;margin-bottom:8px}
+.how-desc{font-size:13px;color:#ffffff;line-height:1.6}
+
+/* ── PRICING ── */
+.pricing-section{background:var(--card2);text-align:center}
+.free-plan{background:rgba(255,31,110,0.06);border:1px solid rgba(255,31,110,0.2);border-radius:20px;padding:28px;max-width:500px;margin:0 auto 36px;text-align:center}
+.free-plan h3{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;margin:8px 0}
+.free-plan p{font-size:13px;color:#ffffff;margin-bottom:18px;line-height:1.6}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:4px}
+@media(max-width:1000px){.pricing-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.pricing-grid{grid-template-columns:1fr}}
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px 22px;text-align:center;position:relative;transition:.2s}
+.price-card.featured{border-color:rgba(255,31,110,0.35);box-shadow:0 0 40px rgba(255,31,110,0.08)}
+.featured-badge{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--pink);background:rgba(255,31,110,0.1);border:1px solid rgba(255,31,110,0.25);border-radius:20px;padding:4px 12px;display:inline-block;margin-bottom:12px}
+.price-name{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.price-amount{font-family:'Rajdhani',sans-serif;font-size:3rem;font-weight:700;color:var(--text);line-height:1}
+.price-amount sup{font-size:1.4rem;vertical-align:super;color:var(--muted)}
+.price-amount span{font-size:1rem;color:var(--muted);font-weight:400}
+.price-sims{font-family:'Space Mono',monospace;font-size:15px;color:var(--pink);margin:8px 0 16px;letter-spacing:.5px}
+.price-features{list-style:none;text-align:left;margin-bottom:20px}
+.price-features li{font-size:13px;color:#ffffff;padding:5px 0;padding-left:18px;position:relative;line-height:1.4}
+.price-features li::before{content:'✓';position:absolute;left:0;color:var(--pink);font-weight:700;font-size:12px}
+.p-cta{width:100%;padding:13px;background:var(--pink);color:#000;border:none;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;margin-bottom:8px}
+.p-cta:hover{background:var(--pink2)}
+.price-note{font-size:11px;color:var(--muted);margin-bottom:8px}
+
+/* ── FAQ ── */
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px}
+@media(max-width:700px){.faq-grid{grid-template-columns:1fr}}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:.2s}
+.faq-item:hover{border-color:rgba(255,31,110,0.2)}
+.faq-q{font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.faq-q span{color:var(--muted);flex-shrink:0;transition:.2s}
+.faq-a{font-size:13px;color:#ffffff;line-height:1.7;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .2s}
+.faq-item.open .faq-a{max-height:300px;padding-top:12px}
+.faq-item.open .faq-q span{transform:rotate(180deg)}
+
+/* ── CONTACT ── */
+.contact-section{background:var(--card2);text-align:center}
+.contact-box{background:var(--card);border:1px solid var(--pink-border);border-radius:24px;padding:40px 32px;max-width:600px;margin:0 auto}
+.contact-box h2{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;margin-bottom:8px}
+.contact-box p{font-size:14px;color:#ffffff;margin-bottom:24px;line-height:1.6}
+.contact-items{display:flex;flex-direction:column;gap:10px}
+.contact-item{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);font-size:14px;transition:.2s}
+.contact-item:hover{border-color:rgba(255,31,110,0.25);color:var(--pink)}
+
+/* ── FOOTER ── */
+footer{background:#000;border-top:1px solid var(--border);padding:48px 24px 32px}
+.footer-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+@media(max-width:700px){.footer-grid{grid-template-columns:1fr}}
+.footer-tagline{font-size:13px;color:var(--muted);line-height:1.7;margin:12px 0 8px}
+footer h4{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;font-family:'Space Mono',monospace}
+footer a{display:block;font-size:13px;color:#ffffff;text-decoration:none;margin-bottom:8px;transition:.2s}
+footer a:hover{color:var(--pink)}
+.footer-bottom{max-width:1200px;margin:32px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--muted)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.88);backdrop-filter:blur(14px);display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-overlay.open{display:flex}
+@media(min-width:640px){.modal-overlay{align-items:center;padding:20px}}
+.modal-box{width:100%;max-width:520px;background:#000000;border:1px solid rgba(255,31,110,0.2);border-radius:24px 24px 0 0;max-height:92svh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+@media(min-width:640px){.modal-box{border-radius:24px}}
+.modal-header{padding:20px 24px 0;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#000000;z-index:2;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--pink)}
+.modal-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:20px 24px 28px}
+.plan-badge{background:rgba(255,31,110,0.06);border:1px solid rgba(255,31,110,0.2);border-radius:14px;padding:12px 16px;margin-bottom:18px}
+.plan-badge-name{font-weight:700;font-size:14px;color:var(--text)}
+.plan-badge-sub{font-size:11px;color:var(--muted);margin-top:3px;font-family:'Space Mono',monospace}
+.section-divider{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:14px 0 8px;font-family:'Space Mono',monospace}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:400px){.f-row{grid-template-columns:1fr}}
+.f-group{margin-bottom:10px}
+.f-group label{display:block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-family:'Space Mono',monospace}
+.f-group input,.f-group select{width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:#fff;font-size:13px;outline:none;transition:.2s;font-family:'DM Sans',sans-serif}
+.f-group input:focus,.f-group select:focus{border-color:var(--pink);background:rgba(255,255,255,0.07)}
+.f-group select option{background:#000000;color:#fff}
+.msg-err{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:10px 14px;font-size:13px;color:#f87171;margin-bottom:12px;display:none}
+.msg-err.show{display:block}
+.pay-btn{width:100%;padding:14px;background:var(--pink);color:#000;border:none;border-radius:14px;font-weight:700;font-size:15px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:6px;transition:.2s}
+.pay-btn:hover{background:var(--pink2)}
+.pay-btn:disabled{opacity:.6;cursor:not-allowed}
+.dsgvo-note{font-size:11px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6}
+
+/* ── APP SELECTOR IN MODAL ── */
+.app-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.app-sel-btn{background:#000000;border:2px solid var(--border);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:.2s;font-family:'DM Sans',sans-serif}
+.app-sel-btn:hover{border-color:rgba(255,31,110,0.3)}
+.app-sel-btn.selected{border-color:#ff1f6e;background:#ff1f6e;color:#000}
+.app-sel-icon{font-size:1.6rem;display:block;margin-bottom:5px}
+.app-sel-name{font-size:11px;font-weight:700;color:var(--text);line-height:1.3}
+.app-sel-hint{font-size:9px;color:var(--muted);margin-top:3px;line-height:1.3}
+
+/* ── COOKIE ── */
+#ls-consent{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#000000;border-top:1px solid rgba(255,31,110,0.25);padding:14px 20px;display:none}
+#ls-consent.show{display:block}
+.lsci{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.lsct{flex:1;min-width:220px;font-size:12px;color:#ffffff;line-height:1.5}
+.lsct strong{color:#ffffff}.lsct a{color:#60a5fa;text-decoration:none}
+.lscbtns{display:flex;gap:8px;flex-shrink:0}
+.lsca{padding:9px 20px;background:#ff1f6e;color:#000;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+.lscd{padding:9px 18px;background:transparent;color:#ffffff;border:1px solid #ffffff;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#ff1f6e22;border-radius:2px}
+
+
+/* ── FINAL FIXES: pure black backgrounds, centered layout, tighter pricing, model links ── */
+:root{--bg:#000000;--card:#000000;--card2:#000000}
+html,body,nav,section,.hero,.apps-section,.gallery-section,.gallery-section.alt,.pricing-section,.contact-section,footer{background:#000000!important;background-image:none!important}
+.hero,.trust-strip,.app-card,.how-step,.gallery-card,.gallery-placeholder,.free-plan,.price-card,.faq-item,.contact-box,.modal-box,#ls-consent{background:#000000!important;background-image:none!important}
+.container,.hero-content,.app-card-top,.app-card-footer,.how-step,.gallery-placeholder,.price-card,.free-plan,.faq-item,.contact-box{text-align:center}
+.trust-strip,.trust-item,.hero-ctas,.apps-grid,.gallery-tabs,.contact-items,.app-selector,.app-sel-btn{align-items:center;justify-content:center;text-align:center}
+.trust-item,.contact-item{justify-content:center;text-align:center}
+.app-card,.how-step,.gallery-placeholder,.price-card,.free-plan{display:flex;flex-direction:column;align-items:center}
+.app-card-top,.app-card-footer{width:100%}
+.gallery-grid{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));max-width:960px;margin-left:auto;margin-right:auto;align-items:stretch}
+.gallery-card{display:block;color:inherit;text-decoration:none;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:.2s}
+.gallery-card:hover{border-color:rgba(255,31,110,.35);transform:translateY(-3px)}
+.gallery-pair{height:auto;aspect-ratio:16/10;background:#000}
+.gallery-pair.single{grid-template-columns:1fr;aspect-ratio:4/3}
+.gallery-footer-bar{justify-content:center;gap:8px;flex-direction:column;text-align:center}
+.gallery-style-name,.gallery-style-cat{text-align:center;width:100%}
+.gallery-loading-card{min-height:210px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;border:1px solid var(--border);border-radius:16px;background:#000}
+.pricing-section .container{max-width:860px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,260px));gap:16px;justify-content:center;align-items:stretch;margin:4px auto 0;width:100%}
+@media(max-width:900px){.pricing-grid{grid-template-columns:repeat(2,minmax(0,260px))}}
+@media(max-width:600px){.pricing-grid{grid-template-columns:minmax(0,320px)}}
+.price-card{width:100%;max-width:260px;margin:0 auto;padding:24px 18px;min-height:100%;justify-content:flex-start}
+.price-features{text-align:center;width:100%;padding:0;margin-bottom:20px}
+.price-features li{padding:5px 0;text-align:center;list-style:none}
+.price-features li::before{position:static;margin-right:6px}
+.p-cta{max-width:220px;margin-left:auto;margin-right:auto}
+.free-plan{max-width:460px}
+.contact-items{display:flex;flex-direction:column;gap:10px}
+.contact-item{width:100%;max-width:420px;margin:0 auto}
+
+/* ── ONLY FIX: center the two software cards ── */
+#software-zugang .apps-grid{grid-template-columns:repeat(2,minmax(280px,380px));justify-content:center;max-width:900px;margin-left:auto;margin-right:auto}
+@media(max-width:900px){#software-zugang .apps-grid{grid-template-columns:1fr;max-width:420px}}
+
+
+/* ── Gallery Groups ── */
+.gallery-grp{margin-bottom:32px}
+.gallery-grp-label{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--pink-soft);margin-bottom:12px;padding:0 4px}
+.gallery-grp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gallery-grp-grid .gc{border-radius:14px;overflow:hidden;position:relative;aspect-ratio:3/4;background:#000000;border:1px solid var(--border)}
+.gallery-grp-grid .gc img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-grp-grid .gc-pair{display:grid;grid-template-columns:1fr 1fr;height:100%}
+.gallery-grp-grid .gc-pair img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-grp-grid .gc-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.7));padding:8px 10px 6px;font-size:11px;color:#fff;font-weight:700}
+.gallery-grp-grid .gc-ph{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:13px}
+@media(max-width:520px){.gallery-grp-grid{grid-template-columns:1fr 1fr}}
+
+/* ── Gallery groups ── */
+.gallery-grp{margin-bottom:36px;text-align:left}
+.gallery-grp-label{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--pink-soft);margin-bottom:12px;padding-left:2px}
+.gallery-grp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gg-pair{display:grid;grid-template-columns:1fr 1fr;gap:4px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.gg-pair.single{grid-template-columns:1fr}
+.gg-img-wrap{position:relative;overflow:hidden;aspect-ratio:3/4}
+.gg-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.gg-lbl{position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,.7);color:var(--muted);font-size:9px;font-weight:700;letter-spacing:1.5px;padding:2px 6px;border-radius:4px;font-family:'Space Mono',monospace}
+.gg-lbl.after{color:var(--pink-soft);border:1px solid rgba(255,31,110,.3)}
+@media(max-width:700px){#featuredCards{grid-template-columns:repeat(3,1fr)!important}}
+@media(max-width:450px){#featuredCards{grid-template-columns:repeat(2,1fr)!important}}
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41tlNDCz7GzTTWukGGu-v4DaMrVPxoyE&libraries=places&language=de" async defer></script>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="logo.png" alt="Logic Style" style="height:72px;width:auto;object-fit:contain;display:block">
+    </a>
+    <div class="nav-links">
+      <a href="Logic_Haare_Farbe_Bart.html" class="nav-link">Logic Haare Software</a>
+      <a href="wahrheit.html" class="nav-link">Wahrheit</a>
+      <a href="models.html" class="nav-link">Models</a>
+      <a href="model.html" class="nav-link">Model werden</a>
+      <a href="#preise"       class="nav-link">Preise</a>
+      <a href="#kontakt"      class="nav-link">Kontakt</a>
+    </div>
+    <button class="nav-cta" onclick="openModal('Probe',0,20)">Kostenlos testen</button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div>
+    <div style="max-width:760px;margin:0 auto 22px;padding:12px 18px;border:1px solid rgba(250,204,21,0.4);background:rgba(250,204,21,0.09);border-radius:14px;text-align:center;font-size:13px;font-weight:700;color:#facc15;line-height:1.6">
+      🧪 <strong>Testprojekt</strong> — Diese Website ist <strong>nicht veröffentlicht</strong> und dient ausschließlich zu Testzwecken. Aktuell findet <strong>kein Verkauf</strong> statt.
+    </div>
+    <div class="hero-eyebrow">Nur für verifizierte Salons</div>
+    <h1>Logic Style<br><em>Die Zukunft</em><br>der Salons</h1>
+    <p class="hero-sub">
+  Zeig deinen Kunden neue Looks, Premium-Schnitte, Farben und Behandlungen, bevor du loslegst — mega realistisch, direkt auf ihrem eigenen Foto und direkt am Stuhl. Sicherer beraten. Mehr verkaufen.
+    <!-- ── GROSSE WAHRHEIT CTA ── -->
+    <div style="display:flex;justify-content:center;margin-bottom:26px">
+      <a href="wahrheit.html" style="display:flex;align-items:center;justify-content:center;gap:18px;width:min(680px,100%);padding:24px 28px;background:linear-gradient(135deg,rgba(255,31,110,0.18),rgba(255,31,110,0.06));border:1px solid rgba(255,31,110,0.38);border-radius:28px;text-decoration:none;box-shadow:0 24px 70px rgba(255,31,110,0.12);transition:.2s" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='rgba(255,31,110,0.72)'" onmouseout="this.style.transform='translateY(0)';this.style.borderColor='rgba(255,31,110,0.38)'">
+        <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#ff1f6e">
+  WAHRHEIT
+</span>
+
+<span style="font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;color:#fff;line-height:1.05">
+  Warum diese Software im Salon wirklich verkauft
+</span>
+
+<span style="font-size:13px;color:#ffffff;line-height:1.5">
+  6 klare Gründe. Keine schönen Sprüche. Nur Beispiele aus dem Salon-Alltag, die jeder sofort versteht.
+</span>
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="stat-num">2</div><div class="stat-label">Softwares</div></div>
+      <div class="hero-stat"><div class="stat-num">200+</div><div class="stat-label">Trend Looks & Services</div></div>
+      <div class="hero-stat"><div class="stat-num">&lt;30s</div><div class="stat-label">Pro Simulation</div></div>
+      <div class="hero-stat"><div class="stat-num">DSGVO</div><div class="stat-label">Fotos auto-gelöscht</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ── TRUST STRIP ── -->
+<div class="trust-strip">
+  <div class="trust-item"><svg width="16" height="16" fill="none" stroke="#ff1f6e" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><strong>100% DSGVO-konform</strong></div>
+  <div class="trust-item"><svg width="16" height="16" fill="none" stroke="#ff1f6e" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><strong>Kein Vertrag — monatlich kündbar</strong></div>
+  <div class="trust-item"><svg width="16" height="16" fill="none" stroke="#4ade80" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 17l9 5 9-5"/><path d="M3 12l9 5 9-5"/></svg><strong style="color:#4ade80">Als Betriebsausgabe absetzbar</strong></div>
+  <div class="trust-item"><svg width="16" height="16" fill="none" stroke="#ff1f6e" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><strong>Antwort in unter 2 Stunden</strong></div>
+</div>
+<!-- ── HOW IT WORKS ── -->
+<section style="background:var(--card2);text-align:center;padding:72px 24px">
+  <div class="container">
+    <div class="sec-eyebrow">So einfach funktioniert es</div>
+    <h2 class="sec-title">4 Schritte. Fertig.</h2>
+    <p class="sec-desc">Kein Training. Kein Aufwand. Du drückst auf einen Knopf — der Rest passiert von selbst.</p>
+    <div class="how-grid">
+      <div class="how-step"><div class="how-num">01</div><span class="how-icon">📲</span><div class="how-title">Software öffnen</div><div class="how-desc">Wähle den gewünschten Style — Haare, Bart, Farbe oder Behandlung.</div></div>
+      <div class="how-step"><div class="how-num">02</div><span class="how-icon">✂️</span><div class="how-title">Modell wählen</div><div class="how-desc">Wähle den gewünschten Style, die Farbe oder die Behandlung aus dem Katalog.</div></div>
+      <div class="how-step"><div class="how-num">03</div><span class="how-icon">📸</span><div class="how-title">Foto hochladen</div><div class="how-desc">Mache ein Foto direkt vom Kunden oder lade ein Bild.</div></div>
+      <div class="how-step"><div class="how-num">04</div><span class="how-icon">✨</span><div class="how-title">Ergebnis in 30s</div><div class="how-desc">Die KI liefert ein fotorealistisches Vorher/Nachher-Bild — zum Speichern und Teilen.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURED MODEL CARDS ── -->
+<section class="gallery-section" id="featuredSection">
+  <div class="container">
+    <div class="sec-eyebrow">Unsere Modelle</div>
+    <h2 class="sec-title">Entdecke unsere Styles</h2>
+    <p class="sec-desc">Wähle deinen Lieblingsstyle — von klassisch bis modern, für Damen und Herren.</p>
+    <div id="featuredCards" style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:32px;max-width:900px;margin-left:auto;margin-right:auto"></div>
+    <div style="text-align:center;margin-top:32px">
+      <a href="models.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;padding:14px 32px;border-radius:14px;font-size:15px;font-weight:700">
+        📸 Alle Styles ansehen
+      </a>
+    </div>
+  </div>
+</section>
+<!-- ── PRICING ── -->
+<!-- Planwerte aktualisiert: Pro 66€/200, Elite 122€/400, Studio 290€/1000 (Basis 0,33€/Simulation; Elite ~7%, Studio ~11% Rabatt). Diese Werte werden auch an Supabase als requested_price und simulations_limit gesendet. -->
+<section id="preise" class="pricing-section">
+  <div class="container">
+    <div class="sec-eyebrow">Preise · monatlich kündbar</div>
+    <h2 class="sec-title">Mehr Simulationen. Klarere Team-Pakete.</h2>
+    <p class="sec-desc">Wähle das passende Paket für deinen Salon. Pro ist für einzelne Stylisten, Elite für kleine Teams und Studio für größere Teams mit dem stärksten Preis-Leistungs-Verhältnis. Sichere Zahlung über Revolut, jederzeit monatlich kündbar.</p>
+
+    <div class="free-plan">
+      <div class="sec-eyebrow">🎁 Testversion · erst prüfen, dann entscheiden</div>
+      <h3>20 Simulationen — 0€</h3>
+      <p>Logic Haare Software inklusive: Haare, Bart, Farbe und Keratin & Perm. Keine Online-Zahlung. Keine Kreditkarte. Manuelle Freischaltung nach Prüfung des Salons.</p>
+      <button class="btn-primary" onclick="openModal('Probe',0,20)" style="width:100%">Testzugang anfragen — Logic Haare Software freischalten</button>
+    </div>
+
+    <div style="max-width:720px;margin:0 auto 28px;padding:16px 18px;border:1px solid rgba(96,165,250,.22);background:rgba(96,165,250,.07);border-radius:18px;color:#bfdbfe;font-size:14px;line-height:1.7"><strong>Hinweis:</strong> Faire Preisbasis: 0,33&nbsp;€ pro Simulation. Elite enthält ~7% und Studio ~11% Mengenrabatt. Studio bietet 1000 gemeinsame Simulationen für 10 Benutzer, Elite ist der Team-Tarif mit 400 Simulationen und 5 Benutzern, Pro der Einstieg für einzelne Stylisten.</div>
+
+    <div class="pricing-grid">
+      <div class="price-card featured">
+        <div class="price-name">Pro</div>
+        <div class="price-amount"><sup>€</sup>66<span>/Monat</span></div>
+        <div class="price-sims">200 Simulationen</div>
+        <ul class="price-features">
+          <li>1 Software nach Wahl inklusive</li>
+          <li>150+ Modelle & Services</li>
+          <li>1 Benutzer im Pro-Zugang</li>
+          <li>Regelmäßige Updates</li>
+        </ul>
+        <button class="p-cta" onclick="openModal('Pro',66,200)">Pro auswählen →</button>
+        <div class="price-note">Monatlich kündbar · Zahlung über Revolut</div>
+        <div style="padding:8px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);border-radius:8px;font-size:11px;color:#4ade80;text-align:center">✓ Steuerlich absetzbar</div>
+      </div>
+      <div class="price-card">
+        <div class="featured-badge">⭐ Beliebteste Wahl</div>
+        <div class="price-name">Elite</div>
+        <div class="price-amount"><sup>€</sup>122<span>/Monat</span></div>
+        <div class="price-sims">400 Simulationen</div>
+        <ul class="price-features">
+          <li>1 Software nach Wahl inklusive</li>
+          <li>150+ Modelle & Services</li>
+          <li>5 Benutzer · gemeinsames Team-Budget</li>
+          <li>Salon-Team-Tarif für kleine und mittlere Teams</li>
+          <li>Regelmäßige Updates</li>
+        </ul>
+        <button class="p-cta" onclick="openModal('Elite',122,400)">Elite auswählen →</button>
+        <div class="price-note">Monatlich kündbar · Zahlung über Revolut</div>
+        <div style="padding:8px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);border-radius:8px;font-size:11px;color:#4ade80;text-align:center">✓ Steuerlich absetzbar</div>
+      </div>
+
+      <div class="price-card">
+        <div class="price-name">Studio</div>
+        <div class="price-amount"><sup>€</sup>290<span>/Monat</span></div>
+        <div class="price-sims">1000 Simulationen</div>
+        <ul class="price-features">
+          <li>Logic Haare Software inklusive</li>
+          <li>300+ Modelle & Services</li>
+          <li>10 Benutzer · gemeinsames Team-Budget</li>
+          <li>Bestes Preis-Leistungs-Verhältnis für Teams</li>
+          <li>Regelmäßige Updates</li>
+        </ul>
+        <button class="p-cta" onclick="openModal('Studio',290,1000)">Studio auswählen →</button>
+        <div class="price-note">Monatlich kündbar · Zahlung über Revolut</div>
+        <div style="padding:8px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);border-radius:8px;font-size:11px;color:#4ade80;text-align:center">✓ Steuerlich absetzbar</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOFTWARE ACCESS ── -->
+<section id="software-zugang" class="apps-section">
+  <div class="container">
+    <div class="sec-eyebrow">Software-Zugang</div>
+    <h2 class="sec-title">Nach dem Paket kommt die passende Software.</h2>
+    <p class="sec-desc">Wähle Herren oder Damen — im Pro-Paket eine Software, in Elite &amp; Studio auch kombiniert. Wird nach Prüfung des Salons freigeschaltet.</p>
+    <div class="apps-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,320px));justify-content:center;max-width:1000px;margin-left:auto;margin-right:auto;gap:18px">
+      <div class="app-card">
+        <div class="app-card-top">
+          <span class="app-icon">👨✂️</span>
+          <div class="app-name" style="color:#ff1f6e">Logic Herren</div>
+          <p class="app-desc">Herren-Haarschnitte, Bart, Bartfarbe, Farbe und Behandlung.</p>
+        </div>
+        <div class="app-card-footer"><a href="Logic_Maenner.html" class="app-cta">→ Software öffnen</a></div>
+      </div>
+      <div class="app-card">
+        <div class="app-card-top">
+          <span class="app-icon">👩🎨</span>
+          <div class="app-name" style="color:#ff1f6e">Logic Damen</div>
+          <p class="app-desc">Damen-Haarschnitte, Farbe, Balayage, Highlights, Toning, Glossing, Keratin und Dauerwelle.</p>
+        </div>
+        <div class="app-card-footer"><a href="Logic_Frauen.html" class="app-cta">→ Software öffnen</a></div>
+      </div>
+      <div class="app-card">
+        <div class="app-card-top">
+          <span class="app-icon">👥✂️🎨</span>
+          <div class="app-name" style="color:#ff1f6e">Logic Kombiniert</div>
+          <p class="app-desc">Herren &amp; Damen zusammen — nur in Elite &amp; Studio.</p>
+        </div>
+        <div class="app-card-footer"><a href="Logic_Haare_Farbe_Bart.html" class="app-cta">→ Software öffnen</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section id="faq" style="padding:72px 24px;text-align:center">
+  <div class="container">
+    <div class="sec-eyebrow">Häufige Fragen</div>
+    <h2 class="sec-title">Was du wissen möchtest.</h2>
+    <div class="faq-grid">
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Muss ich mich mit KI auskennen? <span>▾</span></div><div class="faq-a">Nein. Du drückst auf einen Knopf — der Rest passiert von selbst. In vier Schritten von Unsicherheit zu Entscheidung. Kein technisches Wissen nötig.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Was passiert mit den Fotos meiner Kunden? <span>▾</span></div><div class="faq-a">Fotos werden nach jeder Simulation automatisch gelöscht. Wir speichern keine Gesichter. 100% DSGVO-konform. Wenn der Kunde das Ergebnis behalten möchte, kann er es selbst auf seinem Gerät speichern.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Wie realistisch sind die Simulationen? <span>▾</span></div><div class="faq-a">Fotorealistisch — kein Filter, kein Cartoon. Die Ergebnisse basieren auf dem echten Kundenfoto und werden durch Google Gemini KI erzeugt, die speziell für Salonbedarf konfiguriert wurde.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Wie komme ich nach der Anmeldung rein? <span>▾</span></div><div class="faq-a">Nach der Anmeldung prüfen wir deine Salonadresse — dauert maximal 24 Stunden. Dann bekommst du per E-Mail deinen persönlichen Zugangscode. Einloggen, fertig.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Kann ich auf dem Handy arbeiten? <span>▾</span></div><div class="faq-a">Ja. Alle Softwares funktionieren direkt im Browser — auf Handy, Tablet und Computer. Kein Download nötig. Du kannst sie direkt am Stuhl verwenden, während der Kunde sitzt.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Gibt es einen Vertrag? <span>▾</span></div><div class="faq-a">Nein. Monatlich kündbar. Kein Risiko. Wenn Logic Style nichts für dich ist — kein Problem, kein Druck.</div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Kann ich Logic Style von der Steuer absetzen? <span>▾</span></div><div class="faq-a">Ja. Als monatliches SaaS-Abo gilt Logic Style als laufende Betriebsausgabe und ist vollständig steuerlich absetzbar. Du bekommst monatlich eine ordentliche Rechnung für deinen Steuerberater.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="kontakt" class="contact-section">  <div class="container">
+    <div class="contact-box">
+      <h2>Fragen? Wir antworten in unter 24 Stunden.</h2>
+      <p>Schreib uns direkt — per E-Mail oder WhatsApp. Ein echter Mensch antwortet.</p>
+      <div class="contact-items">
+        <a href="mailto:info@logicstyle-salon.de" class="contact-item">
+          <svg width="18" height="18" fill="none" stroke="#ff1f6e" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          info@logicstyle-salon.de
+        </a>
+        <a href="https://wa.me/4901794286020" target="_blank" class="contact-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#ff1f6e"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          +49 179 428 6020
+        </a>
+        <a href="https://www.instagram.com/logic_style" target="_blank" class="contact-item">
+          <svg width="18" height="18" fill="none" stroke="#ff1f6e" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          @logic_style
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <img src="logo.png" alt="Logic Style" style="height:72px;width:auto;object-fit:contain;display:block;margin-bottom:8px">
+      <p class="footer-tagline">KI-Simulation für Friseursalons in Deutschland.</p>
+      <p style="font-size:12px;color:var(--muted)">Karlsruhe, Deutschland · DSGVO-konform</p>
+    </div>
+    <div>
+      <h4>Software</h4>
+      <a href="Logic_Haare_Farbe_Bart.html">✂️ Logic Haare · Farbe · Bart</a>
+      <a href="models.html">📸 Models</a>
+    </div>
+    <div>
+      <h4>Links</h4>
+      <a href="#preise">Preise & Tarife</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kontakt">Kontakt</a>
+      <a href="model.html">Model werden</a>
+      <a href="Datenschutz.html">Datenschutz</a>
+      <a href="Impressum.html">Impressum</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Logic Style · Karlsruhe · Deutschland</span>
+  </div>
+</footer>
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="regModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Anmeldung</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ── COOKIE ── -->
+<div id="ls-consent">
+  <div class="lsci">
+    <div class="lsct"><strong>Datenschutz & Cookies</strong> — Wir verwenden technisch notwendige Cookies und speichern Session-Daten zur Bereitstellung unserer Dienste. Keine Tracking-Cookies. <a href="Datenschutz.html">Datenschutzerklärung</a> · <a href="Impressum.html">Impressum</a></div>
+    <div class="lscbtns">
+      <button class="lscd" onclick="lsCon('decline')">Ablehnen</button>
+      <button class="lsca" onclick="lsCon('accept')">Akzeptieren ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── CONFIG ── */
+const SB_URL='https://owgfhhkmlkdpjqlwavsx.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93Z2ZoaGttbGtkcGpxbHdhdnN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MTUyNDgsImV4cCI6MjA5MDA5MTI0OH0.arQzSmczsZX6re-mfC6EcvAs9p3Uf1LdG3AfjjgsZvM';
+const ADMIN_EMAIL='farhadjavanmardi@icloud.com';
+const PLANS={
+  probe:  {title:'Probe',  price:0,  limit:20,  type:'free_signup'},
+  pro:    {title:'Pro',    price:66, limit:200, type:'test_signup'},
+  elite:  {title:'Elite',  price:122, limit:400, type:'test_signup'},
+  studio: {title:'Studio', price:290,limit:1000,type:'test_signup'}
+};
+let _plan='',_price=0,_limit=0,_selectedApp='haar';
+
+/* ── REVOLUT: Order erstellen (automatische Freischaltung nach Zahlung) ── */
+async function createRevolutOrder(purpose,userId,extra){
+  try{
+    const r=await fetch(`${SB_URL}/functions/v1/revolut-create-order`,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},body:JSON.stringify({purpose,user_id:userId,...(extra||{})})});
+    const d=await r.json().catch(()=>({}));
+    return (r.ok&&d.ok&&d.checkout_url)?d:null;
+  }catch(e){return null;}
+}
+function showPaymentSuccess(subscriber){
+  document.getElementById('modalTitle').textContent='✅ Zahlung erfolgreich!';
+  document.getElementById('modalBody').innerHTML=`
+    <div style="text-align:center;padding:16px 0">
+      <div style="font-size:52px;margin-bottom:16px">🎉</div>
+      <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.5rem;margin-bottom:10px">Willkommen, ${esc(subscriber.given)}!</h3>
+      <p style="color:var(--muted);margin-bottom:18px;line-height:1.7;font-size:14px">Deine Zahlung wurde bestätigt. Wir haben dir gerade eine E-Mail an <strong style="color:var(--text)">${esc(subscriber.email)}</strong> mit deinem <strong style="color:var(--text)">temporären Passwort</strong> geschickt.</p>
+      <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:14px;padding:16px;text-align:left;margin-bottom:18px;font-size:13px;line-height:1.9;color:var(--text)">
+        <strong>So geht's weiter:</strong><br>
+        1️⃣ Öffne die E-Mail und kopiere das temporäre Passwort<br>
+        2️⃣ Melde dich damit in der App an<br>
+        3️⃣ Lege beim ersten Login dein eigenes Passwort fest
+      </div>
+      <a href="Logic_Haare_Farbe_Bart.html" style="display:block;text-decoration:none;width:100%;box-sizing:border-box;padding:14px;background:linear-gradient(135deg,#ff1f6e,#ff5089);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px">Jetzt zur Anmeldung →</a>
+      <p style="font-size:11px;color:var(--muted)">Keine E-Mail erhalten? Prüfe den Spam-Ordner oder schreib uns: info@logicstyle-salon.de</p>
+    </div>`;
+}
+
+/* ── GALLERY TABS + MODEL LINKS ── */
+const GALLERY_MODE_MAP={
+  hair:{herren:'male',damen:'female',bart:'beard'},
+  color:{vollfarbe:'color_vollfarbe',balayage:'color_balayage',highlights:'color_highlights',behandlung:'color_behandlung'},
+};
+
+function modelLabel(row){return row?.pair_label||row?.model_id||'Simulation'}
+function modeText(mode){
+  return ({male:'Herren',female:'Damen',beard:'Bart',color_vollfarbe:'Vollfarbe',color_balayage:'Balayage',color_highlights:'Highlights',color_toning:'Toning',color_behandlung:'Behandlung'})[mode]||mode||'';
+}
+function modelLink(row){
+  const id=encodeURIComponent(row?.model_id||'');
+  const name=encodeURIComponent(modelLabel(row));
+  const mode=encodeURIComponent(row?.mode||'');
+  return `models.html?model=${id}&name=${name}&mode=${mode}`;
+}
+function showGalleryLoading(section){
+  const grid=document.getElementById('gallery-'+section);
+  if(grid)grid.innerHTML='<div class="gallery-loading-card" style="grid-column:1/-1">Simulationen werden geladen…</div>';
+}
+function showGalleryFallback(section,msg){
+  const grid=document.getElementById('gallery-'+section);
+  if(!grid)return;
+  grid.innerHTML=`<div class="gallery-placeholder" style="grid-column:1/-1"><div class="gallery-ph-icon">📷</div><div class="gallery-ph-text">${esc(msg||'Noch keine Simulationen vorhanden')}</div></div>`;
+}
+async function loadGallerySection(section,tab){
+  const grid=document.getElementById('gallery-'+section);
+  if(!grid)return;
+  const mode=GALLERY_MODE_MAP?.[section]?.[tab];
+  if(!mode)return;
+  showGalleryLoading(section);
+  try{
+    const fields='id,model_id,mode,before_url,after_url,image_url,pair_label,sort_order,created_at';
+    const url=`${SB_URL}/rest/v1/model_gallery?mode=eq.${encodeURIComponent(mode)}&select=${fields}&order=sort_order.asc&limit=9`;
+    const res=await fetch(url,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}});
+    if(!res.ok)throw new Error(await res.text());
+    const rows=await res.json();
+    if(!Array.isArray(rows)||!rows.length){showGalleryFallback(section,'Für diese Kategorie sind noch keine Beispiele eingetragen.');return;}
+    const seen=new Set();
+    const unique=[];
+    rows.forEach(r=>{const key=r.model_id||r.id;if(!seen.has(key)){seen.add(key);unique.push(r)}});
+    grid.innerHTML=unique.slice(0,6).map(r=>{
+      const before=r.before_url||'';
+      const after=r.after_url||r.image_url||'';
+      const label=esc(modelLabel(r));
+      const cat=esc(modeText(r.mode));
+      const link=modelLink(r);
+      const hasPair=before&&after;
+      const imgHtml=hasPair
+        ?`<div class="gallery-pair"><div style="position:relative;overflow:hidden"><img src="${esc(before)}" loading="lazy" alt="Vorher ${label}"><span class="gallery-label vor">VORHER</span></div><div style="position:relative;overflow:hidden"><img src="${esc(after)}" loading="lazy" alt="Nachher ${label}"><span class="gallery-label nach">NACHHER</span></div></div>`
+        :`<div class="gallery-pair single"><div style="position:relative;overflow:hidden"><img src="${esc(after||before)}" loading="lazy" alt="${label}"><span class="gallery-label nach">MODELL</span></div></div>`;
+      return `<a class="gallery-card" href="${link}" aria-label="${label} in der Modellgalerie öffnen">${imgHtml}<div class="gallery-footer-bar"><div class="gallery-style-name">${label}</div><div class="gallery-style-cat">${cat} · Modelle öffnen</div></div></a>`;
+    }).join('');
+  }catch(e){
+    console.warn('gallery load failed:',e);
+    showGalleryFallback(section,'Galerie konnte gerade nicht geladen werden.');
+  }
+}
+function switchGalleryTab(section,tab,btn){
+  const parent=btn.closest('.gallery-section, section');
+  if(parent){parent.querySelectorAll('.gtab').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+  loadGallerySection(section,tab);
+}
+/* ── Homepage gallery groups ── */
+async function loadGalleryGroup(el) {
+  if(!el) return;
+  const mode = el.dataset.mode;
+  const limit = parseInt(el.dataset.limit)||2;
+  if(!mode) return;
+  el.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:12px 0">Wird geladen…</div>';
+  try {
+    const fields = 'model_id,mode,before_url,after_url,image_url,pair_label,sort_order';
+    const url = `${SB_URL}/rest/v1/model_gallery?mode=eq.${encodeURIComponent(mode)}&is_public=eq.true&select=${fields}&order=sort_order.asc&limit=12`;
+    const res = await fetch(url, {headers:{apikey:SB_KEY, Authorization:'Bearer '+SB_KEY}});
+    if(!res.ok) throw new Error();
+    const rows = await res.json();
+    if(!Array.isArray(rows)||!rows.length) {
+      el.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:12px 0;text-align:center">Noch keine Beispiele</div>';
+      return;
+    }
+    // Deduplicate by model_id, take limit
+    const seen = new Set();
+    const unique = rows.filter(r => {
+      const k = r.model_id||r.id;
+      if(seen.has(k)) return false;
+      seen.add(k); return true;
+    }).slice(0, limit);
+    el.innerHTML = unique.map(r => {
+      const before = r.before_url||'';
+      const after = r.after_url||r.image_url||'';
+      const label = esc(r.pair_label||r.model_id||'Simulation');
+      if(before && after) {
+        return `<div class="gg-pair"><div class="gg-img-wrap"><img src="${esc(before)}" loading="lazy" alt="Vorher"><span class="gg-lbl">VORHER</span></div><div class="gg-img-wrap"><img src="${esc(after)}" loading="lazy" alt="Nachher"><span class="gg-lbl after">NACHHER</span></div></div>`;
+      }
+      return `<div class="gg-pair single"><div class="gg-img-wrap"><img src="${esc(after||before)}" loading="lazy" alt="${label}"><span class="gg-lbl after">MODELL</span></div></div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:12px 0;text-align:center">Nicht verfügbar</div>';
+  }
+}
+function initHomepageGalleries(){
+  document.querySelectorAll('.gallery-grp-grid[data-mode]').forEach(el => loadGalleryGroup(el));
+}
+
+/* ── MODAL ── */
+function openModal(planKey,price,limit){
+  _plan=planKey.toLowerCase();_price=price;_limit=limit;
+  const cfg=PLANS[_plan];const isFree=price===0;
+  const isPro=_plan==='pro';
+  // Elite & Studio enthalten beide Programme (Herren + Damen) → keine Software-Auswahl nötig
+  const isCombined=_plan==='elite'||_plan==='studio';
+  _selectedApp=isCombined?'kombiniert':'';
+  document.getElementById('modalTitle').textContent=isFree?'🎁 Kostenlos starten — '+cfg.title:'✅ Anmeldung · '+cfg.title;
+
+  const appOpts=isPro
+    ? [['herren','👨 Herren','Haare · Bart · Farbe'],['damen','👩 Damen','Haare · Farbe · Behandlung']]
+    : [['herren','👨 Herren','Haare · Bart · Farbe'],['damen','👩 Damen','Haare · Farbe · Behandlung'],['kombiniert','👥 Herren + Damen','Komplett-Paket']];
+  const appSelectorHTML=isCombined?`
+    <div class="section-divider">🧩 Software-Zugang</div>
+    <div style="padding:12px 14px;margin-bottom:6px;border:1px solid rgba(255,31,110,0.35);background:rgba(255,31,110,0.08);border-radius:12px;text-align:center;font-size:12.5px;color:#fff;line-height:1.6">
+      ✅ <strong style="color:#ff5089">${cfg.title}</strong> enthält <strong>beide Programme</strong>: Logic Herren + Logic Damen (kombiniert). Keine Auswahl nötig. · ${limit} Simulationen monatlich
+    </div>
+  `:`
+    <div class="section-divider">🧩 Software-Zugang wählen</div>
+    <p style="font-size:12px;color:#9ca3af;text-align:center;margin:-2px 0 10px;line-height:1.5">${isPro?'Im <strong style="color:#ff5089">Pro-Paket</strong> wählst du <strong>eine</strong> Software: Herren <strong>oder</strong> Damen.':'Wähle deine Software.'} · ${limit} Simulationen${isFree?' insgesamt':' monatlich'}</p>
+    <div style="display:grid;grid-template-columns:repeat(${appOpts.length},1fr);gap:8px;margin-bottom:6px">
+      ${appOpts.map(([k,t,d])=>`
+        <div id="sel-${k}" onclick="selectApp('${k}')" style="cursor:pointer;padding:12px 8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);border-radius:12px;text-align:center;transition:all .15s">
+          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:3px">${t}</div>
+          <div style="font-size:10px;color:#9ca3af;line-height:1.4">${d}</div>
+        </div>`).join('')}
+    </div>
+  `;
+
+  const creditCardHTML=isFree?`
+    <div class="plan-badge">
+      <div class="plan-badge-name">${cfg.title} — Kostenlos</div>
+      <div class="plan-badge-sub">${limit} Simulationen · Einmalig · Kein Abo · Logic Haare Software</div>
+    </div>
+  `:`
+    <div style="margin:0 0 16px;padding:20px 18px;border:1.5px solid rgba(255,31,110,0.4);background:linear-gradient(160deg,rgba(255,31,110,0.13),rgba(255,31,110,0.04));border-radius:18px;text-align:center">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.6px;color:#ff5089;text-transform:uppercase;margin-bottom:12px">💳 Credit kaufen — ${cfg.title}</div>
+      <div style="font-size:44px;font-weight:900;color:#fff;line-height:1">${limit}</div>
+      <div style="font-size:13px;color:#cbd5e1;margin-top:4px;font-weight:600">Simulationen / Monat</div>
+      <div style="margin:14px auto;height:1px;width:62%;background:rgba(255,255,255,0.13)"></div>
+      <div style="font-size:36px;font-weight:900;color:#fff;line-height:1"><sup style="font-size:19px;font-weight:700;top:-0.5em">€</sup>${price}<span style="font-size:15px;color:#9ca3af;font-weight:600"> /Monat</span></div>
+      <div style="font-size:11.5px;color:#9ca3af;margin-top:8px;line-height:1.6">Monatlich kündbar · Sichere Zahlung über Revolut</div>
+    </div>
+  `;
+  document.getElementById('modalBody').innerHTML=`
+    ${creditCardHTML}
+    ${appSelectorHTML}
+    <div class="section-divider">👤 Persönliche Angaben</div>
+    <div class="f-row">
+      <div class="f-group"><label>Vorname *</label><input type="text" id="f1" placeholder="Vorname"></div>
+      <div class="f-group"><label>Nachname *</label><input type="text" id="f2" placeholder="Nachname"></div>
+    </div>
+    <div class="f-group"><label>E-Mail-Adresse *</label><input type="email" id="f3" placeholder="deine@email.de"></div>
+    <div class="f-group"><label>Telefon / WhatsApp *</label><input type="tel" id="f4" placeholder="+49 ...">
+      <div id="phone-maps-hint" style="display:none;margin-top:6px;font-size:11px;color:#facc15;line-height:1.6;padding:8px 10px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.2);border-radius:8px">
+        ⚠️ <strong>Wichtig:</strong> Bitte gib die Telefonnummer ein, die in deinem <strong>Google Maps Eintrag</strong> eingetragen ist. Diese wird zur Verifizierung verwendet.
+      </div>
+    </div>
+    <div class="section-divider" style="margin-top:12px">✂️ Salon-Angaben</div>
+    <div class="f-group"><label>Name des Salons *</label><input type="text" id="f5" placeholder="z.B. Salon Bella"></div>
+    <input type="hidden" id="f6" value=""><input type="hidden" id="f6b" value="">
+    <input type="hidden" id="f7" value=""><input type="hidden" id="f8" value="">
+    <div id="locWrap" style="margin-bottom:14px">
+      <div style="margin-bottom:8px;font-size:11px;color:#facc15;line-height:1.6;padding:8px 10px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.2);border-radius:8px">
+        📍 <strong>Wichtig:</strong> Adresse und Telefonnummer müssen mit dem <strong>Google Maps Eintrag</strong> deines Salons übereinstimmen. Da die Software kostenlos ist, prüfen wir jeden Salon vorab. Nach Bestätigung wird dein Zugang innerhalb von 24 Stunden freigeschaltet.
+      </div>
+      <button type="button" id="locBtn" onclick="detectLocation()" style="width:100%;padding:13px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.25);border-radius:13px;color:#60a5fa;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'DM Sans',sans-serif">📍 Salon-Standort ermitteln</button>
+      <div id="locResult" style="margin-top:10px;display:block">
+        <div style="font-size:11px;color:#4ade80;margin-bottom:6px;font-weight:700">✅ Adresse eingeben oder oben GPS nutzen:</div>
+        <input type="text" id="locAddrInput" placeholder="🔍 Salon-Adresse suchen…" oninput="updateLocFromInput()" autocomplete="off" style="width:100%;padding:11px 14px;border:1px solid rgba(96,165,250,0.3);border-radius:12px;background:rgba(96,165,250,0.04);color:#ffffff;font-size:13px;margin-bottom:8px">
+        <a id="locMapLink" href="#" target="_blank" rel="noopener" style="display:none;font-size:11px;color:#60a5fa;text-decoration:none;font-weight:700">🗺 Standort auf der Karte prüfen &amp; ggf. korrigieren</a>
+      </div>
+      <div id="locErr" style="display:none;margin-top:8px;font-size:11px;color:#facc15;line-height:1.6;padding:8px 10px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.2);border-radius:8px"></div>
+    </div>
+    <div class="msg-err" id="ferr"></div>
+    ${isFree?`
+      <button class="pay-btn" id="payBtn" onclick="submitReg()">🚀 Kostenlos anmelden</button>
+    `:`
+      <button class="pay-btn" id="payBtn" onclick="validateAndShowPayPal()">Weiter zur Zahlung → ${price} €/Monat</button>
+      <div style="text-align:center;font-size:12.5px;color:#cbd5e1;margin-top:10px;line-height:1.6">Betrag: <strong style="color:#fff">${price} €/Monat</strong> für <strong style="color:#fff">${limit} Simulationen</strong> · Zahlung über Revolut</div>
+      <div id="paypal-container" style="display:none;margin-top:16px"></div>
+    `}
+    <p class="dsgvo-note">🔒 Deine Daten werden nur zur Kontoerstellung verwendet. DSGVO-konform.</p>
+  `;
+  document.getElementById('regModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+const APP_FILES={herren:'Logic_Maenner.html',damen:'Logic_Frauen.html',kombiniert:'Logic_Haare_Farbe_Bart.html'};
+function selectApp(app){
+  _selectedApp=app;
+  ['herren','damen','kombiniert'].forEach(a=>{
+    const el=document.getElementById('sel-'+a);
+    if(!el)return;
+    const on=a===app;
+    el.style.borderColor=on?'#ff1f6e':'rgba(255,255,255,0.12)';
+    el.style.background=on?'rgba(255,31,110,0.12)':'rgba(255,255,255,0.03)';
+    el.style.boxShadow=on?'0 0 0 1px #ff1f6e':'none';
+  });
+}
+
+function closeModal(){document.getElementById('regModal').classList.remove('open');document.body.style.overflow=''}
+
+/* ── HELPERS ── */
+function esc(s=''){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function showErr(msg){const el=document.getElementById('ferr');el.textContent=msg;el.classList.add('show')}
+function slugify(email){return email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g,'')||('user'+Date.now())}
+
+async function getClientIP(){try{const r=await fetch('https://api.ipify.org?format=json');const d=await r.json();return d.ip||'unknown'}catch(e){return 'unknown'}}
+
+async function sbInsert(table,payload,selectCols){
+  // selectCols: anon darf auf "users" nur bestimmte Spalten lesen — die
+  // Rückgabe muss daher auf erlaubte Spalten (z.B. 'id') begrenzt werden.
+  const q=selectCols?`?select=${encodeURIComponent(selectCols)}`:'';
+  const res=await fetch(`${SB_URL}/rest/v1/${table}${q}`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=representation'},body:JSON.stringify(payload)});
+  const text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch(e){}
+  if(!res.ok)throw new Error(data?.message||data?.error_description||text||'Supabase error');
+  return data;
+}
+async function sendAdminEmail(subject,fields){
+  try{await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(ADMIN_EMAIL)}`,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({_subject:subject,_template:'table',_captcha:'false',...fields})})}catch(e){console.warn('Email failed:',e.message)}
+}
+async function checkDuplicate(email,phone,address,salonName,ip,isFree){
+  const results={email:false,phone:false,address:false,salon:false,ip:false};
+  const h={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
+  try{
+    // E-Mail — immer prüfen
+    const eRes=await fetch(`${SB_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=id`,{headers:h});
+    if((await eRes.json())?.length>0)results.email=true;
+    // Gmail-Tricks (Punkte / +Tag) neutralisieren, damit die gleiche Mailbox nicht mehrfach zählt
+    const canon=canonicalEmail(email);
+    if(!results.email&&canon&&canon!==String(email||'').trim().toLowerCase()){
+      const cRes=await fetch(`${SB_URL}/rest/v1/users?email=eq.${encodeURIComponent(canon)}&select=id`,{headers:h});
+      if((await cRes.json())?.length>0)results.email=true;
+    }
+
+    if(isFree){
+      // Telefon — nur bei Free
+      if(phone){
+        const phoneNorm=phone.replace(/[\s\-\(\)]/g,'');
+        const p1=await fetch(`${SB_URL}/rest/v1/users?phone=eq.${encodeURIComponent(phone)}&select=id`,{headers:h});
+        const p2=await fetch(`${SB_URL}/rest/v1/users?phone=eq.${encodeURIComponent(phoneNorm)}&select=id`,{headers:h});
+        if((await p1.json())?.length>0||(await p2.json())?.length>0)results.phone=true;
+      }
+      // Salonadresse — nur bei Free
+      if(address){
+        const aRes=await fetch(`${SB_URL}/rest/v1/users?salon_address=eq.${encodeURIComponent(address)}&plan=eq.probe&select=id`,{headers:h});
+        if((await aRes.json())?.length>0)results.address=true;
+      }
+      // Salon-Name — nur bei Free
+      if(salonName){
+        const snorm=salonName.toLowerCase().replace(/\s+/g,'');
+        const sRes=await fetch(`${SB_URL}/rest/v1/users?salon_name=ilike.${encodeURIComponent('%'+salonName+'%')}&plan=eq.probe&select=id`,{headers:h});
+        if((await sRes.json())?.length>0)results.salon=true;
+      }
+      // IP — nur bei Free: pro IP nur 1 kostenloser Test
+      if(ip&&ip!=='unknown'){
+        const iRes=await fetch(`${SB_URL}/rest/v1/users?registration_ip=eq.${encodeURIComponent(ip)}&plan=eq.probe&select=id`,{headers:h});
+        if((await iRes.json())?.length>0)results.ip=true;
+      }
+    }
+  }catch(e){console.warn('checkDuplicate:',e.message)}
+  return results;
+}
+
+/* ── ANTI-MISSBRAUCH: Sperre gegen kostenlose Mehrfach-Anmeldungen ── */
+function canonicalEmail(e){
+  e=String(e||'').trim().toLowerCase();
+  const at=e.indexOf('@');if(at<0)return e;
+  let local=e.slice(0,at),domain=e.slice(at+1);
+  if(domain==='gmail.com'||domain==='googlemail.com'){local=local.replace(/\./g,'').split('+')[0];domain='gmail.com';}
+  else{local=local.split('+')[0];}
+  return local+'@'+domain;
+}
+const FREE_LOCK_KEY='ls_free_locked';
+function isFreeLocked(){try{return localStorage.getItem(FREE_LOCK_KEY)==='1'}catch(e){return false}}
+function showFreeLock(){
+  showErr('🔒 Für diesen Salon wurde bereits ein kostenloser Test genutzt. Aus Sicherheitsgründen ist keine weitere kostenlose Anmeldung möglich. Bitte kontaktiere den Admin: farhadjavanmardi@icloud.com');
+  const b=document.getElementById('payBtn');if(b){b.disabled=true;b.textContent='🔒 Gesperrt';}
+}
+async function lockFreeSignup(reason,fields){
+  try{localStorage.setItem(FREE_LOCK_KEY,'1')}catch(e){}
+  showFreeLock();
+  // Admin über den Missbrauchsversuch benachrichtigen
+  try{await sbInsert('admin_notifications',{event_type:'free_signup_abuse_blocked',user_id:null,title:'⚠️ Blockierter Mehrfach-Testversuch',message:'Doppelte Angaben ('+reason+') · '+(fields.salon||'—')+' · '+(fields.email||'—'),payload:{...fields,reason,at:new Date().toISOString()},emailed_to_admin:false})}catch(e){console.warn('abuse notif:',e.message)}
+}
+
+/* ── LOCATION ── */
+function updateLocFromInput(){
+  const val=(document.getElementById('locAddrInput')?.value||'').trim();
+  if(document.getElementById('f6'))document.getElementById('f6').value=val;
+  const mapLink=document.getElementById('locMapLink');
+  if(mapLink)mapLink.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(val);
+}
+// Reverse-Geocoding über Google (genauer als Nominatim, API ist bereits geladen).
+function googleReverse(lat,lng){
+  return new Promise((resolve,reject)=>{
+    if(typeof google==='undefined'||!google.maps||!google.maps.Geocoder){reject(new Error('google-geocoder-unavailable'));return}
+    new google.maps.Geocoder().geocode({location:{lat,lng},language:'de',region:'de'},(results,status)=>{
+      if(status==='OK'&&results&&results.length)resolve(results);else reject(new Error('geocode:'+status));
+    });
+  });
+}
+function detectLocation(){
+  const btn=document.getElementById('locBtn');
+  const le=document.getElementById('locErr');
+  if(!navigator.geolocation){btn.textContent='❌ GPS nicht verfügbar';return}
+  if(le)le.style.display='none';
+  btn.disabled=true;btn.textContent='⏳ Standort wird ermittelt…';
+  navigator.geolocation.getCurrentPosition(
+    async pos=>{
+      try{
+        const{latitude:lat,longitude:lng,accuracy}=pos.coords;
+        let street='',num='',zip='',city='',full='';
+        // 1) Google (präzise) — sonst Nominatim als Fallback
+        try{
+          const results=await googleReverse(lat,lng);
+          const best=results.find(r=>(r.types||[]).includes('street_address'))||results.find(r=>(r.types||[]).includes('premise'))||results[0];
+          const comps=best.address_components||[];
+          const get=type=>(comps.find(c=>c.types.includes(type))||{}).long_name||'';
+          street=get('route');num=get('street_number');zip=get('postal_code');
+          city=get('locality')||get('postal_town')||get('sublocality')||get('administrative_area_level_2');
+          full=best.formatted_address||`${street} ${num}, ${zip} ${city}`.trim();
+        }catch(_){
+          const res=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1&zoom=18`,{headers:{'Accept-Language':'de'}});
+          const d=await res.json();const addr=d.address||{};
+          street=addr.road||'';num=addr.house_number||'';zip=addr.postcode||'';city=addr.city||addr.town||addr.village||'';
+          full=`${street} ${num}, ${zip} ${city}`.trim().replace(/^,\s*/,'');
+        }
+        if(document.getElementById('f6'))document.getElementById('f6').value=street;
+        if(document.getElementById('f6b'))document.getElementById('f6b').value=num;
+        if(document.getElementById('f7'))document.getElementById('f7').value=zip;
+        if(document.getElementById('f8'))document.getElementById('f8').value=city;
+        const inp=document.getElementById('locAddrInput');if(inp)inp.value=full;
+        const mapLink=document.getElementById('locMapLink');
+        if(mapLink){mapLink.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(full);mapLink.style.display='inline-block';}
+        // GPS ist auf Handys ±5-20 m, über WLAN/Desktop teils >100 m → Nutzer zur Kontrolle auffordern.
+        const inaccurate=accuracy&&accuracy>50;
+        if(le){
+          le.style.display='block';
+          le.textContent=inaccurate
+            ?`⚠️ GPS ungenau (±${Math.round(accuracy)} m). Bitte die Adresse oben im Suchfeld prüfen und ggf. korrigieren (Salon-Name eintippen).`
+            :'✅ Bitte kurz prüfen, ob die Adresse exakt stimmt — sonst oben korrigieren.';
+          le.style.color=inaccurate?'#facc15':'#4ade80';
+          le.style.background=inaccurate?'rgba(250,204,21,0.07)':'rgba(74,222,128,0.07)';
+          le.style.borderColor=inaccurate?'rgba(250,204,21,0.2)':'rgba(74,222,128,0.2)';
+        }
+        // Button sichtbar lassen, damit erneut versucht werden kann
+        btn.disabled=false;btn.textContent='📍 Standort erneut ermitteln';
+      }catch(e){btn.textContent='❌ Fehler — bitte manuell eingeben';btn.disabled=false}
+    },
+    err=>{
+      btn.disabled=false;btn.textContent='📍 Nochmal versuchen';
+      if(le){le.style.display='block';le.style.color='#facc15';le.textContent='⚠️ Standort konnte nicht ermittelt werden. Bitte erlaube den GPS-Zugriff oder gib die Adresse oben manuell ein.';}
+    },
+    {enableHighAccuracy:true,timeout:12000,maximumAge:0}
+  );
+}
+function initPlacesAutocomplete(){
+  const input=document.getElementById('locAddrInput');
+  if(!input||typeof google==='undefined'||!google.maps?.places)return;
+  const ac=new google.maps.places.Autocomplete(input,{componentRestrictions:{country:'de'},fields:['formatted_address','geometry','address_components']});
+  ac.addListener('place_changed',()=>{
+    const place=ac.getPlace();if(!place.formatted_address)return;
+    const full=place.formatted_address;const comps=place.address_components||[];
+    const get=type=>(comps.find(c=>c.types.includes(type))||{}).long_name||'';
+    const street=get('route');const num=get('street_number');
+    const zip=get('postal_code');const city=get('locality')||get('sublocality');
+    if(document.getElementById('f6'))document.getElementById('f6').value=street;
+    if(document.getElementById('f6b'))document.getElementById('f6b').value=num;
+    if(document.getElementById('f7'))document.getElementById('f7').value=zip;
+    if(document.getElementById('f8'))document.getElementById('f8').value=city;
+    input.value=full;updateLocFromInput();
+  });
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')e.preventDefault()});
+}
+function tryInitPlaces(){if(typeof google!=='undefined'&&google.maps&&google.maps.places){initPlacesAutocomplete()}else{setTimeout(tryInitPlaces,500)}}
+window.addEventListener('load',()=>setTimeout(tryInitPlaces,800));
+
+/* ── VALIDATE + SHOW PAYPAL ── */
+async function validateAndShowPayPal(){
+  const f1=document.getElementById('f1')?.value.trim();const f2=document.getElementById('f2')?.value.trim();
+  const f3=document.getElementById('f3')?.value.trim().toLowerCase();const f4=document.getElementById('f4')?.value.trim();
+  const f5=document.getElementById('f5')?.value.trim();const f6=document.getElementById('f6')?.value.trim();
+  const btn=document.getElementById('payBtn');
+  document.getElementById('ferr').classList.remove('show');
+  if(!f1||!f2)return showErr('❌ Bitte Vor- und Nachnamen eingeben.');
+  if(!f3||!f3.includes('@'))return showErr('❌ Bitte gültige E-Mail-Adresse eingeben.');
+  if(!f4)return showErr('❌ Bitte Telefonnummer eingeben.');
+  if(!f5)return showErr('❌ Bitte Salonname eingeben.');
+  if(!f6)return showErr('❌ Bitte zuerst den Standort ermitteln (📍 Button).');
+  if(!_selectedApp)return showErr('❌ Bitte wähle eine Software.');
+  btn.disabled=true;btn.textContent='⏳ Daten werden geprüft…';
+  // Bezahlte Pakete: keine Duplikat-Sperre — E-Mail/Adresse dürfen mehrfach registriert werden.
+  const clientIP=await getClientIP();
+  const cfg=PLANS[_plan];
+  let userId=null,ref='';
+  try{
+    const f7=document.getElementById('f7')?.value.trim();const f8=document.getElementById('f8')?.value.trim();
+    const username=slugify(f3);ref='LS-'+username.toUpperCase()+'-'+_plan.toUpperCase()+'-'+Date.now();
+    const inserted=await sbInsert('users',{full_name:f1+' '+f2,email:f3,username,phone:f4,salon_name:f5,salon_address:f6,salon_zip:f7,salon_city:f8,plan:_plan,requested_plan:_plan,requested_price:cfg.price,registration_type:'revolut',approval_status:'pending',payment_status:'pending',simulations_limit:cfg.limit,simulations_used:0,is_active:false,password_hash:'',activation_code:ref,admin_note:'Software-Zugang: '+_selectedApp+' | Revolut (wartet auf Zahlung)',registration_ip:clientIP,temp_password:null,temp_password_expires_at:null,must_change_password:false,temp_password_sent_at:null},'id');
+    const userRow=Array.isArray(inserted)?inserted[0]:inserted;userId=userRow?.id||null;
+    await sendAdminEmail('🆕 Logic Style Bestellung: '+f5+' ('+cfg.title+')',{Name:f1+' '+f2,Email:f3,Telefon:f4,Salon:f5,Adresse:f6+', '+f7+' '+f8,Tarif:cfg.title+' · '+cfg.price+'€/Monat','Software-Zugang':_selectedApp,Status:'Wartet auf Revolut-Zahlung',Referenz:ref});
+    try{await sbInsert('store_orders',{package_code:_plan,billing_cycle:'monthly',customer_name:f1+' '+f2,salon_name:f5,email:f3,phone:f4,country:'DE',amount:cfg.price,currency:'EUR',status:'pending',payment_ref:ref,notes:'Software-Zugang: '+_selectedApp+' | Revolut'})}catch(e){console.warn('store_orders:',e.message)}
+  }catch(e){console.warn('Save pending error:',e.message)}
+
+  // ── Revolut: automatische Freischaltung direkt nach Zahlung ──
+  btn.style.display='none';
+  const cont=document.getElementById('paypal-container');cont.style.display='block';
+  const rev=userId?await createRevolutOrder('plan',userId,{plan:_plan}):null;
+  if(rev&&rev.checkout_url){
+    cont.innerHTML=`
+      <div style="padding:12px 14px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:12px;font-size:12.5px;color:#4ade80;line-height:1.6;text-align:center;font-weight:600;margin-bottom:14px">
+        💳 Betrag: <span style="color:#fff">${Number(cfg.price)} €/Monat</span> für <span style="color:#fff">${cfg.limit} Simulationen</span><br>🔒 Sichere Zahlung über Revolut
+      </div>
+      <a href="${rev.checkout_url}" target="_blank" rel="noopener" class="pay-btn" style="display:block;text-align:center;text-decoration:none">Jetzt mit Revolut bezahlen → ${Number(cfg.price)} €</a>
+      <p style="font-size:11.5px;color:#9ca3af;text-align:center;margin-top:10px;line-height:1.6">Nach erfolgreicher Zahlung wird dein Zugang <strong>automatisch</strong> freigeschaltet und die Zugangsdaten per E-Mail gesendet.</p>`;
+  }else{
+    // Revolut noch nicht konfiguriert — Anfrage gespeichert, Zahlungslink folgt per E-Mail.
+    cont.innerHTML=`
+      <div style="padding:16px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.22);border-radius:14px;font-size:13px;color:#facc15;line-height:1.8;text-align:center">
+        ✅ Deine Anfrage ist gespeichert · Referenz: <span style="font-family:'Space Mono',monospace">${esc(ref)}</span><br>
+        Die Online-Zahlung wird gerade eingerichtet. Wir senden dir in Kürze den Zahlungslink per E-Mail an <strong style="color:#fff">${esc(f3)}</strong> — direkt nach der Zahlung wird dein Zugang automatisch freigeschaltet.
+      </div>`;
+  }
+}
+
+/* ── SUBMIT FREE ── */
+async function submitReg(){
+  const f1=document.getElementById('f1')?.value.trim();const f2=document.getElementById('f2')?.value.trim();
+  const f3=document.getElementById('f3')?.value.trim().toLowerCase();const f4=document.getElementById('f4')?.value.trim();
+  const f5=document.getElementById('f5')?.value.trim();const f6=document.getElementById('f6')?.value.trim();
+  const f7=document.getElementById('f7')?.value.trim();const f8=document.getElementById('f8')?.value.trim();
+  const btn=document.getElementById('payBtn');const cfg=PLANS[_plan];
+  document.getElementById('ferr').classList.remove('show');
+  if(!f1||!f2)return showErr('❌ Bitte Vor- und Nachnamen eingeben.');
+  if(!f3||!f3.includes('@'))return showErr('❌ Bitte gültige E-Mail-Adresse eingeben.');
+  if(!f4)return showErr('❌ Bitte Telefonnummer eingeben.');
+  if(!f5)return showErr('❌ Bitte Salonname eingeben.');
+  if(!f6)return showErr('❌ Bitte zuerst den Standort ermitteln (📍 Button).');
+  if(!_selectedApp)return showErr('❌ Bitte wähle eine Software (Herren oder Damen).');
+  if(isFreeLocked())return showFreeLock();
+  btn.disabled=true;btn.textContent='⏳ Wird geprüft…';
+
+  // Für Free: IP holen und streng prüfen
+  const clientIP=await getClientIP();
+  const dupl=await checkDuplicate(f3,f4,f6,f5,clientIP,true);
+
+  // Anti-Missbrauch: sobald IRGENDEIN Merkmal (E-Mail, Telefon, Adresse, Salon, IP)
+  // schon existiert, wird der kostenlose Zugang gesperrt — ein bloßes Ändern der
+  // E-Mail reicht dann nicht mehr, um erneut einen Gratis-Test zu bekommen.
+  const reasons=[];
+  if(dupl.email)reasons.push('E-Mail');
+  if(dupl.phone)reasons.push('Telefonnummer');
+  if(dupl.address)reasons.push('Salonadresse');
+  if(dupl.salon)reasons.push('Salonname');
+  if(dupl.ip)reasons.push('Standort/IP');
+  if(reasons.length){
+    await lockFreeSignup(reasons.join(', '),{email:f3,phone:f4,salon:f5,address:(f6||'')+', '+(f7||'')+' '+(f8||''),ip:clientIP});
+    return;
+  }
+
+  btn.textContent='⏳ Wird gespeichert…';
+  const username=slugify(f3);const ref='LS-'+username.toUpperCase()+'-'+_plan.toUpperCase()+'-'+Date.now();
+  try{
+    const inserted=await sbInsert('users',{full_name:f1+' '+f2,email:f3,username,phone:f4,salon_name:f5,salon_address:f6,salon_zip:f7,salon_city:f8,plan:_plan,requested_plan:_plan,requested_price:cfg.price,registration_type:cfg.type,approval_status:'pending',payment_status:'not_required',simulations_limit:cfg.limit,simulations_used:0,is_active:false,password_hash:'',activation_code:ref,admin_note:'Software-Zugang: '+_selectedApp+' | GPS-Standort',registration_ip:clientIP,temp_password:null,temp_password_expires_at:null,must_change_password:false,temp_password_sent_at:null},'id');
+    const userRow=Array.isArray(inserted)?inserted[0]:inserted;
+    try{await sbInsert('admin_notifications',{event_type:'new_free_signup',user_id:userRow?.id||null,title:'Neue kostenlose Anmeldung',message:f1+' '+f2+' · '+f5+' · '+cfg.title,payload:{full_name:f1+' '+f2,email:f3,phone:f4,salon_name:f5,address:f6+', '+f7+' '+f8,plan:_plan,software_interest:_selectedApp,reference:ref},emailed_to_admin:false})}catch(e){console.warn('notification:',e.message)}
+    try{await sbInsert('store_orders',{package_code:_plan,billing_cycle:'monthly',customer_name:f1+' '+f2,salon_name:f5,email:f3,phone:f4,country:'DE',amount:cfg.price,currency:'EUR',status:'pending',payment_ref:ref,notes:'Software-Zugang: '+_selectedApp+' | '+cfg.type})}catch(e){console.warn('store_orders:',e.message)}
+    await sendAdminEmail('🆕 Logic Style Anmeldung: '+f5+' ('+cfg.title+')',{Name:f1+' '+f2,Email:f3,Telefon:f4,Salon:f5,Adresse:f6+', '+f7+' '+f8,'Software-Zugang':_selectedApp,Tarif:cfg.title+' · kostenlos',Freischaltung:'Manuell durch Admin erforderlich',Referenz:ref,IP:clientIP});
+    document.getElementById('modalTitle').textContent='✅ Anfrage eingegangen!';
+    document.getElementById('modalBody').innerHTML=`
+      <div style="text-align:center;padding:16px 0">
+        <div style="font-size:52px;margin-bottom:16px">📬</div>
+        <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.5rem;margin-bottom:10px">Danke, ${esc(f1)}!</h3>
+        <p style="color:var(--muted);margin-bottom:20px;line-height:1.7;font-size:14px">Deine Anfrage ist gespeichert. Wir prüfen deine Salonadresse und schalten dich innerhalb von <strong style="color:var(--text)">24 Stunden</strong> frei.<br>Du bekommst per E-Mail deinen persönlichen Zugangscode.</p>
+        <div style="background:rgba(255,31,110,0.06);border:1px solid rgba(255,31,110,0.15);border-radius:14px;padding:16px;text-align:left;margin-bottom:18px">
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1.5px;font-family:'Space Mono',monospace;margin-bottom:10px">DEINE ANGABEN</div>
+          <div style="font-size:13px;line-height:2;color:var(--text)">
+            <strong>Name:</strong> ${esc(f1+' '+f2)}<br>
+            <strong>E-Mail:</strong> ${esc(f3)}<br>
+            <strong>Salon:</strong> ${esc(f5)}<br>
+            <strong>Tarif:</strong> ${esc(cfg.title)}<br>
+            <strong>Referenz:</strong> <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--pink)">${esc(ref)}</span>
+          </div>
+        </div>
+        <button style="width:100%;padding:13px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="closeModal()">Schließen</button>
+      </div>`;
+  }catch(e){
+    const msg=String(e.message||'');
+    if(/duplicate|unique|already|bereits/i.test(msg)){showErr('❌ Diese E-Mail-Adresse ist bereits registriert. Bitte wende dich an: info@logicstyle-salon.de')}
+    else{showErr('❌ Fehler: '+(msg||'Unbekannter Fehler'))}
+    btn.disabled=false;btn.textContent='🚀 Kostenlos anmelden';
+  }
+}
+
+/* ── COOKIE ── */
+  // Show Google Maps hint when phone focused
+  const ph = document.getElementById('f4');
+  const phoneHint = document.getElementById('phone-maps-hint');
+  if(ph && phoneHint){
+    ph.addEventListener('focus', () => phoneHint.style.display = 'block');
+    ph.addEventListener('blur', () => { if(!ph.value) phoneHint.style.display = 'none'; });
+  }
+  document.addEventListener('DOMContentLoaded', initHomepageGalleries);
+(function(){if(!localStorage.getItem('ls_consent'))document.getElementById('ls-consent').classList.add('show')})();
+function lsCon(c){localStorage.setItem('ls_consent',c);document.getElementById('ls-consent').classList.remove('show')}
+
+// ── Gallery Groups: load 2 real images per section ──
+async function loadGalleryGroups(){
+  const grids=document.querySelectorAll('.gallery-grp-grid');
+  if(!grids.length)return;
+  try{
+    const SB=window.SB_ANON||window.lsSB;
+    if(!SB)return;
+    for(const grid of grids){
+      const mode=grid.dataset.mode;
+      const limit=parseInt(grid.dataset.limit||2);
+      const{data}=await SB.from('model_gallery')
+        .select('after_url,image_url,pair_label,model_id,before_url,customer_id')
+        .eq('mode',mode)
+        .not('after_url','is',null)
+        .order('sort_order',{ascending:true})
+        .limit(limit);
+      const rows=(data||[]).filter(r=>String(r.customer_id||'')!=='BASIS');  // Basis-Referenzbilder nie öffentlich zeigen
+      if(!rows.length){
+        grid.innerHTML='<div class="gc"><div class="gc-ph">Demnächst</div></div>';
+        continue;
+      }
+      grid.innerHTML=rows.map(r=>`
+        <div class="gc">
+          ${r.before_url&&r.after_url
+            ?`<div class="gc-pair"><img src="${r.before_url}" loading="lazy" alt="Vorher"><img src="${r.after_url||r.image_url}" loading="lazy" alt="Nachher"></div>`
+            :`<img src="${r.after_url||r.image_url}" loading="lazy" alt="${r.pair_label||''}">`}
+          <div class="gc-label">${r.pair_label||''}</div>
+        </div>`).join('');
+    }
+  }catch(e){console.warn('Gallery load:',e);}
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(loadGalleryGroups,600));
+
+async function loadFeaturedCards(){
+  const grid=document.getElementById('featuredCards');
+  if(!grid)return;
+  const modeLabels={female:'Damen',male:'Herren',beard:'Bart',color:'Farbe',behandlung:'Keratin'};
+  const modeLinks={female:'models.html?mode=female',male:'models.html?mode=male',beard:'models.html?mode=beard',color:'models.html?mode=color',behandlung:'models.html?mode=behandlung'};
+  const modeNames={female:'Damen Styles',male:'Herren Styles',beard:'Bart Styles',color:'Farbe & Balayage',behandlung:'Keratin & Perm'};
+  const order=['female','male','beard','color','behandlung'];
+  const placeholder=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:rgba(255,31,110,0.3)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>`;
+  const card=(r)=>{
+    const before=r.before_url, after=r.after_url||r.image_url;
+    let media;
+    if(before&&after){
+      media=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:100%;height:100%">
+        <div style="position:relative;overflow:hidden"><img src="${before}" loading="lazy" alt="Vorher" style="width:100%;height:100%;object-fit:cover;display:block"><span style="position:absolute;bottom:6px;left:6px;background:rgba(96,165,250,0.92);color:#fff;font-size:7px;font-weight:700;padding:2px 6px;border-radius:6px;font-family:Space Mono,monospace">VORHER</span></div>
+        <div style="position:relative;overflow:hidden"><img src="${after}" loading="lazy" alt="Nachher" style="width:100%;height:100%;object-fit:cover;display:block"><span style="position:absolute;bottom:6px;right:6px;background:rgba(255,31,110,0.92);color:#000;font-size:7px;font-weight:700;padding:2px 6px;border-radius:6px;font-family:Space Mono,monospace">NACHHER</span></div>
+      </div>`;
+    }else if(after){
+      media=`<img src="${after}" loading="lazy" alt="${r.name}" style="width:100%;height:100%;object-fit:cover;display:block">`;
+    }else{ media=placeholder; }
+    return`<a href="${modeLinks[r.mode]||'models.html'}" style="text-decoration:none;display:block">
+      <div style="border-radius:14px;overflow:hidden;border:1px solid rgba(255,31,110,0.2);background:#000000;transition:all .2s;cursor:pointer" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='rgba(255,31,110,0.5)'" onmouseout="this.style.transform='';this.style.borderColor='rgba(255,31,110,0.2)'">
+        <div style="width:100%;aspect-ratio:3/4;overflow:hidden;background:#000000;position:relative">
+          ${media}
+          <div style="position:absolute;top:8px;left:8px;background:rgba(255,31,110,0.88);color:#000;font-size:8px;font-weight:700;padding:2px 8px;border-radius:10px;font-family:Space Mono,monospace;text-transform:uppercase;z-index:2">${modeLabels[r.mode]||r.mode}</div>
+        </div>
+        <div style="padding:8px 10px 10px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:#ffffff;line-height:1.3">${r.name}</div>
+        </div>
+      </div>
+    </a>`;
+  };
+  try{
+    const h={apikey:SB_KEY,Authorization:'Bearer '+SB_KEY};
+    // Single source of truth = model_gallery (same table gallery, models & software read).
+    const res=await fetch(`${SB_URL}/rest/v1/model_gallery?select=model_id,mode,pair_label,before_url,after_url,image_url,sort_order&after_url=not.is.null&order=sort_order.asc&limit=400`,{headers:h});
+    const rows=await res.json();
+    const pick={};
+    (Array.isArray(rows)?rows:[]).forEach(r=>{
+      if(!r.mode||pick[r.mode])return;
+      if(r.after_url||r.image_url)pick[r.mode]=r;
+    });
+    const items=order.map(m=>({mode:m,name:modeNames[m],...(pick[m]||{})}));
+    grid.innerHTML=items.map(card).join('');
+  }catch(e){
+    console.warn('loadFeaturedCards:',e.message);
+    grid.innerHTML=order.map(m=>card({mode:m,name:modeNames[m]})).join('');
+  }
+}
+// Call it when page loads
+loadFeaturedCards();
+</script>
+</body>
+</html>
