@@ -770,11 +770,23 @@ function openModal(planKey,price,limit){
     </div>
   `;
 
-  document.getElementById('modalBody').innerHTML=`
+  const creditCardHTML=isFree?`
     <div class="plan-badge">
-      <div class="plan-badge-name">${cfg.title}${isFree?' — Kostenlos':' · '+price+'€/Monat'}</div>
-      <div class="plan-badge-sub">${limit} Simulationen · ${isFree?'Einmalig · Kein Abo':'Monatlich kündbar'} · Logic Haare Software</div>
+      <div class="plan-badge-name">${cfg.title} — Kostenlos</div>
+      <div class="plan-badge-sub">${limit} Simulationen · Einmalig · Kein Abo · Logic Haare Software</div>
     </div>
+  `:`
+    <div style="margin:0 0 16px;padding:20px 18px;border:1.5px solid rgba(255,31,110,0.4);background:linear-gradient(160deg,rgba(255,31,110,0.13),rgba(255,31,110,0.04));border-radius:18px;text-align:center">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.6px;color:#ff5089;text-transform:uppercase;margin-bottom:12px">💳 Credit kaufen — ${cfg.title}</div>
+      <div style="font-size:44px;font-weight:900;color:#fff;line-height:1">${limit}</div>
+      <div style="font-size:13px;color:#cbd5e1;margin-top:4px;font-weight:600">Simulationen / Monat</div>
+      <div style="margin:14px auto;height:1px;width:62%;background:rgba(255,255,255,0.13)"></div>
+      <div style="font-size:36px;font-weight:900;color:#fff;line-height:1"><sup style="font-size:19px;font-weight:700;top:-0.5em">€</sup>${price}<span style="font-size:15px;color:#9ca3af;font-weight:600"> /Monat</span></div>
+      <div style="font-size:11.5px;color:#9ca3af;margin-top:8px;line-height:1.6">Monatlich kündbar · Sichere Zahlung über PayPal</div>
+    </div>
+  `;
+  document.getElementById('modalBody').innerHTML=`
+    ${creditCardHTML}
     ${appSelectorHTML}
     <div class="section-divider">👤 Persönliche Angaben</div>
     <div class="f-row">
@@ -807,7 +819,8 @@ function openModal(planKey,price,limit){
     ${isFree?`
       <button class="pay-btn" id="payBtn" onclick="submitReg()">🚀 Kostenlos anmelden</button>
     `:`
-      <button class="pay-btn" id="payBtn" onclick="validateAndShowPayPal()">Weiter zur Zahlung →</button>
+      <button class="pay-btn" id="payBtn" onclick="validateAndShowPayPal()">Weiter zur Zahlung → ${price} €/Monat</button>
+      <div style="text-align:center;font-size:12.5px;color:#cbd5e1;margin-top:10px;line-height:1.6">Betrag: <strong style="color:#fff">${price} €/Monat</strong> für <strong style="color:#fff">${limit} Simulationen</strong> · Zahlung über PayPal</div>
       <div id="paypal-container" style="display:none;margin-top:16px"></div>
     `}
     <p class="dsgvo-note">🔒 Deine Daten werden nur zur Kontoerstellung verwendet. DSGVO-konform.</p>
@@ -1042,7 +1055,7 @@ async function validateAndShowPayPal(){
   if(paidOnline&&userId){
     cont.innerHTML=`
       <div style="padding:12px 14px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:12px;font-size:12.5px;color:#4ade80;line-height:1.6;text-align:center;font-weight:600;margin-bottom:14px">
-        🔒 Sichere Zahlung über PayPal · monatlich kündbar<br>Direkt nach der Zahlung erhältst du dein temporäres Passwort per E-Mail.
+        💳 Betrag: <span style="color:#fff">${Number(cfg.price)} €/Monat</span> für <span style="color:#fff">${cfg.limit} Simulationen</span><br>🔒 Sichere Zahlung über PayPal · monatlich kündbar<br>Direkt nach der Zahlung erhältst du dein temporäres Passwort per E-Mail.
       </div>
       <div id="paypal-btn"></div>
       <div id="paypal-status" style="margin-top:12px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6"></div>`;
