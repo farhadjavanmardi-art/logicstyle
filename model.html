@@ -1,0 +1,1667 @@
+<!doctype html>
+<html lang="de">
+ <head>
+  <meta charset="UTF-8" />
+  <meta
+   name="viewport"
+   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <title>Logic Style | Fotomodell werden</title>
+  <meta
+   name="description"
+   content="Als Fotomodell für die Logic Style Simulations-Galerie teilnehmen: Haare, Farbe, Bart, Keratin und Perm."
+  />
+  <meta
+   property="og:title"
+   content="Logic Style — Fotomodell für die Simulations-Galerie werden"
+  />
+  <meta
+   property="og:description"
+   content="Nimm freiwillig als Fotomodell für realistische Vorher/Nachher KI-Simulationen teil."
+  />
+  <link
+   href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap"
+   rel="stylesheet"
+  />
+  <style>
+   :root {
+    --bg: #000000;
+    --card: #000000;
+    --card2: #000000;
+    --text: #ffffff;
+    --muted: #ffffff;
+    --silver: #ffffff;
+    --pink: #ff1f6e;
+    --pink2: #ff5089;
+    --pink-dim: rgba(255, 31, 110, 0.12);
+    --pink-border: rgba(255, 31, 110, 0.38);
+    --border: #ffffff;
+    --ok: #4ade80;
+    --ok-bg: rgba(74, 222, 128, 0.08);
+    --warn: #fb923c;
+    --danger: #f87171;
+   }
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   }
+   html {
+    scroll-behavior: smooth;
+   }
+   body {
+    font-family: "DM Sans", sans-serif;
+    background: #000000;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+   }
+   nav {
+    position: relative;
+    z-index: 10;
+    padding: 18px 18px 8px;
+   }
+   .nav-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+   }
+   .logo {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+   }
+   .nav-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+   }
+   .nav-btn {
+    padding: 7px 14px;
+    border-radius: 20px;
+    background: #000000;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: 0.2s;
+   }
+   .nav-btn:hover {
+    color: var(--text);
+    border-color: var(--pink-border);
+    background: var(--pink-dim);
+   }
+   .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 10px 18px 50px;
+    position: relative;
+    z-index: 1;
+   }
+   .hero {
+    text-align: center;
+    padding: 30px 0 28px;
+   }
+   .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pink-dim);
+    border: 1px solid var(--pink-border);
+    border-radius: 30px;
+    padding: 7px 16px;
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--pink);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+   }
+   .hero h1 {
+    font-family: "Rajdhani", sans-serif;
+    font-size: clamp(42px, 10vw, 74px);
+    line-height: 0.86;
+    letter-spacing: -2px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+   }
+   .hero h1 em {
+    font-style: normal;
+    color: var(--pink);
+    text-shadow: 0 0 40px rgba(255, 31, 110, 0.45);
+   }
+   .hero-sub {
+    font-size: 17px;
+    color: #ffffff;
+    line-height: 1.75;
+    max-width: 660px;
+    margin: 0 auto;
+   }
+   .hero-sub strong {
+    color: var(--text);
+   }
+   .quick-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0 0 26px;
+   }
+   .qlink {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #000000;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    text-decoration: none;
+    transition: 0.25s;
+   }
+   .qlink:hover {
+    border-color: var(--pink-border);
+    background: #000000;
+    transform: translateY(-2px);
+   }
+   .qlink .ico {
+    font-size: 22px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #000000;
+    border: 1px solid var(--pink-border);
+    box-shadow: 0 0 16px rgba(255, 31, 110, 0.22), 0 0 5px rgba(255, 31, 110, 0.12);
+    flex-shrink: 0;
+   }
+   .qlink strong {
+    display: block;
+    color: var(--text);
+    font-size: 14px;
+   }
+   .qlink span {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 2px;
+   }
+   .benefits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+   }
+   .benefit {
+    background: #000000;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: 0.25s;
+   }
+   .benefit:hover {
+    border-color: var(--pink-border);
+    transform: translateY(-2px);
+   }
+   .benefit-icon {
+    font-size: 26px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: #000000;
+    border: 1px solid var(--pink-border);
+    box-shadow: 0 0 18px rgba(255, 31, 110, 0.25), 0 0 6px rgba(255, 31, 110, 0.15);
+    flex-shrink: 0;
+   }
+   .benefit-title {
+    font-weight: 800;
+    font-size: 15px;
+    margin-bottom: 6px;
+    color: var(--text);
+   }
+   .benefit-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+   }
+   .info-box,
+   .consent-box,
+   .form-section,
+   .notice-box {
+    background: #000000;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 24px;
+    margin-bottom: 24px;
+   }
+   .info-box-title,
+   .consent-title,
+   .form-title,
+   .notice-title {
+    font-family: "Space Mono", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 16px;
+   }
+   .info-list {
+    display: grid;
+    gap: 14px;
+   }
+   .info-item {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 1.75;
+   }
+   .info-item strong {
+    color: var(--text);
+   }
+   .info-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--pink);
+    border-radius: 50%;
+    margin-top: 9px;
+    flex-shrink: 0;
+    box-shadow: 0 0 14px rgba(255, 31, 110, 0.6);
+   }
+   .notice-box {
+    background: #000000;
+    border-color: var(--pink-border);
+   }
+   .notice-title {
+    color: var(--pink);
+   }
+   .notice-box p {
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 1.8;
+   }
+   .consent-text {
+    font-size: 13px;
+    color: #ffffff;
+    line-height: 1.9;
+   }
+   .consent-text strong {
+    color: var(--text);
+   }
+   .consent-text h4 {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+    margin: 18px 0 6px;
+   }
+   .consent-text a {
+    color: var(--pink);
+    text-decoration: none;
+   }
+   .field {
+    margin-bottom: 18px;
+   }
+   .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+   }
+   .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-family: "Space Mono", monospace;
+    margin-bottom: 7px;
+   }
+   input,
+   select,
+   textarea {
+    width: 100%;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 13px 14px;
+    color: var(--text);
+    font-family: "DM Sans", sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
+   }
+   input:focus,
+   select:focus,
+   textarea:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px var(--pink-dim);
+   }
+   textarea {
+    min-height: 110px;
+    resize: vertical;
+   }
+   .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+   }
+   .check-item {
+    background: #000000;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: 0.2s;
+   }
+   .check-item:hover {
+    border-color: var(--pink-border);
+   }
+   .check-item.checked {
+    background: #000000;
+    border-color: var(--pink-border);
+   }
+   .check-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: var(--pink);
+    margin-top: 2px;
+    cursor: pointer;
+   }
+   .check-label {
+    font-size: 13px;
+    color: #ffffff;
+    line-height: 1.65;
+   }
+   .check-label strong {
+    display: block;
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 4px;
+   }
+   .check-required {
+    display: inline-block;
+    background: rgba(255, 31, 110, 0.14);
+    color: var(--pink);
+    font-family: "Space Mono", monospace;
+    font-size: 8px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    margin-left: 5px;
+   }
+   .form-err {
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--danger);
+    margin-bottom: 16px;
+    display: none;
+   }
+   .mail-preview {
+    display: none;
+    background: #000000;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 16px;
+   }
+   .mail-preview textarea {
+    min-height: 220px;
+    font-size: 12px;
+    color: #ffffff;
+   }
+   .btn-submit,
+   .btn-secondary {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+    transition: 0.25s;
+   }
+   .btn-submit {
+    background: var(--pink);
+    color: #000;
+   }
+   .btn-submit:hover {
+    background: var(--pink2);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 32px rgba(255, 31, 110, 0.3);
+   }
+   .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    margin-top: 10px;
+   }
+   .btn-secondary:hover {
+    border-color: var(--pink-border);
+    background: var(--pink-dim);
+   }
+   .success-screen {
+    display: none;
+    text-align: center;
+    padding: 38px 24px;
+    background: var(--card);
+    border: 1px solid var(--pink-border);
+    border-radius: 22px;
+   }
+   .success-icon {
+    font-size: 54px;
+    margin-bottom: 18px;
+   }
+   .success-title {
+    font-family: "Rajdhani", sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 10px;
+   }
+   .success-sub {
+    font-size: 15px;
+    color: #ffffff;
+    line-height: 1.8;
+   }
+   .page-footer {
+    text-align: center;
+    padding: 28px 18px 40px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
+   }
+   .page-footer a {
+    color: var(--pink);
+    text-decoration: none;
+   }
+   .legal-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+   }
+   #ls-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    background: #000000;
+    border-top: 1px solid rgba(255, 31, 110, 0.25);
+    padding: 14px 18px;
+    display: none;
+    font-family: "DM Sans", sans-serif;
+   }
+   #ls-consent.show {
+    display: block;
+   }
+   .ls-ci {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+   }
+   .ls-ct {
+    flex: 1;
+    min-width: 220px;
+    font-size: 12px;
+    color: #ffffff;
+    line-height: 1.5;
+   }
+   .ls-ct strong {
+    color: #ffffff;
+   }
+   .ls-ct a {
+    color: #60a5fa;
+    text-decoration: none;
+   }
+   .ls-cbtns {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+   }
+   .ls-ca {
+    padding: 8px 18px;
+    background: #ff1f6e;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+   }
+   .ls-cd {
+    padding: 8px 18px;
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+   }
+   /* ── RESERVATION SECTION ── */
+  .reserve-section {
+   background: #000000;
+   border: 1px solid var(--border);
+   border-radius: 22px;
+   padding: 24px;
+   margin-bottom: 24px;
+  }
+  .reserve-intro {
+   font-size: 13px;
+   color: #ffffff;
+   line-height: 1.7;
+   margin-bottom: 20px;
+  }
+  .reserve-name-row {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 14px;
+   margin-bottom: 20px;
+  }
+  .week-nav {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   margin-bottom: 14px;
+  }
+  .week-nav-btn {
+   background: #000;
+   border: 1px solid var(--border);
+   color: var(--text);
+   border-radius: 10px;
+   padding: 7px 14px;
+   cursor: pointer;
+   font-size: 13px;
+   font-family: "DM Sans", sans-serif;
+   transition: 0.2s;
+  }
+  .week-nav-btn:hover {
+   border-color: var(--pink-border);
+   background: var(--pink-dim);
+  }
+  .week-label {
+   font-family: "Space Mono", monospace;
+   font-size: 11px;
+   color: var(--pink);
+   letter-spacing: 1px;
+   text-transform: uppercase;
+  }
+  .schedule-grid {
+   display: grid;
+   grid-template-columns: 60px repeat(7, 1fr);
+   gap: 4px;
+  }
+  .sch-header {
+   font-family: "Space Mono", monospace;
+   font-size: 9px;
+   color: var(--muted);
+   text-align: center;
+   padding: 6px 2px;
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
+  }
+  .sch-header.today-col {
+   color: var(--pink);
+  }
+  .sch-time {
+   font-family: "Space Mono", monospace;
+   font-size: 9px;
+   color: var(--muted);
+   display: flex;
+   align-items: center;
+   justify-content: flex-end;
+   padding-right: 8px;
+  }
+  .sch-slot {
+   border-radius: 8px;
+   height: 34px;
+   cursor: pointer;
+   transition: 0.18s;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 9px;
+   font-family: "Space Mono", monospace;
+   text-align: center;
+   line-height: 1.2;
+   padding: 2px;
+   position: relative;
+   overflow: hidden;
+  }
+  .sch-slot.free {
+   background: #000000;
+   border: 1px solid rgba(74,222,128,0.5);
+  }
+  .sch-slot.free:hover {
+   background: rgba(74,222,128,0.08);
+   border-color: rgba(74,222,128,0.9);
+   transform: scale(1.04);
+  }
+  .sch-slot.booked {
+   background: #000000;
+   border: 1px solid rgba(248,113,113,0.5);
+   color: var(--danger);
+   cursor: default;
+  }
+  .sch-slot.selected {
+   background: #000000;
+   border: 1px solid var(--pink);
+   color: var(--pink);
+   transform: scale(1.04);
+  }
+  .sch-slot.past {
+   background: #000000;
+   border: 1px solid rgba(255,255,255,0.05);
+   cursor: not-allowed;
+  }
+  .reserve-legend {
+   display: flex;
+   gap: 16px;
+   margin: 14px 0;
+   flex-wrap: wrap;
+  }
+  .legend-item {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+   font-size: 11px;
+   color: var(--muted);
+  }
+  .legend-dot {
+   width: 10px;
+   height: 10px;
+   border-radius: 3px;
+  }
+  .legend-dot.free  { background: rgba(74,222,128,0.4); border: 1px solid rgba(74,222,128,0.6); }
+  .legend-dot.booked { background: rgba(248,113,113,0.4); border: 1px solid rgba(248,113,113,0.6); }
+  .legend-dot.selected { background: rgba(255,31,110,0.4); border: 1px solid var(--pink); }
+  .reserve-slot-info {
+   background: #000000;
+   border: 1px solid var(--border);
+   border-radius: 12px;
+   padding: 12px 16px;
+   margin-top: 14px;
+   font-size: 13px;
+   color: var(--muted);
+   line-height: 1.6;
+  }
+  .reserve-slot-info.has-slot {
+   border-color: var(--pink-border);
+   color: var(--silver);
+  }
+  .reserve-slot-info.has-slot span { color: var(--pink); font-weight: 700; }
+  .reserve-confirm-bar {
+   display: none;
+   background: #000000;
+   border: 1px solid var(--pink-border);
+   border-radius: 14px;
+   padding: 16px;
+   margin-top: 16px;
+  }
+  .reserve-confirm-bar.show { display: block; }
+  .confirm-info {
+   font-size: 13px;
+   color: var(--silver);
+   margin-bottom: 12px;
+   line-height: 1.7;
+  }
+  .confirm-info strong { color: var(--pink); }
+  .btn-reserve {
+   width: 100%;
+   padding: 14px;
+   border: none;
+   border-radius: 12px;
+   background: var(--pink);
+   color: #000;
+   font-weight: 800;
+   font-size: 15px;
+   cursor: pointer;
+   font-family: "DM Sans", sans-serif;
+   transition: 0.2s;
+  }
+  .btn-reserve:hover { background: var(--pink2); transform: translateY(-1px); box-shadow: 0 8px 32px rgba(255,31,110,0.3); }
+  .reserve-success {
+   display: none;
+   background: #000000;
+   border: 1px solid var(--pink-border);
+   border-radius: 14px;
+   padding: 16px;
+   margin-top: 14px;
+   text-align: center;
+   font-size: 14px;
+   color: var(--text);
+  }
+  .reserve-success.show { display: block; }
+  .reserve-slot-confirm {
+   background: #000000;
+   border: 1px solid var(--pink-border);
+   border-radius: 12px;
+   padding: 14px 16px;
+   margin-bottom: 16px;
+   font-size: 14px;
+   color: var(--pink);
+   font-weight: 600;
+   text-align: center;
+   line-height: 1.6;
+  }
+  /* ── END RESERVATION ── */
+
+  @media (max-width: 640px) {
+    nav {
+     padding: 14px 12px 4px;
+    }
+    .nav-inner {
+     align-items: flex-start;
+    }
+    .logo {
+     height: 62px;
+    }
+    .nav-actions {
+     gap: 6px;
+    }
+    .nav-btn {
+     font-size: 11px;
+     padding: 6px 10px;
+    }
+    .wrap {
+     padding: 8px 14px 42px;
+    }
+    .hero {
+     padding-top: 24px;
+    }
+    .quick-links,
+    .benefits,
+    .field-row,
+    .category-grid {
+     grid-template-columns: 1fr;
+    }
+    .info-box,
+    .consent-box,
+    .form-section,
+    .notice-box {
+     padding: 20px;
+     border-radius: 18px;
+    }
+    .hero-sub {
+     font-size: 15px;
+    }
+    .qlink {
+     padding: 14px;
+    }
+    .ls-ci {
+     display: block;
+    }
+    .ls-cbtns {
+     margin-top: 12px;
+    }
+    .ls-cbtns button {
+     flex: 1;
+    }
+   }
+  </style>
+ </head>
+ <body>
+  <nav>
+   <div class="nav-inner">
+    <a href="index.html" aria-label="Logic Style Startseite"
+     ><img src="logo.png" alt="Logic Style" class="logo"
+    /></a>
+    <div class="nav-actions">
+     <a class="nav-btn" href="models.html">← Galerie</a>
+     <a class="nav-btn" href="index.html">Startseite</a>
+    </div>
+   </div>
+  </nav>
+
+  <main class="wrap">
+   <section class="hero">
+    <div class="hero-badge">✨ Fotomodell für Logic Style</div>
+    <h1>Dein Bild.<br /><em>Unsere Galerie.</em></h1>
+    <p class="hero-sub">
+     Diese Seite ist für Personen, die freiwillig als
+     <strong>Fotomodell für die Logic Style Simulations-Galerie</strong>
+     teilnehmen möchten. Die Beispiele helfen Friseuren, Barbern und
+     Salons, realistische KI-Vorschauen für ihre Beratung zu zeigen.
+    </p>
+   </section>
+
+   <div class="quick-links">
+    <a class="qlink" href="models.html">
+     <div class="ico">🖼</div>
+     <div>
+      <strong>Modellgalerie ansehen</strong
+      ><span
+       >Vorher/Nachher-Beispiele für Haare, Farbe, Bart, Keratin und Perm.</span
+      >
+     </div>
+    </a>
+    <a class="qlink" href="wahrheit.html">
+     <div class="ico">💡</div>
+     <div>
+      <strong>Warum Logic Style?</strong
+      ><span
+       >Die Erklärung, warum realistische Simulationen die Salonberatung
+       verändern.</span
+      >
+     </div>
+    </a>
+   </div>
+
+   <section class="benefits">
+    <div class="benefit">
+     <div class="benefit-icon">📸</div>
+     <div>
+      <div class="benefit-title">Beispiele für Salons</div>
+      <div class="benefit-desc">
+       Deine freigegebenen Bilder können als realistisches Beispiel in
+       der Logic Style Galerie erscheinen.
+      </div>
+     </div>
+    </div>
+    <div class="benefit">
+     <div class="benefit-icon">🤖</div>
+     <div>
+      <div class="benefit-title">KI-Simulationen</div>
+      <div class="benefit-desc">
+       Wir erstellen digitale Vorher/Nachher-Vorschauen für
+       professionelle Salon- und Salonberatung.
+      </div>
+     </div>
+    </div>
+    <div class="benefit">
+     <div class="benefit-icon">🎨</div>
+     <div>
+      <div class="benefit-title">Mehr als nur Haare</div>
+      <div class="benefit-desc">
+       Möglich sind Beispiele für Haare, Farbe, Bart, Keratin und Perm.
+      </div>
+     </div>
+    </div>
+    <div class="benefit">
+     <div class="benefit-icon">🔒</div>
+     <div>
+      <div class="benefit-title">Klare Zustimmung</div>
+      <div class="benefit-desc">
+       Du entscheidest, wofür wir deine Bilder verwenden dürfen. Eine
+       Einwilligung ist widerrufbar.
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <section class="info-box">
+    <div class="info-box-title">Was genau passiert?</div>
+    <div class="info-list">
+     <div class="info-item">
+      <div class="info-dot"></div>
+      <div>
+       <strong>Kontaktaufnahme:</strong> Du sendest uns eine freiwillige
+       Anfrage. Wir prüfen, ob dein Profil für die aktuelle
+       Galerie-Erweiterung passt.
+      </div>
+     </div>
+     <div class="info-item">
+      <div class="info-dot"></div>
+      <div>
+       <strong>Foto- und Simulationsmaterial:</strong> Je nach Kategorie
+       können Vorher/Nachher-Fotos oder digitale Simulationen für die
+       Logic Style Galerie entstehen.
+      </div>
+     </div>
+     <div class="info-item">
+      <div class="info-dot"></div>
+      <div>
+       <strong>Optionales Styling:</strong> Ein leichtes Styling oder
+       eine Veränderung findet nur statt, wenn es vorher eindeutig
+       abgesprochen wurde. Es gibt keinen Anspruch auf eine kostenlose
+       Dienstleistung.
+      </div>
+     </div>
+
+   </section>
+
+   <section class="notice-box">
+    <div class="notice-title">Wo erscheinen die Beispiele?</div>
+    <p>
+     Freigegebene Bilder können in der
+     <strong>Logic Style Modellgalerie</strong> erscheinen. Dort sehen
+     Salons und Interessenten Beispielsimulationen für Haare, Farbe, Bart,
+     Keratin und Perm. Social Media oder Werbung verwenden wir nur,
+     wenn du dafür separat zustimmst.
+    </p>
+   </section>
+
+   <section class="consent-box">
+    <div class="consent-title">
+     Einwilligungserklärung — Bitte sorgfältig lesen
+    </div>
+    <div class="consent-text">
+     <h4>1. Zweck der Datenverarbeitung</h4>
+     Meine Angaben und freigegebenen Fotos werden von
+     <strong>Logic Style</strong> ausschließlich zur Bearbeitung meiner
+     Fotomodell-Anfrage und zur Demonstration der
+     KI-Simulations-Technologie auf
+     <strong>logicstyle-salon.de</strong> verwendet.
+     <h4>2. Welche Fotos betroffen sein können</h4>
+     Je nach gewählter Kategorie können die Fotos Haare, Haarfarbe, Bart, Keratin oder Perm zeigen. Es werden nur Inhalte
+     verwendet, die ich ausdrücklich freigebe.
+     <h4>3. Art der Nutzung</h4>
+     Die Fotos können in der Modellgalerie auf logicstyle-salon.de und
+     innerhalb der Logic Style Software als Beispielmaterial genutzt
+     werden. Eine Nutzung für Social Media oder Werbung erfolgt nur mit
+     separater Zustimmung.
+     <h4>4. Keine garantierte Dienstleistung</h4>
+     Die Teilnahme ist freiwillig. Logic Style ist keine Terminbuchung für
+     eine kostenpflichtige oder kostenlose Salonleistung. Etwaige
+     Veränderungen oder Stylings erfolgen nur nach vorheriger Absprache und
+     auf Grundlage einer separaten, klaren Zustimmung.
+     <h4>5. Widerruf</h4>
+     Ich kann meine Einwilligung jederzeit ohne Angabe von Gründen per
+     E-Mail an <strong>info@logicstyle-salon.de</strong> widerrufen. Nach
+     Widerruf entfernen wir freigegebene Inhalte aus unseren eigenen
+     Systemen. Eine vollständige Entfernung aus externen Caches oder
+     bereits geteilten Inhalten kann technisch nicht vollständig garantiert
+     werden.
+     <h4>6. Rechtsgrundlage</h4>
+     Die Verarbeitung erfolgt auf Grundlage meiner ausdrücklichen
+     Einwilligung gemäß <strong>Art. 6 Abs. 1 lit. a DSGVO</strong> sowie,
+     soweit Bildveröffentlichungen betroffen sind, auf Grundlage meiner
+     Zustimmung zur Bildnutzung. Weitere Informationen stehen in der
+     <a href="Datenschutz.html">Datenschutzerklärung</a>.
+    </div>
+   </section>
+
+   <!-- ── RESERVATION SECTION ── -->
+   <section class="reserve-section" id="reserveSection">
+    <div class="form-title">📅 Terminwunsch angeben</div>
+    <p class="reserve-intro">
+     Fülle das Formular aus und wähle einen <strong style="color:var(--pink)">freien Termin</strong> (grüner Rahmen). Nach der Buchung erhältst du eine Bestätigung per E-Mail. Verfügbare Zeiten: <strong style="color:var(--text)">17:00 · 18:00 · 19:00 Uhr</strong> · Logic Style · Welfen Straße 30, 76137 Karlsruhe.
+    </p>
+
+    <!-- Calendar -->
+    <div class="week-nav">
+     <button class="week-nav-btn" onclick="changeWeek(-1)">← Vorherige</button>
+     <span class="week-label" id="weekLabel"></span>
+     <button class="week-nav-btn" onclick="changeWeek(1)">Nächste →</button>
+    </div>
+
+    <div class="schedule-grid" id="scheduleGrid"></div>
+
+    <div class="reserve-legend">
+     <div class="legend-item"><div class="legend-dot free"></div> Frei</div>
+     <div class="legend-item"><div class="legend-dot booked"></div> Vergeben</div>
+     <div class="legend-item"><div class="legend-dot selected"></div> Ausgewählt</div>
+    </div>
+
+    <!-- Selected slot info -->
+    <div class="reserve-slot-info" id="reserveSlotInfo">
+     <span id="slotInfoText">⬆️ Bitte wähle einen freien Termin aus dem Kalender.</span>
+    </div>
+
+   </section>
+   <!-- ── END RESERVATION ── -->
+
+   <section id="formSection">
+    <div class="form-section">
+     <div class="form-title">Persönliche Angaben</div>
+     <div class="field-row">
+      <div class="field">
+       <label>Vorname *</label
+       ><input type="text" id="fVorname" placeholder="Vorname" />
+      </div>
+      <div class="field">
+       <label>Nachname *</label
+       ><input type="text" id="fNachname" placeholder="Nachname" />
+      </div>
+     </div>
+     <div class="field-row">
+      <div class="field">
+       <label>Geburtsdatum *</label><input type="date" id="fGeburt" />
+      </div>
+      <div class="field">
+       <label>Geschlecht *</label
+       ><select id="fGeschlecht">
+        <option value="">Bitte wählen</option>
+        <option>Männlich</option>
+        <option>Weiblich</option>
+        <option>Divers / Keine Angabe</option>
+       </select>
+      </div>
+     </div>
+     <div class="field">
+      <label>E-Mail *</label
+      ><input type="email" id="fEmail" placeholder="deine@email.de" />
+     </div>
+     <div class="field">
+      <label>Telefon / Nachricht</label
+      ><input type="tel" id="fTelefon" placeholder="+49 …" />
+     </div>
+     <div class="field">
+      <label>Stadt / Ort *</label
+      ><input type="text" id="fStadt" placeholder="z.B. Karlsruhe" />
+     </div>
+    </div>
+
+    <div class="form-section">
+     <div class="form-title">
+      Für welche Beispielbereiche interessierst du dich?
+     </div>
+     <div class="category-grid">
+      <div
+       class="check-item"
+       id="catHairWrap"
+       onclick="toggleCheck('catHair', 'catHairWrap')"
+      >
+       <input
+        type="checkbox"
+        id="catHair"
+        onclick="
+         event.stopPropagation();
+         toggleCheck('catHair', 'catHairWrap');
+        "
+       />
+       <div class="check-label">
+        <strong>Haare / Schnitt</strong>Damen- oder Herrenlooks,
+        klassisch, modern oder trendbasiert.
+       </div>
+      </div>
+      <div
+       class="check-item"
+       id="catColorWrap"
+       onclick="toggleCheck('catColor', 'catColorWrap')"
+      >
+       <input
+        type="checkbox"
+        id="catColor"
+        onclick="
+         event.stopPropagation();
+         toggleCheck('catColor', 'catColorWrap');
+        "
+       />
+       <div class="check-label">
+        <strong>Farbe</strong>Balayage, Glossing, Toner, Highlights,
+        Grey Blending oder andere Farbservices.
+       </div>
+      </div>
+      <div
+       class="check-item"
+       id="catBeardWrap"
+       onclick="toggleCheck('catBeard', 'catBeardWrap')"
+      >
+       <input
+        type="checkbox"
+        id="catBeard"
+        onclick="
+         event.stopPropagation();
+         toggleCheck('catBeard', 'catBeardWrap');
+        "
+       />
+       <div class="check-label">
+        <strong>Bart</strong>Beard Shape, Stubble, Full Beard, 
+        oder Bartfarbe.
+       </div>
+      </div>
+      <div
+       class="check-item"
+       id="catTreatmentWrap"
+       onclick="toggleCheck('catTreatment', 'catTreatmentWrap')"
+      >
+       <input
+        type="checkbox"
+        id="catTreatment"
+        onclick="
+         event.stopPropagation();
+         toggleCheck('catTreatment', 'catTreatmentWrap');
+        "
+       />
+       <div class="check-label">
+        <strong>Keratin & Perm</strong>Keratin, Women’s Perm oder Men’s Perm als digitale Vorschau.
+       </div>
+      </div>
+
+     </div>
+    </div>
+
+    <div class="form-section">
+     <div class="form-title">Optionale Informationen</div>
+     <div class="field-row">
+      <div class="field">
+       <label>Haartyp</label
+       ><select id="fHaartyp">
+        <option value="">Bitte wählen</option>
+        <option>Glatt</option>
+        <option>Wellig</option>
+        <option>Lockig</option>
+        <option>Sehr lockig / Afro</option>
+        <option>Nicht relevant</option>
+       </select>
+      </div>
+      <div class="field">
+       <label>Haarlänge</label
+       ><select id="fLaenge">
+        <option value="">Bitte wählen</option>
+        <option>Sehr kurz</option>
+        <option>Kurz</option>
+        <option>Mittel</option>
+        <option>Lang</option>
+        <option>Nicht relevant</option>
+       </select>
+      </div>
+     </div>
+     <div class="field">
+      <label>Aktuelle Haarfarbe / Bartfarbe</label
+      ><input
+       type="text"
+       id="fHaarfarbe"
+       placeholder="z.B. Dunkelbraun, gefärbt-blond, grau meliert …"
+      />
+     </div>
+     <div class="field">
+      <label>Was ist für dich interessant?</label
+      ><textarea
+       id="fWunsch"
+       placeholder="z.B. Ich bin offen für Haarfarbe, Bartbeispiele, Keratin oder Perm. Bitte keine echten Veränderungen ohne Rücksprache."
+      ></textarea>
+     </div>
+    </div>
+
+    <div class="form-section">
+     <div class="form-title">Einwilligung & Zustimmung</div>
+     <div
+      class="check-item"
+      id="ck1wrap"
+      onclick="toggleCheck('ck1', 'ck1wrap')"
+     >
+      <input
+       type="checkbox"
+       id="ck1"
+       onclick="
+        event.stopPropagation();
+        toggleCheck('ck1', 'ck1wrap');
+       "
+      />
+      <div class="check-label">
+       <strong
+        >Foto- und Bildnutzung
+        <span class="check-required">PFLICHT</span></strong
+       >Ich stimme zu, dass freigegebene Vorher/Nachher-Fotos oder
+       Simulationen in der Logic Style Modellgalerie und innerhalb der
+       Logic Style Software als Beispielmaterial gezeigt werden dürfen.
+      </div>
+     </div>
+     <div
+      class="check-item"
+      id="ck2wrap"
+      onclick="toggleCheck('ck2', 'ck2wrap')"
+     >
+      <input
+       type="checkbox"
+       id="ck2"
+       onclick="
+        event.stopPropagation();
+        toggleCheck('ck2', 'ck2wrap');
+       "
+      />
+      <div class="check-label">
+       <strong
+        >Keine automatische Dienstleistung
+        <span class="check-required">PFLICHT</span></strong
+       >Ich verstehe, dass diese Anfrage keine Buchung einer kostenlosen
+       oder kostenpflichtigen Salonleistung ist. Jede reale Veränderung
+       würde vorher separat abgesprochen.
+      </div>
+     </div>
+     <div
+      class="check-item"
+      id="ck3wrap"
+      onclick="toggleCheck('ck3', 'ck3wrap')"
+     >
+      <input
+       type="checkbox"
+       id="ck3"
+       onclick="
+        event.stopPropagation();
+        toggleCheck('ck3', 'ck3wrap');
+       "
+      />
+      <div class="check-label">
+       <strong
+        >DSGVO-Einwilligung
+        <span class="check-required">PFLICHT</span></strong
+       >Ich stimme der Verarbeitung meiner Angaben zur Prüfung meiner
+       Fotomodell-Anfrage zu und habe den Hinweis zur
+       Widerrufsmöglichkeit gelesen.
+      </div>
+     </div>
+     <div
+      class="check-item"
+      id="ck4wrap"
+      onclick="toggleCheck('ck4', 'ck4wrap')"
+     >
+      <input
+       type="checkbox"
+       id="ck4"
+       onclick="
+        event.stopPropagation();
+        toggleCheck('ck4', 'ck4wrap');
+       "
+      />
+      <div class="check-label">
+       <strong
+        >Volljährigkeit
+        <span class="check-required">PFLICHT</span></strong
+       >Ich bin mindestens 18 Jahre alt. Minderjährige Personen dürfen
+       dieses Formular nur über eine erziehungsberechtigte Person nutzen.
+      </div>
+     </div>
+     <div
+      class="check-item"
+      id="ck5wrap"
+      onclick="toggleCheck('ck5', 'ck5wrap')"
+     >
+      <input
+       type="checkbox"
+       id="ck5"
+       onclick="
+        event.stopPropagation();
+        toggleCheck('ck5', 'ck5wrap');
+       "
+      />
+      <div class="check-label">
+       <strong>Social Media / Werbung optional</strong>Ich erlaube
+       zusätzlich, dass freigegebene Bilder auch für Social Media oder
+       Werbematerial von Logic Style verwendet werden dürfen.
+      </div>
+     </div>
+    </div>
+
+    <div class="form-err" id="formErr"></div>
+
+    <!-- Slot confirmation display above button -->
+    <div class="reserve-slot-confirm" id="slotConfirmDisplay" style="display:none;">
+     <span id="slotConfirmText"></span>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+     Anfrage als E-Mail vorbereiten
+    </button>
+    <p
+     style="
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 14px;
+      line-height: 1.7;
+     "
+    >
+     Nach dem Klick öffnet sich dein E-Mail-Programm mit allen Angaben.<br />Bitte die E-Mail dort noch absenden.<br />Logic Style · Welfen Straße 30, 76137 Karlsruhe · info@logicstyle-salon.de
+    </p>
+
+    <div class="mail-preview" id="mailPreview">
+     <div class="form-title">Falls dein E-Mail-Programm nicht aufgeht</div>
+     <p
+      style="
+       font-size: 13px;
+       color: var(--muted);
+       line-height: 1.7;
+       margin-bottom: 12px;
+      "
+     >
+      Kopiere den Text und sende ihn an
+      <strong style="color: var(--pink)"
+       >info@logicstyle-salon.de</strong
+      >.
+     </p>
+     <textarea id="mailText" readonly></textarea>
+     <button class="btn-secondary" onclick="copyMailText()">
+      Text kopieren
+     </button>
+    </div>
+   </section>
+
+   <section class="success-screen" id="successScreen">
+    <div class="success-icon">✅</div>
+    <div class="success-title">E-Mail vorbereitet</div>
+    <p class="success-sub">
+     Deine Anfrage wurde im E-Mail-Programm vorbereitet. Bitte sende die
+     E-Mail dort ab, damit wir sie erhalten.<br /><br /><strong
+      style="color: var(--pink)"
+      >info@logicstyle-salon.de</strong
+     ><br /><a
+      href="https://wa.me/491794286020"
+      style="color: var(--pink); text-decoration: none"
+      >WhatsApp: +49 179 428 6020</a
+     >
+    </p>
+   </section>
+  </main>
+
+  <footer class="page-footer">
+   Logic Style · Karlsruhe · Deutschland<br />
+   KI-Simulation für Friseure, Barber & Salons ·
+   <a href="index.html">logicstyle-salon.de</a>
+   <div class="legal-row">
+    <a href="Datenschutz.html">Datenschutz</a
+    ><a href="Impressum.html">Impressum</a
+    ><a href="models.html">Modellgalerie</a>
+   </div>
+  </footer>
+
+  <div id="ls-consent">
+   <div class="ls-ci">
+    <div class="ls-ct">
+     <strong>Cookies & Datenschutz</strong> — Technisch notwendige Cookies.
+     <a href="Datenschutz.html">Datenschutz</a> ·
+     <a href="Impressum.html">Impressum</a>
+    </div>
+    <div class="ls-cbtns">
+     <button class="ls-cd" onclick="lsConsent('decline')">Ablehnen</button
+     ><button class="ls-ca" onclick="lsConsent('accept')">
+      Akzeptieren ✓
+     </button>
+    </div>
+   </div>
+  </div>
+
+  <script>
+   // ── RESERVATION LOGIC ──
+  const SLOTS = ['17:00','18:00','19:00'];
+  const DAY_NAMES_SHORT = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const DAY_NAMES_FULL  = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const STORAGE_KEY = 'ls_reservations';
+  const SALON_EMAIL = 'info@logicstyle-salon.de';
+  const SALON_ADDR  = 'Welfen Straße 30, 76137 Karlsruhe';
+
+  let currentWeekOffset = 0;
+  let selectedSlot = null;
+
+  function getMonday(offset) {
+   const now = new Date();
+   const day = now.getDay();
+   const diff = (day === 0 ? -6 : 1 - day);
+   const monday = new Date(now);
+   monday.setDate(now.getDate() + diff + offset * 7);
+   monday.setHours(0,0,0,0);
+   return monday;
+  }
+
+  function dateStr(d) {
+   return d.toISOString().slice(0,10);
+  }
+
+  function loadReservations() {
+   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+   catch(e) { return {}; }
+  }
+
+  function saveReservations(data) {
+   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function changeWeek(dir) {
+   currentWeekOffset += dir;
+   renderGrid();
+  }
+
+  function renderGrid() {
+   const monday = getMonday(currentWeekOffset);
+   const days = [];
+   for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    days.push(d);
+   }
+
+   const wStart = days[0];
+   const wEnd   = days[6];
+   document.getElementById('weekLabel').textContent =
+    `KW ${getWeekNumber(wStart)} · ${wStart.getDate()}.${wStart.getMonth()+1}. – ${wEnd.getDate()}.${wEnd.getMonth()+1}.${wEnd.getFullYear()}`;
+
+   const reservations = loadReservations();
+   const now = new Date();
+   const todayStr = dateStr(new Date());
+
+   let html = '';
+
+   html += '<div class="sch-header"></div>';
+   days.forEach(d => {
+    const ds = dateStr(d);
+    const isToday = ds === todayStr;
+    html += `<div class="sch-header${isToday?' today-col':''}">${DAY_NAMES_SHORT[d.getDay()]}<br>${d.getDate()}.${d.getMonth()+1}</div>`;
+   });
+
+   SLOTS.forEach(time => {
+    html += `<div class="sch-time">${time}</div>`;
+    days.forEach(d => {
+     const ds = dateStr(d);
+     const key = `${ds}_${time}`;
+     const slotDt = new Date(`${ds}T${time}:00`);
+     const isPast = slotDt < now;
+     const isBooked = !!(reservations[key]);
+     const isSelected = selectedSlot && selectedSlot.dateStr === ds && selectedSlot.time === time;
+
+     let cls, label, clickAttr;
+     if (isPast) {
+      cls = 'past'; label = ''; clickAttr = '';
+     } else if (isBooked) {
+      cls = 'booked'; label = ''; clickAttr = '';
+     } else if (isSelected) {
+      cls = 'selected'; label = '✓'; clickAttr = `onclick="selectSlot('${ds}','${time}')"`;
+     } else {
+      cls = 'free'; label = ''; clickAttr = `onclick="selectSlot('${ds}','${time}')"`;
+     }
+
+     html += `<div class="sch-slot ${cls}" ${clickAttr} title="${DAY_NAMES_FULL[d.getDay()]}, ${ds} ${time}">${label}</div>`;
+    });
+   });
+
+   document.getElementById('scheduleGrid').innerHTML = html;
+
+   // Update slot info bar in calendar section
+   const infoEl = document.getElementById('reserveSlotInfo');
+   const infoText = document.getElementById('slotInfoText');
+   // Update slot confirm display near submit button
+   const confirmDisplay = document.getElementById('slotConfirmDisplay');
+   const confirmText = document.getElementById('slotConfirmText');
+   if (selectedSlot) {
+    const sd = new Date(selectedSlot.dateStr);
+    infoEl.classList.add('has-slot');
+    const slotStr = `${DAY_NAMES_FULL[sd.getDay()]}, ${sd.getDate()}.${sd.getMonth()+1}.${sd.getFullYear()} · ${selectedSlot.time} Uhr — Logic Style, ${SALON_ADDR}`;
+    infoText.innerHTML = `Ausgewählter Termin: <span>${slotStr}</span>`;
+    if (confirmDisplay) {
+     confirmDisplay.style.display = 'block';
+     confirmText.innerHTML = `📅 Termin: <strong>${slotStr}</strong>`;
+    }
+   } else {
+    infoEl.classList.remove('has-slot');
+    infoText.innerHTML = '⬆️ Bitte wähle einen freien Termin aus dem Kalender.';
+    if (confirmDisplay) confirmDisplay.style.display = 'none';
+   }
+  }
+
+  function selectSlot(ds, time) {
+   selectedSlot = { dateStr: ds, time };
+   renderGrid();
+   document.getElementById('reserveSlotInfo').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+
+  function getWeekNumber(d) {
+   const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+   date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+   const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+   return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  }
+
+  // Init
+  renderGrid();
+  // ── END RESERVATION ──
+
+  function toggleCheck(id, wrapId) {
+    const cb = document.getElementById(id);
+    const wrap = document.getElementById(wrapId);
+    cb.checked = !cb.checked;
+    wrap.classList.toggle("checked", cb.checked);
+   }
+   function checkedLabel(id, label) {
+    return document.getElementById(id).checked ? label : null;
+   }
+   function getSelectedCategories() {
+    return [
+     checkedLabel("catHair", "Haare / Schnitt"),
+     checkedLabel("catColor", "Farbe"),
+     checkedLabel("catBeard", "Bart"),
+     checkedLabel("catTreatment", "Keratin & Perm"),
+    ].filter(Boolean);
+   }
+   function submitForm() {
+    const err = document.getElementById("formErr");
+    err.style.display = "none";
+    const vorname = val("fVorname"),
+     nachname = val("fNachname"),
+     geburt = val("fGeburt"),
+     email = val("fEmail"),
+     stadt = val("fStadt");
+    if (!vorname || !nachname)
+     return showErr("❌ Bitte Vor- und Nachnamen eingeben.");
+    if (!geburt) return showErr("❌ Bitte Geburtsdatum angeben.");
+    if (!email || !email.includes("@"))
+     return showErr("❌ Bitte gültige E-Mail-Adresse eingeben.");
+    if (!stadt) return showErr("❌ Bitte Stadt / Ort angeben.");
+    if (!val("fGeschlecht")) return showErr("❌ Bitte Geschlecht auswählen.");
+    // Check duplicate email or phone in existing reservations
+    const existingRes = loadReservations();
+    const allEntries = Object.values(existingRes);
+    if (allEntries.some(e => e.email && e.email === email))
+     return showErr("❌ Diese E-Mail-Adresse hat bereits einen Termin reserviert.");
+    const telefon = val("fTelefon");
+    if (telefon && allEntries.some(e => e.phone && e.phone === telefon))
+     return showErr("❌ Diese Telefonnummer hat bereits einen Termin reserviert.");
+    const cats = getSelectedCategories();
+    if (!cats.length)
+     return showErr(
+      "❌ Bitte mindestens einen Beispielbereich auswählen.",
+     );
+    if (
+     !document.getElementById("ck1").checked ||
+     !document.getElementById("ck2").checked ||
+     !document.getElementById("ck3").checked ||
+     !document.getElementById("ck4").checked
+    ) {
+     return showErr("❌ Bitte alle Pflicht-Einwilligungen bestätigen.");
+    }
+    if (!selectedSlot) {
+     return showErr("❌ Bitte einen Termin im Kalender oben auswählen.");
+    }
+    const body = buildMailBody(cats);
+    document.getElementById("mailText").value = body;
+    document.getElementById("mailPreview").style.display = "block";
+    const sd = new Date(selectedSlot.dateStr);
+    const slotLabel = `${DAY_NAMES_FULL[sd.getDay()]}, ${sd.getDate()}.${sd.getMonth()+1}.${sd.getFullYear()} · ${selectedSlot.time} Uhr`;
+    const subject = encodeURIComponent(
+     `Fotomodell-Anfrage & Termin: ${vorname} ${nachname} · ${slotLabel}`,
+    );
+    const mailto = `mailto:${SALON_EMAIL}?subject=${subject}&body=${encodeURIComponent(body)}`;
+    // Save reservation with email+phone for duplicate detection
+    const reservations = loadReservations();
+    const key = `${selectedSlot.dateStr}_${selectedSlot.time}`;
+    reservations[key] = { name: `${vorname} ${nachname}`, email: email, phone: val("fTelefon") };
+    saveReservations(reservations);
+    selectedSlot = null;
+    renderGrid();
+    window.location.href = mailto;
+    document.getElementById("successScreen").style.display = "block";
+    document
+     .getElementById("successScreen")
+     .scrollIntoView({ behavior: "smooth", block: "start" });
+   }
+   function val(id) {
+    return document.getElementById(id).value.trim();
+   }
+   function buildMailBody(cats) {
+    const sd = selectedSlot ? new Date(selectedSlot.dateStr) : null;
+    const slotLine = sd
+     ? `Gewünschter Termin: ${DAY_NAMES_FULL[sd.getDay()]}, ${sd.getDate()}.${sd.getMonth()+1}.${sd.getFullYear()} um ${selectedSlot.time} Uhr\nAdresse: Logic Style · ${SALON_ADDR}\n\n`
+     : '';
+    return (
+     `FOTOMODELL-ANFRAGE — Logic Style\n\n` +
+     `Name: ${val("fVorname")} ${val("fNachname")}\n` +
+     `Geburtsdatum: ${val("fGeburt")}\n` +
+     `Geschlecht: ${val("fGeschlecht") || "—"}\n` +
+     `E-Mail: ${val("fEmail")}\n` +
+     `Telefon / Nachricht: ${val("fTelefon") || "—"}\n` +
+     `Stadt / Ort: ${val("fStadt")}\n\n` +
+     slotLine +
+     `Interessante Beispielbereiche:\n- ${cats.join("\n- ")}\n\n` +
+     `Optionale Informationen:\n` +
+     `Haartyp: ${val("fHaartyp") || "—"}\n` +
+     `Haarlänge: ${val("fLaenge") || "—"}\n` +
+     `Aktuelle Haarfarbe / Bartfarbe: ${val("fHaarfarbe") || "—"}\n` +
+     `Wunsch / Hinweise: ${val("fWunsch") || "—"}\n\n` +
+     `Einwilligungen:\n` +
+     `Foto- und Bildnutzung: JA\n` +
+     `Keine automatische Dienstleistung verstanden: JA\n` +
+     `DSGVO-Einwilligung: JA\n` +
+     `Volljährigkeit bestätigt: JA\n` +
+     `Social Media / Werbung optional: ${document.getElementById("ck5").checked ? "JA" : "NEIN"}\n\n` +
+     `Hinweis: Diese E-Mail wurde über das Formular auf logicstyle-salon.de vorbereitet. Die Anfrage gilt erst als eingegangen, wenn diese E-Mail abgesendet wurde.\n` +
+     `Datum: ${new Date().toLocaleString("de-DE")}`
+    );
+   }
+   function copyMailText() {
+    const t = document.getElementById("mailText");
+    t.select();
+    document.execCommand("copy");
+    alert(
+     "Text wurde kopiert. Ja, ausnahmsweise hat ein Button getan, was er verspricht.",
+    );
+   }
+   function showErr(msg) {
+    const el = document.getElementById("formErr");
+    el.textContent = msg;
+    el.style.display = "block";
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+   }
+   (function () {
+    if (!localStorage.getItem("ls_consent"))
+     document.getElementById("ls-consent").classList.add("show");
+   })();
+   function lsConsent(c) {
+    localStorage.setItem("ls_consent", c);
+    document.getElementById("ls-consent").classList.remove("show");
+   }
+  </script>
+ </body>
+</html>
