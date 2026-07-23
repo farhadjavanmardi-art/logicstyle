@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Logic Style | Impressum</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#000000;
+      --card:#000000;
+      --card2:#000000;
+      --text:#ffffff;
+      --muted:#ffffff;
+      --soft:#ffffff;
+      --silver:#ffffff;
+      --pink:#ff1f6e;
+      --pink2:#ff5089;
+      --blue:#60a5fa;
+      --border:#ffffff;
+      --shadow:0 24px 70px rgba(0,0,0,0.45);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'DM Sans',sans-serif;
+      background:
+        radial-gradient(circle at top left,rgba(255,31,110,0.13),transparent 32%),
+        radial-gradient(circle at bottom right,rgba(96,165,250,0.08),transparent 34%),
+        var(--bg);
+      color:var(--text);
+      min-height:100svh;
+      overflow-x:hidden;
+    }
+    a{color:inherit}
+    nav{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      background:rgba(0,0,0,0.86);
+      backdrop-filter:blur(24px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-inner{
+      max-width:1100px;
+      margin:0 auto;
+      padding:12px 20px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo-img{
+      height:70px;
+      width:auto;
+      object-fit:contain;
+      display:block;
+      flex-shrink:0;
+    }
+    .brand-fallback{
+      display:none;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+    }
+    .nav-shield{
+      width:38px;
+      height:38px;
+      background:linear-gradient(135deg,var(--pink2),var(--pink));
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:'Rajdhani',sans-serif;
+      font-weight:700;
+      font-size:18px;
+      color:#050505;
+      flex-shrink:0;
+    }
+    .nav-brand{
+      font-family:'Rajdhani',sans-serif;
+      font-weight:700;
+      font-size:1.2rem;
+      letter-spacing:1px;
+      line-height:1;
+    }
+    .nav-brand .l{color:var(--pink)}
+    .nav-brand .s{color:var(--silver)}
+    .nav-sub{
+      font-family:'Space Mono',monospace;
+      font-size:8px;
+      letter-spacing:2px;
+      color:var(--soft);
+      text-transform:uppercase;
+      margin-top:2px;
+    }
+    .nav-links{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .nav-link,
+    .back-btn{
+      padding:8px 15px;
+      border-radius:999px;
+      background:#000000;
+      border:1px solid var(--border);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      text-decoration:none;
+      transition:.2s;
+      white-space:nowrap;
+    }
+    .nav-link:hover,
+    .back-btn:hover{
+      border-color:rgba(255,31,110,0.35);
+      color:var(--pink);
+      background:rgba(255,31,110,0.06);
+    }
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:44px 20px 90px;
+    }
+    .hero{
+      border:1px solid rgba(255,31,110,0.18);
+      border-radius:28px;
+      padding:30px;
+      background:
+        linear-gradient(135deg,rgba(255,31,110,0.11),rgba(255,255,255,0.03)),
+        rgba(0,0,0,0.92);
+      box-shadow:var(--shadow);
+      margin-bottom:26px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero:after{
+      content:"";
+      position:absolute;
+      inset:auto -70px -90px auto;
+      width:240px;
+      height:240px;
+      background:radial-gradient(circle,rgba(255,31,110,0.22),transparent 68%);
+      pointer-events:none;
+    }
+    .page-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:rgba(255,31,110,0.10);
+      border:1px solid rgba(255,31,110,0.24);
+      border-radius:999px;
+      padding:6px 14px;
+      font-family:'Space Mono',monospace;
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:2px;
+      color:var(--pink);
+      text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    h1{
+      font-family:'Rajdhani',sans-serif;
+      font-size:clamp(2.1rem,6vw,4rem);
+      line-height:.92;
+      letter-spacing:-1px;
+      margin-bottom:12px;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.75;
+      max-width:760px;
+      position:relative;
+      z-index:1;
+    }
+    .quick-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin:24px 0 28px;
+    }
+    .quick-card{
+      background:#000000;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:15px;
+      min-height:104px;
+    }
+    .quick-card span{
+      display:block;
+      font-size:22px;
+      margin-bottom:9px;
+    }
+    .quick-card strong{
+      display:block;
+      color:var(--text);
+      font-size:13px;
+      margin-bottom:5px;
+    }
+    .quick-card small{
+      color:var(--soft);
+      line-height:1.5;
+      font-size:11px;
+    }
+    .toc{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:28px;
+    }
+    .toc a{
+      text-decoration:none;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      background:#000000;
+    }
+    .toc a:hover{color:var(--pink);border-color:rgba(255,31,110,0.3)}
+    .section{
+      margin-bottom:18px;
+      background:rgba(0,0,0,0.96);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:24px;
+      box-shadow:0 18px 46px rgba(0,0,0,0.28);
+    }
+    .section-title{
+      font-family:'Space Mono',monospace;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--pink);
+      margin-bottom:14px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .section h2{
+      font-family:'Rajdhani',sans-serif;
+      font-size:1.65rem;
+      line-height:1.08;
+      margin-bottom:12px;
+    }
+    .section p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.85;
+      margin-bottom:10px;
+    }
+    .section p:last-child{margin-bottom:0}
+    .section p strong{color:var(--text)}
+    .section a{color:var(--blue);text-decoration:none}
+    .section a:hover{text-decoration:underline}
+    .info-list{
+      display:grid;
+      gap:10px;
+    }
+    .info-line{
+      display:grid;
+      grid-template-columns:170px 1fr;
+      gap:14px;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.65;
+      padding-bottom:10px;
+      border-bottom:1px solid rgba(255,255,255,0.04);
+    }
+    .info-line:last-child{padding-bottom:0;border-bottom:none}
+    .info-label{
+      font-weight:700;
+      color:var(--text);
+      min-width:0;
+    }
+    .service-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+    .service-item{
+      border:1px solid rgba(255,255,255,0.06);
+      background:#000000;
+      border-radius:16px;
+      padding:14px;
+    }
+    .service-item strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:5px;
+      font-size:13px;
+    }
+    .service-item span{
+      display:block;
+      color:var(--soft);
+      line-height:1.55;
+      font-size:12px;
+    }
+    .notice{
+      border:1px solid rgba(96,165,250,0.22);
+      background:rgba(96,165,250,0.06);
+      border-radius:18px;
+      padding:16px;
+      margin-top:14px;
+    }
+    .notice strong{display:block;color:#bfdbfe;margin-bottom:7px;font-size:13px}
+    .notice p{font-size:13px;color:#ffffff;line-height:1.75}
+    .warning{
+      border-color:rgba(255,31,110,0.24);
+      background:rgba(255,31,110,0.06);
+    }
+    .warning strong{color:var(--pink)}
+    .link-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+    .link-card{
+      text-decoration:none!important;
+      border:1px solid rgba(255,255,255,0.07);
+      background:#000000;
+      border-radius:16px;
+      padding:14px;
+      color:var(--text)!important;
+      transition:.2s;
+    }
+    .link-card:hover{
+      transform:translateY(-1px);
+      border-color:rgba(255,31,110,0.32);
+      background:rgba(255,31,110,0.06);
+    }
+    .link-card strong{display:block;font-size:13px;margin-bottom:5px;color:var(--text)}
+    .link-card span{display:block;font-size:12px;color:var(--soft);line-height:1.5}
+    .footer{
+      text-align:center;
+      padding:24px 16px 16px;
+      font-size:11px;
+      color:var(--soft);
+      border-top:1px solid var(--border);
+      background:#000;
+    }
+    .footer-links{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .footer a{
+      color:var(--soft);
+      text-decoration:none;
+      padding:4px 6px;
+    }
+    .footer a:hover{color:var(--pink)}
+    #ls-consent{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      z-index:99999;
+      background:#000000;
+      border-top:1px solid rgba(255,31,110,0.25);
+      padding:12px 16px;
+      display:none;
+      font-family:'DM Sans',sans-serif;
+    }
+    #ls-consent.show{display:block}
+    .lsci{
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .lsct{
+      flex:1;
+      min-width:220px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    .lsct strong{color:var(--text)}
+    .lsct a{color:var(--blue);text-decoration:none}
+    .lscbtns{display:flex;gap:8px;flex-shrink:0}
+    .lsca,
+    .lscd{
+      padding:8px 18px;
+      border-radius:10px;
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      font-family:'DM Sans',sans-serif;
+    }
+    .lsca{background:var(--pink);color:#000;border:none}
+    .lscd{background:transparent;color:var(--soft);border:1px solid rgba(255,255,255,0.08)}
+    @media(max-width:760px){
+      .nav-inner{padding:10px 14px}
+      .logo-img{height:58px}
+      .nav-links{gap:6px}
+      .nav-link{display:none}
+      .back-btn{font-size:11px;padding:7px 12px}
+      .wrap{padding:28px 14px 76px}
+      .hero{padding:22px;border-radius:22px}
+      .quick-grid{grid-template-columns:1fr;margin-top:18px}
+      .section{padding:20px;border-radius:18px}
+      .info-line{grid-template-columns:1fr;gap:3px}
+      .service-grid,.link-grid{grid-template-columns:1fr}
+      .toc a{font-size:11px;padding:7px 10px}
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" aria-label="Logic Style Startseite">
+        <img src="logo.png" alt="Logic Style" class="logo-img" onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex';">
+      </a>
+      <a href="index.html" class="brand-fallback" aria-label="Logic Style Startseite">
+        <div class="nav-shield">LS</div>
+        <div>
+          <div class="nav-brand"><span class="l">Logic</span> <span class="s">Style</span></div>
+          <div class="nav-sub">Salon KI Software</div>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="models.html" class="nav-link">Beispiele</a>
+        <a href="wahrheit.html" class="nav-link">Warum?</a>
+        <a href="model.html" class="nav-link">Model werden</a>
+        <a href="index.html" class="back-btn">← Zurück</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="page-badge">⚖️ Anbieterkennzeichnung</div>
+      <h1>Impressum</h1>
+      <p class="subtitle">Angaben nach § 5 DDG für Logic Style, eine KI-gestützte Testsoftware für Friseure, Barber, Beauty-Salons und salonspezifische Beratung mit realistischen Vorher/Nachher-Simulationen.</p>
+      <div class="quick-grid">
+        <div class="quick-card">
+          <span>🧾</span>
+          <strong>Anbieter</strong>
+          <small>Farhad Javanmardi · Logic Style · Karlsruhe</small>
+        </div>
+        <div class="quick-card">
+          <span>🧪</span>
+          <strong>Testversion</strong>
+          <small>Keine Online-Zahlung · manuelle Freischaltung</small>
+        </div>
+        <div class="quick-card">
+          <span>✨</span>
+          <strong>Digitale Vorschau</strong>
+          <small>Haare, Farbe, Bart, Keratin und Perm</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="toc" aria-label="Inhaltsübersicht">
+      <a href="#anbieter">Anbieter</a>
+      <a href="#kontakt">Kontakt</a>
+      <a href="#angebot">Angebot</a>
+      <a href="#testversion">Testversion</a>
+      <a href="#verantwortung">Verantwortung</a>
+      <a href="#haftung">Haftung</a>
+      <a href="#urheberrecht">Urheberrecht</a>
+      <a href="#streit">Streitbeilegung</a>
+      <a href="#links">Weitere Seiten</a>
+    </div>
+
+    <section class="section" id="anbieter">
+      <div class="section-title">01 · Anbieter</div>
+      <h2>Betreiber dieser Website</h2>
+      <div class="info-list">
+        <div class="info-line"><span class="info-label">Name</span><span>Farhad Javanmardi</span></div>
+        <div class="info-line"><span class="info-label">Projekt / Marke</span><span>Logic Style</span></div>
+        <div class="info-line"><span class="info-label">Anschrift</span><span><strong>Straße &amp; Hausnummer · PLZ bitte ergänzen</strong> · Karlsruhe, Baden-Württemberg, Deutschland</span></div>
+        <div class="info-line"><span class="info-label">Digitale Dienste</span><span>KI-gestützte Salonsoftware, Simulations-Galerie, Testzugang-Anfrage und Modellgalerie</span></div>
+      </div>
+      <div class="notice warning">
+        <strong>Pflichtangabe: vollständige Anschrift erforderlich</strong>
+        <p>Nach § 5 DDG (Digitale-Dienste-Gesetz) ist bei einem geschäftsmäßigen Angebot die vollständige ladungsfähige Anschrift (Straße, Hausnummer, Postleitzahl, Ort) anzugeben. Bitte ergänzen Sie diese vor der kommerziellen Live-Schaltung; die bloße Ortsangabe „Karlsruhe" genügt hierfür nicht.</p>
+      </div>
+    </section>
+
+    <section class="section" id="kontakt">
+      <div class="section-title">02 · Kontakt</div>
+      <h2>Kontaktmöglichkeiten</h2>
+      <div class="info-list">
+        <div class="info-line"><span class="info-label">E-Mail</span><span><a href="mailto:info@logicstyle-salon.de">info@logicstyle-salon.de</a></span></div>
+        <div class="info-line"><span class="info-label">Telefon / Nachricht</span><span><a href="https://wa.me/491794286020" target="_blank" rel="noopener">+49 179 428 6020</a></span></div>
+        <div class="info-line"><span class="info-label">Instagram</span><span><a href="https://www.instagram.com/logic_style" target="_blank" rel="noopener">@logic_style</a></span></div>
+        <div class="info-line"><span class="info-label">Website</span><span><a href="https://logicstyle-salon.de" target="_blank" rel="noopener">logicstyle-salon.de</a></span></div>
+      </div>
+      <p style="margin-top:14px">Für schnelle Rückfragen zur Testversion, Freischaltung oder Modellgalerie ist E-Mail der bevorzugte Kontaktweg.</p>
+    </section>
+
+    <section class="section" id="angebot">
+      <div class="section-title">03 · Inhalt des Angebots</div>
+      <h2>Was die Logic Style Software bereitstellt</h2>
+      <p><strong>Logic Style</strong> ist eine KI-gestützte Software für Friseure, Barber und professionelle Beratungssituationen im Salon. Die Software unterstützt realistische digitale Vorher/Nachher-Simulationen und Beispielgalerien für Haare, Farbe, Bart, Keratin und Perm.</p>
+      <div class="service-grid">
+        <div class="service-item"><strong>Haare & Schnitt</strong><span>Damen- und Herrenmodelle, klassische Looks, moderne Looks, Trendmodelle und Beratungsvorschauen.</span></div>
+        <div class="service-item"><strong>Farbe & Blond</strong><span>Balayage, Ombré, Highlights, Glossing, Toner, Grey Blending und weitere Farbservices.</span></div>
+        <div class="service-item"><strong>Bart & Barbering</strong><span>Beard shaping, Stubble, Full Beard, Mustache, Beard Blending und barbershop-orientierte Vorschauen.</span></div>
+        <div class="service-item"><strong>Keratin & Perm</strong><span>Keratin-Glättung, Smoothing und Dauerwelle für Damen und Herren.</span></div>
+        <div class="service-item"><strong>Modellgalerie</strong><span>Gespeicherte Beispielbilder und Simulationspaare für professionelle Präsentation und Beratung.</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="testversion">
+      <div class="section-title">04 · Testversion</div>
+      <h2>Keine Online-Zahlung in dieser Version</h2>
+      <p>Logic Style befindet sich in einer Testphase. Über diese Website findet keine Online-Zahlung statt. Registrierungen dienen der Anfrage eines Testzugangs und werden manuell geprüft und freigeschaltet.</p>
+      <div class="notice">
+        <strong>Abgleich mit der Datenschutzerklärung</strong>
+        <p>Diese Angaben sind mit der aktuellen Datenschutzerklärung abgestimmt: Testzugang, manuelle Freischaltung, keine Online-Zahlung, Modellgalerie und KI-gestützte Bildverarbeitung werden als Bestandteile des Projekts beschrieben.</p>
+      </div>
+    </section>
+
+    <section class="section" id="verantwortung">
+      <div class="section-title">05 · Verantwortlichkeit</div>
+      <h2>Verantwortlich für Inhalte</h2>
+      <p>Verantwortlich für die eigenen Inhalte dieser Website ist:</p>
+      <p><strong>Farhad Javanmardi</strong><br>Karlsruhe, Baden-Württemberg, Deutschland</p>
+      <p>Soweit journalistisch-redaktionelle Inhalte im Sinne des § 18 Abs. 2 MStV bereitgestellt werden, liegt die Verantwortlichkeit ebenfalls bei der oben genannten Person.</p>
+    </section>
+
+    <section class="section" id="haftung">
+      <div class="section-title">06 · Haftungsausschluss</div>
+      <h2>Inhalte, Simulationen und externe Links</h2>
+      <p><strong>Haftung für Inhalte:</strong> Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann dennoch keine Gewähr übernommen werden.</p>
+      <p><strong>KI-Simulationen:</strong> Alle auf dieser Plattform gezeigten oder erzeugten KI-Simulationen dienen ausschließlich als digitale Vorschau und Beratungshilfe. Sie stellen keine medizinische, kosmetische, farbtechnische, barbertechnische oder handwerkliche Erfolgsgarantie dar.</p>
+      <p><strong>Ergebnisabweichungen:</strong> Reale Ergebnisse können je nach Ausgangszustand, Haarstruktur, Haarstruktur, Licht, Fotoqualität, Technik, Produktwahl, Fachausführung und individueller Reaktion abweichen.</p>
+      <p><strong>Haftung für Links:</strong> Diese Website enthält Links zu externen Websites Dritter. Auf deren Inhalte besteht kein Einfluss. Für Inhalte externer Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich.</p>
+    </section>
+
+    <section class="section" id="urheberrecht">
+      <div class="section-title">07 · Urheberrecht</div>
+      <h2>Inhalte, Bilder und Werke</h2>
+      <p>Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors oder Erstellers.</p>
+      <p>Soweit Inhalte, Bilder oder Simulationen von Nutzerinnen, Nutzern, Modellen, Salons oder Kundinnen und Kunden bereitgestellt oder freigegeben werden, gelten die jeweiligen Einwilligungen und Nutzungsrechte. Weitere Informationen dazu stehen in der <a href="Datenschutz.html">Datenschutzerklärung</a>.</p>
+    </section>
+
+    <section class="section" id="streit">
+      <div class="section-title">08 · Streitbeilegung</div>
+      <h2>Verbraucherstreitbeilegung</h2>
+      <p>Die Europäische Kommission stellte eine Plattform zur Online-Streitbeilegung bereit. Nach aktuellen EU-Informationen wurde die OS-Plattform eingestellt. Soweit gesetzlich erforderlich, werden Streitbeilegungsinformationen entsprechend aktualisiert.</p>
+      <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+    </section>
+
+    <section class="section" id="links">
+      <div class="section-title">09 · Projektseiten</div>
+      <h2>Wichtige Links innerhalb von Logic Style</h2>
+      <p>Diese Links gehören zum aktuellen Logic Style System und sind mit Website, Testversion, Modellgalerie und rechtlichen Hinweisen abgestimmt.</p>
+      <div class="link-grid">
+        <a class="link-card" href="index.html"><strong>Startseite</strong><span>Informationen zur Testversion und Testzugang-Anfrage.</span></a>
+        <a class="link-card" href="models.html"><strong>Beispiele ansehen</strong><span>Simulations-Galerie mit Vorher/Nachher-Beispielen.</span></a>
+        <a class="link-card" href="wahrheit.html"><strong>Warum Logic Style?</strong><span>Business-Erklärung, Nutzen und Beispielrechnungen.</span></a>
+        <a class="link-card" href="model.html"><strong>Model werden</strong><span>Fotomodell-Anfrage für die Logic Style Galerie.</span></a>
+        <a class="link-card" href="Datenschutz.html"><strong>Datenschutz</strong><span>Informationen zur Datenverarbeitung und Modellgalerie.</span></a>
+        <a class="link-card" href="Impressum.html"><strong>Impressum</strong><span>Anbieterkennzeichnung und rechtliche Hinweise.</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>Logic Style · Karlsruhe · Deutschland</div>
+    <div class="footer-links">
+      <a href="index.html">Startseite</a>
+      <a href="models.html">Beispiele</a>
+      <a href="wahrheit.html">Warum Logic Style?</a>
+      <a href="model.html">Model werden</a>
+      <a href="Datenschutz.html">Datenschutz</a>
+      <a href="Impressum.html">Impressum</a>
+    </div>
+  </footer>
+
+  <div id="ls-consent">
+    <div class="lsci">
+      <div class="lsct"><strong>Cookies</strong> — Wir verwenden technisch notwendige Speicherfunktionen, z. B. für die Cookie-Auswahl. Details stehen in der <a href="Datenschutz.html">Datenschutzerklärung</a> und im <a href="Impressum.html">Impressum</a>.</div>
+      <div class="lscbtns">
+        <button class="lscd" type="button" onclick="lsCon('decline')">Ablehnen</button>
+        <button class="lsca" type="button" onclick="lsCon('accept')">Akzeptieren ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const banner=document.getElementById('ls-consent');
+      if(!localStorage.getItem('ls_consent')&&banner){banner.classList.add('show');}
+    })();
+    function lsCon(choice){
+      localStorage.setItem('ls_consent',choice);
+      const banner=document.getElementById('ls-consent');
+      if(banner){banner.classList.remove('show');}
+    }
+  </script>
+</body>
+</html>
