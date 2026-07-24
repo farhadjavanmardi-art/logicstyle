@@ -602,8 +602,9 @@ async function loadGalleryCounts(){
         const so=r.sort_order||0;
         [code,mid].forEach(k=>{
           if(!k)return;
-          if(!_galleryThumbs[k] || so>=(_galleryThumbs[k]._so||0)){
-            _galleryThumbs[k]={before:bef,after:aft,_so:so};
+          const tk=`${gm}|${k}`;  // Thumbnail pro Bereich getrennt (gleiche id in Farbe ≠ Damen)
+          if(!_galleryThumbs[tk] || so>=(_galleryThumbs[tk]._so||0)){
+            _galleryThumbs[tk]={before:bef,after:aft,_so:so};
           }
         });
       }
@@ -654,7 +655,7 @@ function buildGalleryBtn(mode,id,name){
 
 /* thumbnail کوچک عکس نمونه جلوی هر مدل (آخرین شبیه‌سازی) */
 function buildThumb(id){
-  const t=_galleryThumbs[id];
+  const t=_galleryThumbs[`${galCanonMode(currentMode)}|${id}`];
   if(!t||!t.after)return'';
   const after=String(t.after).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
   return`<img class="model-thumb" src="${after}" loading="lazy" onclick="toggleInlinePair('${id}',event)" title="Vorher/Nachher ansehen">`;
@@ -668,7 +669,7 @@ function toggleInlinePair(id,event){
   if(existing){existing.remove();return;}
   // همه بازهای دیگر را ببند (فقط یکی همزمان)
   document.querySelectorAll('.inline-pair').forEach(el=>el.remove());
-  const t=_galleryThumbs[id];
+  const t=_galleryThumbs[`${galCanonMode(currentMode)}|${id}`];
   if(!t||!t.after)return;
   const row=event&&event.target?event.target.closest('.model-row'):null;
   if(!row)return;
@@ -1524,7 +1525,12 @@ async function openGallery(modelId,modelName,event){
   document.getElementById('galleryModal').classList.add('open');
   const imgs=document.getElementById('galleryImgs');
   try{
-    let{data:rows,error}=await getSB().from('model_gallery').select('*').eq('model_id',modelId).order('sort_order');
+    // Nur Bilder aus dem aktuellen Bereich zeigen — gleiche id in Farbe/Damen/Bart nicht vermischen
+    const _cm=galCanonMode(currentMode);
+    const _modeIn=_cm==='behandlung'?['behandlung','treatment']:(_cm?[_cm]:null);
+    let _q=getSB().from('model_gallery').select('*').eq('model_id',modelId);
+    if(_modeIn)_q=_q.in('mode',_modeIn);
+    let{data:rows,error}=await _q.order('sort_order');
     // Detect color/behandlung IDs across all ranges (not just 300-379)
     const _allColorIds=new Set([VOLLFARBEN,BALAYAGE,OMBRE,HIGHLIGHTS,MONEY_PIECE,ROOT_SERVICES,
       TONING,BLONDE_SERVICES,GREY_SERVICES,FASHION_COLOR,MENS_COLOR,BART_FARBEN].flat().map(x=>x.id));
