@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="de" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Logic Style · Buchhaltung & Kosten-Cockpit</title>
+<style>
+  :root{
+    --bg:#f3f5f4; --panel:#ffffff; --panel-2:#eef2f1; --panel-3:#e6ece9;
+    --ink:#13201c; --muted:#5c6b66; --hair:#dbe3e0;
+    --accent:#0e7c66; --accent-soft:#d4ebe4;
+    --good:#0e7c66; --good-soft:#d4ebe4;
+    --cost:#c0492f; --cost-soft:#f6ddd6;
+    --tax:#b7791f; --tax-soft:#f6ecd6;
+    --contin:#6b5bd2; --contin-soft:#e4e0f7;
+    --per:#d98a4e; --per-soft:#f6e6d6;
+    --shadow:0 1px 2px rgba(19,32,28,.05),0 8px 24px rgba(19,32,28,.06);
+    --font:"Vazirmatn","Tahoma","Segoe UI",system-ui,sans-serif;
+    --num:"SF Mono",ui-monospace,"DejaVu Sans Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#0e1512; --panel:#151e1a; --panel-2:#1b2622; --panel-3:#22302a;
+    --ink:#e7efeb; --muted:#93a49d; --hair:#2a3630;
+    --accent:#3fbf9f; --accent-soft:#173b33;
+    --good:#3fbf9f; --good-soft:#153229;
+    --cost:#e8836b; --cost-soft:#3a231c;
+    --tax:#e0b25a; --tax-soft:#3a2f18;
+    --contin:#a89bf0; --contin-soft:#221d3c;
+    --per:#e0a869; --per-soft:#3a2c18;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }}
+  :root[data-theme="dark"]{
+    --bg:#0e1512; --panel:#151e1a; --panel-2:#1b2622; --panel-3:#22302a;
+    --ink:#e7efeb; --muted:#93a49d; --hair:#2a3630;
+    --accent:#3fbf9f; --accent-soft:#173b33;
+    --good:#3fbf9f; --good-soft:#153229;
+    --cost:#e8836b; --cost-soft:#3a231c;
+    --tax:#e0b25a; --tax-soft:#3a2f18;
+    --contin:#a89bf0; --contin-soft:#221d3c;
+    --per:#e0a869; --per-soft:#3a2c18;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"]{
+    --bg:#f3f5f4; --panel:#ffffff; --panel-2:#eef2f1; --panel-3:#e6ece9;
+    --ink:#13201c; --muted:#5c6b66; --hair:#dbe3e0;
+    --accent:#0e7c66; --accent-soft:#d4ebe4;
+    --good:#0e7c66; --good-soft:#d4ebe4;
+    --cost:#c0492f; --cost-soft:#f6ddd6;
+    --tax:#b7791f; --tax-soft:#f6ecd6;
+    --contin:#6b5bd2; --contin-soft:#e4e0f7;
+    --per:#d98a4e; --per-soft:#f6e6d6;
+    --shadow:0 1px 2px rgba(19,32,28,.05),0 8px 24px rgba(19,32,28,.06);
+  }
+
+  *{box-sizing:border-box}
+  .wrap{direction:rtl;font-family:var(--font);background:var(--bg);color:var(--ink);
+    min-height:100vh;padding:clamp(14px,3.5vw,40px);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .inner{max-width:1120px;margin:0 auto}
+
+  header.top{margin-bottom:20px}
+  .eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px}
+  h1{font-size:clamp(1.5rem,3.6vw,2.25rem);font-weight:800;margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--muted);max-width:62ch;font-size:.96rem}
+
+  nav.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 24px}
+  nav.chips a{text-decoration:none;font-size:.82rem;font-weight:600;color:var(--muted);
+    background:var(--panel);border:1px solid var(--hair);padding:7px 13px;border-radius:999px;transition:.15s}
+  nav.chips a:hover{color:var(--accent);border-color:var(--accent)}
+
+  section{margin-bottom:26px;scroll-margin-top:16px}
+  .card{background:var(--panel);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow);padding:20px}
+  .card h2{font-size:1.02rem;font-weight:800;margin:0 0 4px;letter-spacing:-.01em}
+  .card .lead{color:var(--muted);font-size:.86rem;margin:0 0 16px}
+  h3.sub-h{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px}
+
+  /* KPI tiles */
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:640px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(min-width:960px){.kpis{grid-template-columns:repeat(6,1fr)}}
+  .kpi{border-radius:14px;padding:14px;border:1px solid var(--hair);background:var(--panel)}
+  .kpi .k-lab{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:7px;line-height:1.35}
+  .kpi .k-val{font-family:var(--num);font-size:1.28rem;font-weight:700;font-variant-numeric:tabular-nums;direction:ltr;text-align:right;line-height:1.1}
+  .kpi .k-sub{font-size:.68rem;color:var(--muted);margin-top:5px;direction:ltr;text-align:right}
+  .kpi.hl{background:var(--cost-soft)} .kpi.hl .k-val{color:var(--cost)}
+  .kpi.g{background:var(--good-soft)} .kpi.g .k-val{color:var(--good)}
+  .kpi.a{background:var(--accent-soft)} .kpi.a .k-val{color:var(--accent)}
+
+  /* generic form bits */
+  label.field{display:block;margin-bottom:14px}
+  label.field .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:.86rem;margin-bottom:6px;font-weight:600}
+  label.field .hint{color:var(--muted);font-weight:400;font-size:.76rem}
+  input[type=number],input[type=text],input[type=month]{width:100%;background:var(--panel-2);border:1px solid var(--hair);color:var(--ink);border-radius:10px;padding:9px 12px;font-family:var(--num);font-size:.92rem;text-align:left;direction:ltr}
+  input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+
+  .seg{display:flex;gap:6px;background:var(--panel-2);padding:4px;border-radius:12px;border:1px solid var(--hair)}
+  .seg button{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 8px;border-radius:9px;font-family:var(--font);font-size:.84rem;font-weight:700;cursor:pointer;transition:.15s}
+  .seg button.on{background:var(--panel);color:var(--accent);box-shadow:var(--shadow)}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .btn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:10px;padding:9px 16px;font-family:var(--font);font-weight:700;font-size:.86rem;cursor:pointer}
+  .btn.ghost{background:transparent;color:var(--accent)}
+  .btn.sm{padding:5px 10px;font-size:.78rem}
+  .btn.danger{border-color:var(--cost);color:var(--cost);background:transparent}
+
+  .tbl-scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:.87rem}
+  th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--hair);white-space:nowrap}
+  th{font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  td.num,th.num{font-family:var(--num);font-variant-numeric:tabular-nums;direction:ltr;text-align:left}
+  tbody tr:hover{background:var(--panel-2)}
+  tfoot td{font-weight:800;border-top:2px solid var(--hair);border-bottom:0}
+  .pos{color:var(--good)} .neg{color:var(--cost)}
+  .pkg-in{width:76px;background:var(--panel-2);border:1px solid var(--hair);color:var(--ink);border-radius:8px;padding:5px 7px;font-family:var(--num);direction:ltr;text-align:left;font-size:.85rem}
+
+  /* bar chart */
+  .barchart{display:flex;align-items:flex-end;gap:10px;height:130px;padding-top:8px}
+  .barchart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:44px}
+  .barchart .bar{width:100%;max-width:46px;background:var(--accent);border-radius:6px 6px 0 0;transition:.2s}
+  .barchart .cap{font-size:.68rem;color:var(--muted);direction:ltr}
+  .barchart .amt{font-size:.66rem;font-family:var(--num);color:var(--ink);direction:ltr}
+
+  .bd-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair);font-size:.9rem}
+  .bd-row:last-child{border-bottom:0}
+  .bd-dot{width:10px;height:10px;border-radius:3px;flex:none}
+  .bd-name{flex:1}.bd-name small{display:block;color:var(--muted);font-size:.74rem}
+  .bd-val{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:700;direction:ltr;min-width:92px;text-align:left}
+  .c-cost{color:var(--cost)}.bg-cost{background:var(--cost)}
+  .c-fix{color:var(--muted)}.bg-fix{background:var(--muted)}
+  .c-con{color:var(--contin)}.bg-con{background:var(--contin)}
+  .c-tax{color:var(--tax)}.bg-tax{background:var(--tax)}
+  .c-per{color:var(--per)}.bg-per{background:var(--per)}
+  .c-net{color:var(--good)}.bg-net{background:var(--good)}
+  .bars{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:4px 0 8px;border:1px solid var(--hair)}
+  .bars span{display:block;height:100%}
+
+  .note{background:var(--panel-2);border-right:3px solid var(--accent);border-radius:8px;padding:12px 14px;font-size:.83rem;color:var(--muted);margin-top:14px}
+  .note b{color:var(--ink)}
+  .grid2{display:grid;gap:18px}
+  @media(min-width:860px){.grid2.calc{grid-template-columns:330px 1fr;align-items:start}}
+  details.sql{margin-top:14px}
+  details.sql summary{cursor:pointer;font-size:.82rem;font-weight:700;color:var(--accent)}
+  pre{background:var(--panel-2);border:1px solid var(--hair);border-radius:10px;padding:12px;overflow-x:auto;direction:ltr;text-align:left;font-family:var(--num);font-size:.76rem;line-height:1.5;margin:8px 0 0}
+  footer{margin-top:28px;color:var(--muted);font-size:.76rem;text-align:center}
+  .row-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:6px}
+  .row-actions label{flex:1;min-width:120px;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="inner">
+
+  <header class="top">
+    <div class="eyebrow">Logic Style · Buchhaltung (Einzelunternehmer DE)</div>
+    <h1>حساب‌وکتاب و کاکپیتِ هزینه</h1>
+    <p class="sub">همه‌چیز یکجا: صورتحساب واقعی Google، مصرف Gemini، و محاسبه‌گر سود/مالیات. اعداد واقعیِ امروز داخلش هست؛ بخش‌های محاسبه‌گر رو زنده عوض کن. صورتحساب‌های جدید رو خودت اضافه می‌کنی و ذخیره می‌مونه.</p>
+  </header>
+
+  <nav class="chips">
+    <a href="#overview">۱ · نمای کلی</a>
+    <a href="#billing">۲ · صورتحساب‌ها</a>
+    <a href="#usage">۳ · مصرف Gemini</a>
+    <a href="#rechner">۴ · محاسبه‌گر سود</a>
+    <a href="#prognose">۵ · پیش‌بینی و سربه‌سر</a>
+  </nav>
+
+  <!-- 1 OVERVIEW -->
+  <section id="overview"><div class="card">
+    <h2>نمای کلی</h2>
+    <p class="lead">وضعیت واقعیِ امروز — بر اساس صورتحساب Google و دیتابیس.</p>
+    <div class="kpis">
+      <div class="kpi hl"><div class="k-lab">کل خرج Gemini تا امروز</div><div class="k-val" id="oTotalSpend">–</div><div class="k-sub" id="oTotalSpendSub">مجموع صورتحساب‌ها</div></div>
+      <div class="kpi"><div class="k-lab">این ماه (آخرین صورتحساب)</div><div class="k-val" id="oThisMonth">–</div><div class="k-sub" id="oThisMonthSub"></div></div>
+      <div class="kpi"><div class="k-lab">تصاویر تولیدشده</div><div class="k-val" id="oImages">729</div><div class="k-sub">گالری (۴۸۱+۲۴۸ آرشیو)</div></div>
+      <div class="kpi a"><div class="k-lab">هزینه هر تصویر (1K)</div><div class="k-val">€0.06</div><div class="k-sub">قفل‌شده روی 1K</div></div>
+      <div class="kpi"><div class="k-lab">درآمد از مشتری تا حالا</div><div class="k-val">€0</div><div class="k-sub">۰ شبیه‌سازی مشتری</div></div>
+      <div class="kpi g"><div class="k-lab">مرحله‌ی فعلی</div><div class="k-val" style="font-family:var(--font);font-size:1rem">راه‌اندازی</div><div class="k-sub">هزینه یک‌بارِ گالری</div></div>
+    </div>
+    <div class="note"><b>خلاصه:</b> €۴۵ خرجِ ژوئیه = ساختِ یک‌بارِ ~۷۳۰ تصویر گالری، نه هزینه‌ی تکرارشونده و نه از مشتری. از این به بعد لاگ فعاله؛ هر تصویر جدید ثبت می‌شه.</div>
+  </div></section>
+
+  <!-- 2 BILLING -->
+  <section id="billing"><div class="card">
+    <h2>صورتحساب‌های Google (Rechnungsverlauf)</h2>
+    <p class="lead">هر ماه که Rechnung اومد، عددش رو اینجا اضافه کن. توی مرورگرت ذخیره می‌مونه.</p>
+    <div class="tbl-scroll"><table>
+      <thead><tr><th>ماه</th><th class="num">Gemini (€)</th><th>توضیح</th><th></th></tr></thead>
+      <tbody id="billBody"></tbody>
+      <tfoot><tr><td>مجموع</td><td class="num neg" id="billTotal">–</td><td colspan="2"></td></tr></tfoot>
+    </table></div>
+
+    <div class="row-actions">
+      <label class="field"><span class="lab">ماه</span><input type="month" id="bMonth"></label>
+      <label class="field"><span class="lab">مبلغ Gemini (€)</span><input type="number" id="bAmount" step="0.01" min="0" placeholder="45.35"></label>
+      <label class="field"><span class="lab">توضیح</span><input type="text" id="bNote" placeholder="z.B. Galerie / Kunden"></label>
+      <button class="btn" id="bAdd">افزودن</button>
+    </div>
+
+    <h3 class="sub-h" style="margin-top:22px">نمودار ماهانه</h3>
+    <div class="barchart" id="billChart"></div>
+    <div class="note">دکمه‌ی «افزودن» یه ردیف جدید می‌سازه. برای پاک‌کردن یه ردیف، دکمه‌ی 🗑 کنارش رو بزن. داده‌ها فقط توی همین مرورگر ذخیره می‌شن (localStorage).</div>
+  </div></section>
+
+  <!-- 3 USAGE -->
+  <section id="usage"><div class="card">
+    <h2>مصرف Gemini</h2>
+    <p class="lead">تفکیک اینکه پول کجا رفته — ادمین (ساخت گالری) در مقابل مشتری.</p>
+    <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+      <div class="kpi hl"><div class="k-lab">تصاویر ساخته‌شده توسط ادمین</div><div class="k-val">729</div><div class="k-sub">پر کردن گالری‌ها · ~€45</div></div>
+      <div class="kpi"><div class="k-lab">شبیه‌سازیِ مشتری</div><div class="k-val">0</div><div class="k-sub">هنوز مشتری فعال نشده</div></div>
+    </div>
+    <div class="note"><b>سیستم لاگ فعال است.</b> از حالا هر فراخوانی Gemini (چه ادمین، چه مشتری، چه موفق، چه ناموفق) توی جدول <code>gemini_usage_log</code> ثبت می‌شه. ۷۲۹ تصویر بالا مربوط به قبل از فعال‌شدن لاگ است و از روی گالری برآورد شده.</div>
+    <details class="sql"><summary>کوئری‌های آماده برای دیدن هزینه در Supabase</summary>
+<pre>-- Gesamtkosten bis heute
+SELECT COUNT(*) AS bilder, ROUND(SUM(est_cost_usd),2) AS usd
+FROM gemini_usage_log WHERE success;
+
+-- Kosten pro Monat
+SELECT to_char(created_at,'YYYY-MM') AS monat,
+       COUNT(*) AS bilder, ROUND(SUM(est_cost_usd),2) AS usd
+FROM gemini_usage_log WHERE success GROUP BY 1 ORDER BY 1 DESC;
+
+-- Admin vs. Kunde
+SELECT is_admin, COUNT(*) AS bilder, ROUND(SUM(est_cost_usd),2) AS usd
+FROM gemini_usage_log WHERE success GROUP BY 1;</pre>
+    </details>
+  </div></section>
+
+  <!-- 4 RECHNER -->
+  <section id="rechner"><div class="card">
+    <h2>محاسبه‌گر سود و مالیات</h2>
+    <p class="lead">پیش‌بینیِ ماهانه وقتی مشتری فعال بشه. هر عدد رو عوض کنی، زنده حساب می‌شه.</p>
+    <div class="grid2 calc">
+      <aside>
+        <h3 class="sub-h">تنظیمات</h3>
+        <div class="lab" style="font-size:.86rem;font-weight:600;margin-bottom:6px">وضعیت مالیاتی</div>
+        <div class="seg" id="taxseg" style="margin-bottom:16px">
+          <button data-tax="klein" class="on">Kleinunternehmer</button>
+          <button data-tax="regel">USt ۱۹٪</button>
+        </div>
+        <label class="field"><span class="lab">هزینه هر شبیه‌سازی<span class="hint">Gemini 1K</span></span><input type="number" id="costSim" value="0.06" step="0.005" min="0"></label>
+        <label class="field"><span class="lab">هزینه ثابت ماهانه<span class="hint">Supabase+دامنه €</span></span><input type="number" id="fixed" value="30" step="1" min="0"></label>
+        <label class="field"><span class="lab">هزینه‌های پیش‌بینی‌نشده<span class="hint">٪ روی هزینه‌ها</span></span><input type="number" id="contin" value="15" step="1" min="0"></label>
+        <label class="field"><span class="lab">مالیات بر درآمد<span class="hint">٪ روی سود</span></span><input type="number" id="estRate" value="25" step="1" min="0" max="45"></label>
+        <div class="lab" style="font-size:.86rem;font-weight:600;margin-bottom:6px">هزینه پرسنل</div>
+        <div class="seg" id="persseg" style="margin-bottom:12px">
+          <button data-pers="none" class="on">بدون</button>
+          <button data-pers="mini">Mini-Job</button>
+          <button data-pers="voll">تمام‌وقت</button>
+        </div>
+        <label class="field" id="persWrap" style="display:none"><span class="lab">حقوق ناخالص ماهانه<span class="hint" id="persHint">یورو</span></span><input type="number" id="persGross" value="556" step="50" min="0"><div class="hint" id="persCalc" style="margin-top:6px;font-family:var(--num);direction:ltr;text-align:left"></div></label>
+      </aside>
+
+      <main>
+        <div class="kpis" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px">
+          <div class="kpi a"><div class="k-lab">درآمد (netto)</div><div class="k-val" id="oRev">–</div></div>
+          <div class="kpi hl"><div class="k-lab">کل هزینه‌ها</div><div class="k-val" id="oCost">–</div></div>
+          <div class="kpi"><div class="k-lab">مالیات درآمد</div><div class="k-val" id="oTax">–</div></div>
+          <div class="kpi g"><div class="k-lab">سود خالص</div><div class="k-val" id="oNet">–</div></div>
+        </div>
+        <div class="bars" id="cbars"></div>
+        <div id="breakdown"></div>
+
+        <h3 class="sub-h" style="margin-top:20px">پکیج‌ها — اعداد رو مستقیم عوض کن</h3>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>پکیج</th><th class="num">قیمت</th><th class="num">شبیه‌سازی</th><th class="num">مشتری</th><th class="num">هزینه</th><th class="num">درآمد</th></tr></thead>
+          <tbody id="pkgBody"></tbody>
+          <tfoot><tr><td>جمع</td><td class="num" id="fPrice">–</td><td class="num" id="fSim">–</td><td class="num" id="fCust">–</td><td class="num neg" id="fGem">–</td><td class="num pos" id="fRev">–</td></tr></tfoot>
+        </table></div>
+      </main>
+    </div>
+  </div></section>
+
+  <!-- 5 PROGNOSE -->
+  <section id="prognose"><div class="card">
+    <h2>پیش‌بینی و نقطه‌ی سربه‌سر</h2>
+    <p class="lead">بر اساس اعداد محاسبه‌گر بالا.</p>
+    <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+      <div class="kpi g"><div class="k-lab">سود خالص سالانه (برآورد)</div><div class="k-val" id="pYear">–</div><div class="k-sub">سود ماهانه × ۱۲</div></div>
+      <div class="kpi a"><div class="k-lab">چند ماه تا جبرانِ €45 راه‌اندازی</div><div class="k-val" id="pBreak">–</div><div class="k-sub">با سود ماهانه‌ی فعلی</div></div>
+    </div>
+    <div class="note" id="prognoseNote"></div>
+  </div></section>
+
+  <footer>Logic Style · Buchhaltung · اعداد مالیاتی تخمینی‌اند — برای رقم دقیق با Steuerberater چک کن.</footer>
+</div></div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var euro=function(n){return "€"+(Math.round(n*100)/100).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var int=function(n){return Math.round(n).toLocaleString("de-DE");};
+
+  /* ---------- BILLING ---------- */
+  var LS_KEY="ls_billing_v1";
+  var SEED=[{month:"2026-07",gemini:45.35,note:"Galerie-Aufbau (~730 Bilder, einmalig)"}];
+  var bills=load();
+  function load(){try{var r=localStorage.getItem(LS_KEY);if(r)return JSON.parse(r);}catch(e){}return SEED.slice();}
+  function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(bills));}catch(e){}}
+
+  function renderBills(){
+    bills.sort(function(a,b){return a.month<b.month?-1:1;});
+    var tb=$("billBody");tb.innerHTML="";
+    var tot=0;
+    bills.forEach(function(b,i){
+      tot+=(+b.gemini||0);
+      var tr=document.createElement("tr");
+      tr.innerHTML='<td>'+b.month+'</td><td class="num neg">'+euro(+b.gemini||0)+'</td><td>'+(b.note||"")+'</td>'+
+        '<td><button class="btn danger sm" data-del="'+i+'">🗑</button></td>';
+      tb.appendChild(tr);
+    });
+    $("billTotal").textContent=euro(tot);
+    tb.querySelectorAll("[data-del]").forEach(function(el){el.addEventListener("click",function(){bills.splice(+el.dataset.del,1);save();renderBills();});});
+    renderChart();
+    // overview
+    $("oTotalSpend").textContent=euro(tot);
+    $("oTotalSpendSub").textContent=bills.length+" ماه";
+    if(bills.length){var last=bills[bills.length-1];$("oThisMonth").textContent=euro(+last.gemini||0);$("oThisMonthSub").textContent=last.month;}
+    else{$("oThisMonth").textContent="€0.00";$("oThisMonthSub").textContent="–";}
+    computeBreak();
+  }
+  function renderChart(){
+    var c=$("billChart");c.innerHTML="";
+    var max=Math.max.apply(null,bills.map(function(b){return +b.gemini||0}).concat([1]));
+    bills.forEach(function(b){
+      var v=+b.gemini||0, h=Math.max(4,v/max*100);
+      var col=document.createElement("div");col.className="col";
+      col.innerHTML='<div class="amt">'+euro(v)+'</div><div class="bar" style="height:'+h+'%"></div><div class="cap">'+b.month.slice(2)+'</div>';
+      c.appendChild(col);
+    });
+  }
+  $("bAdd").addEventListener("click",function(){
+    var m=$("bMonth").value, a=parseFloat($("bAmount").value);
+    if(!m||isNaN(a)){alert("ماه و مبلغ رو وارد کن");return;}
+    var ex=bills.find(function(x){return x.month===m;});
+    if(ex){ex.gemini=a;ex.note=$("bNote").value||ex.note;}
+    else bills.push({month:m,gemini:a,note:$("bNote").value||""});
+    save();$("bAmount").value="";$("bNote").value="";renderBills();
+  });
+
+  /* ---------- RECHNER ---------- */
+  var pkgs=[{name:"Basis",price:19.90,sims:100,cust:0},{name:"Profi",price:49.00,sims:300,cust:0},{name:"Premium",price:99.00,sims:800,cust:0}];
+  var taxMode="klein",persMode="none",MINI=0.31,VOLL=0.21;
+  var lastNet=0;
+
+  function buildRows(){
+    var tb=$("pkgBody");tb.innerHTML="";
+    pkgs.forEach(function(p,i){
+      var tr=document.createElement("tr");
+      tr.innerHTML='<td><b>'+p.name+'</b></td>'+
+        '<td class="num"><input class="pkg-in" data-i="'+i+'" data-k="price" type="number" step="1" min="0" value="'+p.price+'"></td>'+
+        '<td class="num"><input class="pkg-in" data-i="'+i+'" data-k="sims" type="number" step="10" min="0" value="'+p.sims+'"></td>'+
+        '<td class="num"><input class="pkg-in" data-i="'+i+'" data-k="cust" type="number" step="1" min="0" value="'+p.cust+'"></td>'+
+        '<td class="num neg" data-c="gem-'+i+'">–</td><td class="num pos" data-c="rev-'+i+'">–</td>';
+      tb.appendChild(tr);
+    });
+    tb.querySelectorAll(".pkg-in").forEach(function(el){el.addEventListener("input",function(){pkgs[+el.dataset.i][el.dataset.k]=parseFloat(el.value)||0;calc();});});
+  }
+
+  function calc(){
+    var costSim=parseFloat($("costSim").value)||0,fixed=parseFloat($("fixed").value)||0;
+    var continR=(parseFloat($("contin").value)||0)/100,estR=(parseFloat($("estRate").value)||0)/100;
+    var totRev=0,totGem=0,totSim=0,totCust=0,totPrice=0;
+    pkgs.forEach(function(p,i){
+      var gem=p.sims*costSim*p.cust,rev=p.price*p.cust;
+      totGem+=gem;totRev+=rev;totSim+=p.sims*p.cust;totCust+=p.cust;totPrice+=p.price;
+      var g=document.querySelector('[data-c="gem-'+i+'"]'),r=document.querySelector('[data-c="rev-'+i+'"]');
+      if(g)g.textContent=euro(gem);if(r)r.textContent=euro(rev);
+    });
+    var persGross=parseFloat($("persGross").value)||0,persCost=0,persRate=0;
+    if(persMode==="mini"){persRate=MINI;persCost=persGross*(1+MINI);}
+    else if(persMode==="voll"){persRate=VOLL;persCost=persGross*(1+VOLL);}
+    if(persMode!=="none")$("persCalc").textContent="+ "+Math.round(persRate*100)+"% Arbeitgeber = "+euro(persCost)+" / Monat";
+
+    var baseCost=totGem+fixed,contin=baseCost*continR,totCost=baseCost+contin+persCost;
+    var pbt=totRev-totCost,itax=pbt>0?pbt*estR:0,net=pbt-itax;lastNet=net;
+
+    $("oRev").textContent=euro(totRev);$("oCost").textContent=euro(totCost);$("oTax").textContent=euro(itax);$("oNet").textContent=euro(net);
+
+    function rowb(cls,name,sub,val){return '<div class="bd-row"><span class="bd-dot bg-'+cls+'"></span><span class="bd-name">'+name+'<small>'+sub+'</small></span><span class="bd-val c-'+cls+'">'+val+'</span></div>';}
+    var pl=persMode==="mini"?"Mini-Job +سهم کارفرما":(persMode==="voll"?"تمام‌وقت +سهم کارفرما":"");
+    $("breakdown").innerHTML=
+      rowb("cost","هزینه Gemini","متغیر · "+int(totSim)+" تصویر/ماه","−"+euro(totGem))+
+      rowb("fix","هزینه ثابت","Supabase + دامنه","−"+euro(fixed))+
+      (persMode!=="none"?rowb("per","هزینه پرسنل",pl,"−"+euro(persCost)):"")+
+      rowb("con","پیش‌بینی‌نشده",(parseFloat($("contin").value)||0)+"٪","−"+euro(contin))+
+      rowb("tax","مالیات درآمد",(parseFloat($("estRate").value)||0)+"٪","−"+euro(itax))+
+      rowb("net","سود خالص ماهانه","بعد از همه کسورات",(net>=0?"+":"−")+euro(Math.abs(net)));
+
+    var base=totRev>0?totRev:1;
+    function seg(c,v){return '<span class="bg-'+c+'" style="width:'+Math.max(0,Math.min(100,v/base*100))+'%"></span>';}
+    $("cbars").innerHTML=seg("cost",totGem)+seg("fix",fixed)+seg("per",persCost)+seg("con",contin)+seg("tax",itax)+seg("net",net>0?net:0);
+
+    $("fPrice").textContent=euro(totPrice);$("fSim").textContent=int(totSim);$("fCust").textContent=int(totCust);
+    $("fGem").textContent="−"+euro(totGem);$("fRev").textContent=euro(totRev);
+    computeBreak();
+  }
+
+  function computeBreak(){
+    $("pYear").textContent=euro(lastNet*12);
+    var setup=bills.reduce(function(s,b){return s+(+b.gemini||0);},0);
+    var n=$("pBreak"),note=$("prognoseNote");
+    if(lastNet>0){
+      var months=Math.ceil(setup/lastNet);
+      n.textContent=months+" ماه";
+      note.innerHTML="با سود ماهانه‌ی <b>"+euro(lastNet)+"</b>، هزینه‌ی راه‌اندازیِ <b>"+euro(setup)+"</b> در حدود <b>"+months+" ماه</b> جبران می‌شه. بعد از اون خالص سود می‌کنی.";
+    }else{
+      n.textContent="—";
+      note.innerHTML="فعلاً تعداد مشتری در پکیج‌ها صفره (یا سود منفیه). توی بخش «محاسبه‌گر» ستون «مشتری» رو پر کن تا پیش‌بینی فعال بشه.";
+    }
+  }
+
+  document.querySelectorAll("#taxseg button").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll("#taxseg button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");taxMode=b.dataset.tax;calc();});});
+  document.querySelectorAll("#persseg button").forEach(function(b){b.addEventListener("click",function(){
+    document.querySelectorAll("#persseg button").forEach(function(x){x.classList.remove("on");});b.classList.add("on");persMode=b.dataset.pers;
+    var w=$("persWrap");
+    if(persMode==="none")w.style.display="none";
+    else{w.style.display="block";if(persMode==="mini"){$("persHint").textContent="حداکثر €۵۵۶ (Minijob)";$("persGross").value=556;}else{$("persHint").textContent="مثلاً €۲۵۰۰";$("persGross").value=2500;}}
+    calc();
+  });});
+  ["costSim","fixed","contin","estRate","persGross"].forEach(function(id){$(id).addEventListener("input",calc);});
+
+  renderBills();buildRows();calc();
+})();
+</script>
+
+</body>
+</html>
