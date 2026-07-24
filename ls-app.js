@@ -24,7 +24,11 @@ let _currentModelId='', _currentColorItem=null;
 let _currentAngles=[], _selectedAngle=null, _selectedIntensity=null;
 let _currentGalleryModelId='', _currentGalleryModelName='';
 let _galleryCounts={};
+let _galleryCountsByMode={};  // `${mode}|${model_id}` → Anzahl — Skip-Prüfung pro Bereich
 let _galleryThumbs={};  // model_id → {before, after} آخرین جفت شبیه‌سازی
+/* Galerie-Modus vereinheitlichen: Behandlung wird sowohl als 'treatment' (Batch)
+   als auch als 'behandlung' (Einzelspeicherung) abgelegt → beide auf 'behandlung'. */
+function galCanonMode(m){m=String(m||'').toLowerCase();return m==='treatment'?'behandlung':m;}
 let _selectedAdvancedOptions={};
 let _selectedMustache='natural'; /* Schnurrbart: eigener Bereich, überlebt resetGenState */
 
@@ -567,6 +571,7 @@ async function loadGalleryCounts(){
   try{
     const{data}=await getSB().from('model_gallery').select('model_id,mode,pair_label,before_url,after_url,image_url,sort_order,customer_id');
     _galleryCounts={};
+    _galleryCountsByMode={};
     _galleryThumbs={};
     const _nameToCode={};
     [[VOLLFARBEN],[BALAYAGE],[OMBRE],[HIGHLIGHTS],[MONEY_PIECE],
@@ -587,6 +592,10 @@ async function loadGalleryCounts(){
       const code=/^\d+$/.test(mid)?mid:(_nameToCode[normColorId(mid)]||mid);
       _galleryCounts[code]=(_galleryCounts[code]||0)+1;
       if(code!==mid)_galleryCounts[mid]=(_galleryCounts[mid]||0)+1;
+      // mode-aware: gleiche id in einem anderen Bereich zählt NICHT als „hat bereits ein Bild“
+      const gm=galCanonMode(r.mode);
+      _galleryCountsByMode[`${gm}|${code}`]=(_galleryCountsByMode[`${gm}|${code}`]||0)+1;
+      if(code!==mid)_galleryCountsByMode[`${gm}|${mid}`]=(_galleryCountsByMode[`${gm}|${mid}`]||0)+1;
       // ذخیره جفت before/after برای thumbnail — آخرین (بیشترین sort_order) نگه داشته می‌شود
       const bef=r.before_url||'', aft=r.after_url||r.image_url||'';
       if(aft){
@@ -600,7 +609,7 @@ async function loadGalleryCounts(){
       }
     });
     renderCurrent();
-  }catch(e){_galleryCounts={}}
+  }catch(e){_galleryCounts={};_galleryCountsByMode={}}
 }
 
 function renderCurrent(){
@@ -1444,7 +1453,7 @@ async function startBatch(){
     if(_batchStop)break;
     const name=m.name;
     _batchSetStatus(`${done}/${total} · ${ok} ✓ · ${skip} übersprungen · ${fail} ✗ — aktuell: ${name}`);
-    if(skipExisting&&(_galleryCounts[m.id]||0)>0){skip++;done++;_batchSetBar(done/total*100);_batchLog(`↷ ${name} (hat bereits ein Bild)`);continue;}
+    if(skipExisting&&(_galleryCountsByMode[`${galCanonMode(mode)}|${m.id}`]||0)>0){skip++;done++;_batchSetBar(done/total*100);_batchLog(`↷ ${name} (hat bereits ein Bild)`);continue;}
     const prompt=m.prompt;
     try{
       await touchSession();
