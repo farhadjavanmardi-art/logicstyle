@@ -1,0 +1,389 @@
+<title>Logic Style — Präsentation für Salons</title>
+<style>
+  :root{
+    --ground:#FAF6EF;--panel:#FFFFFF;--ink:#211C17;--ink-soft:#5B5148;--hair:#E4DBCC;
+    --brass:#B07B3E;--brass-deep:#8F5F26;--espresso:#2A231D;--gold-wash:#F3E9D8;
+    --shadow:24px 32px 60px -32px rgba(42,35,29,.35);--maxw:680px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#1A1512;--panel:#241E19;--ink:#F4ECDF;--ink-soft:#B4A692;--hair:#3A322A;
+      --brass:#D19A57;--brass-deep:#E0AE6C;--espresso:#F4ECDF;--gold-wash:#2E271F;
+      --shadow:24px 32px 70px -34px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#1A1512;--panel:#241E19;--ink:#F4ECDF;--ink-soft:#B4A692;--hair:#3A322A;
+    --brass:#D19A57;--brass-deep:#E0AE6C;--espresso:#F4ECDF;--gold-wash:#2E271F;
+    --shadow:24px 32px 70px -34px rgba(0,0,0,.7);
+  }
+  :root[data-theme="light"]{
+    --ground:#FAF6EF;--panel:#FFFFFF;--ink:#211C17;--ink-soft:#5B5148;--hair:#E4DBCC;
+    --brass:#B07B3E;--brass-deep:#8F5F26;--espresso:#2A231D;--gold-wash:#F3E9D8;
+    --shadow:24px 32px 60px -32px rgba(42,35,29,.35);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+  /* RTL: use a clean system face that has Arabic/Persian glyphs for headings */
+  body[dir="rtl"] .brand,body[dir="rtl"] h1,body[dir="rtl"] h2,body[dir="rtl"] .big{
+    font-family:"Segoe UI","Tahoma",system-ui,sans-serif;
+  }
+
+  /* ---------- Language bar ---------- */
+  .langbar{
+    position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--ground) 88%,transparent);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--hair);
+  }
+  .langbar-in{
+    max-width:var(--maxw);margin:0 auto;padding:10px 14px;
+    display:flex;flex-wrap:wrap;gap:7px;justify-content:center;
+  }
+  .langbtn{
+    font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;
+    padding:6px 13px;border-radius:999px;border:1px solid var(--hair);
+    background:transparent;color:var(--ink-soft);transition:all .12s ease;
+  }
+  .langbtn:hover{border-color:var(--brass);color:var(--brass-deep)}
+  .langbtn.on{background:var(--brass-deep);border-color:var(--brass-deep);color:#fff}
+  .langbtn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:52px 0 46px;text-align:center;
+    background:radial-gradient(120% 90% at 50% -10%, var(--gold-wash) 0%, transparent 60%);}
+  .brand{font-family:Georgia,serif;font-weight:700;letter-spacing:.02em;font-size:15px;
+    text-transform:uppercase;color:var(--brass);display:inline-flex;align-items:center;gap:10px;}
+  .brand::before,.brand::after{content:"";width:26px;height:1px;background:var(--brass);opacity:.6}
+  .eyebrow{margin:26px 0 0;font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-soft);font-weight:600;}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:700;
+    font-size:clamp(30px,7vw,44px);line-height:1.12;margin:14px 0 0;
+    text-wrap:balance;letter-spacing:-.01em;}
+  .lead{font-size:18px;color:var(--ink-soft);margin:20px auto 0;max-width:42ch;text-wrap:balance}
+
+  /* ---------- Sections ---------- */
+  section{padding:40px 0;border-top:1px solid var(--hair)}
+  section:first-of-type{border-top:none}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--brass);font-weight:700;margin:0 0 10px;}
+  h2{font-family:Georgia,serif;font-weight:700;font-size:clamp(22px,4.5vw,28px);
+     margin:0 0 12px;line-height:1.24;text-wrap:balance}
+  p{margin:0 0 16px}p:last-child{margin-bottom:0}
+  strong{color:var(--ink);font-weight:700}
+
+  .steps{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:16px}
+  .steps li{display:grid;grid-template-columns:34px 1fr;gap:16px;align-items:start;}
+  .num{font-family:Georgia,serif;font-weight:700;color:var(--brass);font-size:20px;
+    line-height:1.3;border-bottom:2px solid var(--hair);text-align:center;}
+  .steps li p{margin:0}
+  .steps b{display:block;color:var(--ink);font-weight:700;margin-bottom:2px}
+
+  .offer{background:var(--panel);border:1px solid var(--hair);border-radius:18px;
+    padding:30px 26px;box-shadow:var(--shadow);text-align:center;}
+  .big{font-family:Georgia,serif;font-weight:700;color:var(--brass-deep);
+    font-size:clamp(46px,13vw,72px);line-height:.95;letter-spacing:-.02em;}
+  .big span{font-size:.34em;display:block;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);font-family:system-ui,sans-serif;font-weight:700;margin-top:8px}
+  .offer .note{color:var(--ink-soft);font-size:15px;margin:16px auto 0;max-width:38ch}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}
+  .badge{font-size:13px;font-weight:600;color:var(--ink);background:var(--gold-wash);
+    border:1px solid var(--hair);border-radius:999px;padding:7px 14px;}
+
+  .privacy{background:var(--gold-wash);border-radius:14px;padding:22px 24px;border:1px solid var(--hair);}
+  .privacy h2{font-size:20px;display:flex;align-items:center;gap:10px}
+  .privacy p{color:var(--ink-soft);font-size:15px}
+  .privacy a{color:var(--brass-deep);font-weight:600;text-decoration:none}
+  .privacy a:hover{text-decoration:underline}
+
+  .cta{text-align:center}
+  .btns{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+  .btn{display:block;text-decoration:none;font-weight:700;font-size:16px;
+    padding:15px 20px;border-radius:12px;transition:transform .12s ease,box-shadow .12s ease;}
+  .btn.primary{background:var(--brass-deep);color:#fff}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 24px -12px var(--brass-deep)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--hair)}
+  .btn.ghost:hover{border-color:var(--brass);color:var(--brass-deep)}
+  .btn:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+  .contact{margin-top:26px;display:grid;gap:2px;font-size:15px;text-align:center;color:var(--ink-soft);}
+  .contact a{color:var(--brass-deep);text-decoration:none;font-weight:600}
+  .contact a:hover{text-decoration:underline}
+
+  footer{text-align:center;padding:34px 0 46px;color:var(--ink-soft);font-size:13px;border-top:1px solid var(--hair);}
+  footer a{color:var(--ink-soft)}
+
+  @media (min-width:560px){.btns{flex-direction:row;justify-content:center}.btn{flex:1;max-width:260px}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<nav class="langbar" aria-label="Sprache / Language">
+  <div class="langbar-in">
+    <button class="langbtn" data-l="de" onclick="setLang('de')">Deutsch</button>
+    <button class="langbtn" data-l="en" onclick="setLang('en')">English</button>
+    <button class="langbtn" data-l="fa" onclick="setLang('fa')">فارسی</button>
+    <button class="langbtn" data-l="ku" onclick="setLang('ku')">Kurdî</button>
+    <button class="langbtn" data-l="ar" onclick="setLang('ar')">العربية</button>
+    <button class="langbtn" data-l="tr" onclick="setLang('tr')">Türkçe</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="brand">Logic Style</div>
+    <p class="eyebrow" data-i18n="eyebrow"></p>
+    <h1 data-i18n="h1"></h1>
+    <p class="lead" data-i18n="lead"></p>
+  </div>
+</div>
+
+<div class="wrap">
+  <section>
+    <p class="kicker" data-i18n="s1_kicker"></p>
+    <h2 data-i18n="s1_h2"></h2>
+    <p data-i18n="s1_p1"></p>
+    <p data-i18n="s1_p2"></p>
+  </section>
+
+  <section>
+    <p class="kicker" data-i18n="s2_kicker"></p>
+    <h2 data-i18n="s2_h2"></h2>
+    <ol class="steps">
+      <li><span class="num">1</span><p><b data-i18n="step1_b"></b><span data-i18n="step1_p"></span></p></li>
+      <li><span class="num">2</span><p><b data-i18n="step2_b"></b><span data-i18n="step2_p"></span></p></li>
+      <li><span class="num">3</span><p><b data-i18n="step3_b"></b><span data-i18n="step3_p"></span></p></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="offer">
+      <div class="big">20<span data-i18n="offer_sub"></span></div>
+      <p class="note" data-i18n="offer_note"></p>
+      <div class="badges">
+        <span class="badge" data-i18n="badge1"></span>
+        <span class="badge" data-i18n="badge2"></span>
+        <span class="badge" data-i18n="badge3"></span>
+        <span class="badge" data-i18n="badge4"></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="privacy">
+      <h2><span>🔒</span><span data-i18n="privacy_h2"></span></h2>
+      <p data-i18n="privacy_p"></p>
+      <p><a href="https://logicstyle-salon.de/Datenschutz.html" data-i18n="privacy_link"></a></p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <p class="kicker" data-i18n="cta_kicker"></p>
+    <h2 data-i18n="cta_h2"></h2>
+    <p data-i18n="cta_p"></p>
+    <div class="btns">
+      <a class="btn primary" href="https://logicstyle-salon.de/Logic_Haare_Farbe_Bart.html" data-i18n="btn_primary"></a>
+      <a class="btn ghost" href="https://wa.me/491794286020" data-i18n="btn_ghost"></a>
+    </div>
+    <div class="contact">
+      <div>🌐 <a href="https://logicstyle-salon.de">logicstyle-salon.de</a></div>
+      <div>📸 <a href="https://www.instagram.com/logic_style">@logic_style</a></div>
+      <div>✉️ <a href="mailto:info@logicstyle-salon.de">info@logicstyle-salon.de</a></div>
+      <div>📱 <a href="https://wa.me/491794286020">+49 179 428 6020</a></div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  Logic Style · <span data-i18n="footer_loc"></span> ·
+  <a href="https://logicstyle-salon.de/Impressum.html">Impressum</a> ·
+  <a href="https://logicstyle-salon.de/Datenschutz.html">Datenschutz</a>
+</footer>
+
+<script>
+const I18N = {
+  de:{
+    eyebrow:"KI-Haarsimulation für Salons",
+    h1:"Hallo liebes Team von [Salonname]! 👋",
+    lead:"Wir bauen gerade etwas, das perfekt zu euch passt — und würden es euch gern kostenlos zeigen.",
+    s1_kicker:"Was ist das?",
+    s1_h2:"Eure Kund:innen sehen den neuen Look, bevor die Schere ansetzt",
+    s1_p1:"Logic Style ist eine KI-Plattform für Friseur- und Barbershops. Der Gast lädt ein Foto hoch, wählt einen Schnitt, eine Farbe oder einen Bart — und sieht in Sekunden, wie das Ergebnis an ihm selbst aussieht.",
+    s1_p2:"Das Ganze läuft direkt im Browser, ohne App, auf Deutsch. Für euch heißt das: weniger „Ich weiß nicht, ob mir das steht“, mehr klare Entscheidungen am Stuhl.",
+    s2_kicker:"360° AI-Simulation",
+    s2_h2:"So einfach ist es",
+    step1_b:"Foto hochladen",step1_p:"Ein normales Selfie reicht völlig.",
+    step2_b:"Look wählen",step2_p:"Haarschnitt, Farbe, Bart oder Behandlung — Damen & Herren.",
+    step3_b:"Ergebnis ansehen",step3_p:"Realistische Vorschau aus mehreren Blickwinkeln, in Sekunden.",
+    offer_sub:"Simulationen gratis",
+    offer_note:"Zum Testen unseres Projekts — komplett kostenlos, ohne Kreditkarte und ohne Verpflichtung.",
+    badge1:"✔ Keine Kreditkarte",badge2:"✔ Keine App nötig",badge3:"✔ Auf Deutsch",badge4:"✔ Sofort startklar",
+    privacy_h2:"Datenschutz ist uns wichtig",
+    privacy_p:"Wir sind ein deutsches Projekt und arbeiten DSGVO-konform. Die hochgeladenen Fotos werden ausschließlich für die Simulation verwendet — nicht weiterverkauft und nicht für Werbung genutzt. Alle Details stehen transparent in unserer Datenschutzerklärung.",
+    privacy_link:"→ Zur Datenschutzerklärung",
+    cta_kicker:"Und wenn ihr Lust habt",
+    cta_h2:"Lasst uns kurz sprechen — unverbindlich",
+    cta_p:"Wir zeigen euch in wenigen Minuten, wie Logic Style in eurem Salon funktioniert, und holen uns gern euer Feedback. Wenn es passt, vereinbaren wir einen kostenlosen Beratungstermin.",
+    btn_primary:"Jetzt 20 Simulationen testen",
+    btn_ghost:"Beratungstermin per WhatsApp",
+    footer_loc:"Karlsruhe & Umgebung"
+  },
+  en:{
+    eyebrow:"AI Hair Simulation for Salons",
+    h1:"Hello dear team at [Salon name]! 👋",
+    lead:"We're building something that's a perfect fit for you — and we'd love to show it to you for free.",
+    s1_kicker:"What is it?",
+    s1_h2:"Your clients see the new look before the scissors touch a hair",
+    s1_p1:"Logic Style is an AI platform for hair and barber shops. Your guest uploads a photo, picks a cut, a color or a beard — and sees in seconds how the result looks on them.",
+    s1_p2:"It all runs right in the browser, no app, in German. For you that means less “I'm not sure it suits me”, and more clear decisions in the chair.",
+    s2_kicker:"360° AI Simulation",
+    s2_h2:"It's this simple",
+    step1_b:"Upload a photo",step1_p:"A normal selfie is all it takes.",
+    step2_b:"Choose a look",step2_p:"Haircut, color, beard or treatment — women & men.",
+    step3_b:"See the result",step3_p:"A realistic preview from several angles, in seconds.",
+    offer_sub:"free simulations",
+    offer_note:"To test our project — completely free, no credit card and no obligation.",
+    badge1:"✔ No credit card",badge2:"✔ No app needed",badge3:"✔ In German",badge4:"✔ Ready right away",
+    privacy_h2:"Your data matters to us",
+    privacy_p:"We're a German project and work in full compliance with the GDPR. Uploaded photos are used only for the simulation — never resold, never used for advertising. Every detail is transparent in our privacy policy.",
+    privacy_link:"→ Read our privacy policy",
+    cta_kicker:"And if you're interested",
+    cta_h2:"Let's have a quick, no-obligation chat",
+    cta_p:"In just a few minutes we'll show you how Logic Style works in your salon, and we'd love your feedback. If it's a good fit, we'll set up a free consultation.",
+    btn_primary:"Try 20 simulations now",
+    btn_ghost:"Book a consultation on WhatsApp",
+    footer_loc:"Karlsruhe & surroundings"
+  },
+  fa:{
+    eyebrow:"شبیه‌سازی هوش مصنوعی مو برای سالن‌ها",
+    h1:"سلام به تیم عزیز [نام سالن]! 👋",
+    lead:"ما داریم چیزی می‌سازیم که دقیقاً به درد شما می‌خورد — و خوشحال می‌شویم آن را رایگان نشانتان دهیم.",
+    s1_kicker:"این چیست؟",
+    s1_h2:"مشتری‌هایتان استایل جدید را قبل از اینکه قیچی به مو بخورد می‌بینند",
+    s1_p1:"لاجیک استایل یک پلتفرم هوش مصنوعی برای آرایشگاه‌ها و باربرشاپ‌هاست. مهمان یک عکس آپلود می‌کند، یک مدل مو، رنگ یا ریش انتخاب می‌کند — و در چند ثانیه می‌بیند نتیجه روی خودش چطور می‌شود.",
+    s1_p2:"همه‌چیز مستقیم داخل مرورگر اجرا می‌شود، بدون اپلیکیشن، به زبان آلمانی. برای شما یعنی: کمتر «نمی‌دانم بهم می‌آید یا نه» و بیشتر تصمیم‌های روشن روی صندلی.",
+    s2_kicker:"شبیه‌سازی ۳۶۰ درجه با هوش مصنوعی",
+    s2_h2:"به همین سادگی",
+    step1_b:"عکس آپلود کنید",step1_p:"یک سلفی معمولی کاملاً کافی است.",
+    step2_b:"استایل را انتخاب کنید",step2_p:"مدل مو، رنگ، ریش یا خدمات — زنانه و مردانه.",
+    step3_b:"نتیجه را ببینید",step3_p:"پیش‌نمایش واقعی از چند زاویه، در چند ثانیه.",
+    offer_sub:"شبیه‌سازی رایگان",
+    offer_note:"برای تست پروژهٔ ما — کاملاً رایگان، بدون کارت اعتباری و بدون هیچ تعهدی.",
+    badge1:"✔ بدون کارت اعتباری",badge2:"✔ بدون نیاز به اپ",badge3:"✔ به زبان آلمانی",badge4:"✔ آمادهٔ استفادهٔ فوری",
+    privacy_h2:"حریم خصوصی برای ما مهم است",
+    privacy_p:"ما یک پروژهٔ آلمانی هستیم و کاملاً مطابق قانون DSGVO (GDPR) کار می‌کنیم. عکس‌های آپلودشده فقط برای شبیه‌سازی استفاده می‌شوند — نه فروخته می‌شوند و نه برای تبلیغات به کار می‌روند. همهٔ جزئیات به‌صورت شفاف در سیاست حریم خصوصی ما آمده است.",
+    privacy_link:"← مشاهدهٔ سیاست حریم خصوصی",
+    cta_kicker:"و اگر دوست داشتید",
+    cta_h2:"بیایید کوتاه و بدون تعهد صحبت کنیم",
+    cta_p:"در چند دقیقه نشانتان می‌دهیم لاجیک استایل در سالن شما چطور کار می‌کند و خوشحال می‌شویم نظرتان را بشنویم. اگر مناسب بود، یک جلسهٔ مشاورهٔ رایگان می‌گذاریم.",
+    btn_primary:"همین حالا ۲۰ شبیه‌سازی را تست کنید",
+    btn_ghost:"رزرو مشاوره از طریق واتساپ",
+    footer_loc:"کارلسروهه و حومه"
+  },
+  ku:{
+    eyebrow:"Simulasyona Porê ya AI ji bo Salonan",
+    h1:"Silav tîma hêja ya [Navê Salonê]! 👋",
+    lead:"Em tiştekî ava dikin ku bêkêmasî li we tê — û em dixwazin wê belaş nîşanî we bidin.",
+    s1_kicker:"Ev çi ye?",
+    s1_h2:"Mişterîyên we berî ku meqes bi por bikeve, awayê nû dibînin",
+    s1_p1:"Logic Style platformek AI ye ji bo salon û berberxaneyan. Mêvan wêneyekê bar dike, porek, rengek an rihek hildibijêre — û di çend saniyeyan de dibîne ka encam li wî/wê çawa xuya dike.",
+    s1_p2:"Her tişt rasterast di gerokê de dixebite, bê sepan, bi Almanî. Ji bo we ev tê wateya: kêmtir «Ez nizanim li min tê an na», bêtir biryarên zelal li ser kursiyê.",
+    s2_kicker:"Simulasyona AI ya 360°",
+    s2_h2:"Ew ewqas hêsan e",
+    step1_b:"Wêne bar bike",step1_p:"Selfiyeke asayî bes e.",
+    step2_b:"Awayekî hilbijêre",step2_p:"Porkirin, reng, rih an dermankirin — jin û mêr.",
+    step3_b:"Encamê bibîne",step3_p:"Pêşdîtineke rastîn ji gelek aliyan, di çend saniyeyan de.",
+    offer_sub:"simulasyon belaş",
+    offer_note:"Ji bo ceribandina projeya me — bi tevahî belaş, bê qerta krediyê û bê mecbûriyet.",
+    badge1:"✔ Bê qerta krediyê",badge2:"✔ Sepan ne hewce ye",badge3:"✔ Bi Almanî",badge4:"✔ Tavilê amade",
+    privacy_h2:"Parastina daneyan ji me re girîng e",
+    privacy_p:"Em projeyeke Almanî ne û li gorî DSGVO (GDPR) dixebitin. Wêneyên ku têne barkirin tenê ji bo simulasyonê têne bikaranîn — nayên firotin û ji bo reklaman nayên bikaranîn. Hemû hûrgilî bi zelalî di siyaseta nepenîtiyê de ne.",
+    privacy_link:"→ Siyaseta nepenîtiyê bibîne",
+    cta_kicker:"Û heke hûn dixwazin",
+    cta_h2:"Werin em kurt biaxivin — bê mecbûrî",
+    cta_p:"Di çend deqeyan de em nîşanî we didin ka Logic Style çawa di salona we de dixebite, û em dixwazin nêrîna we bibihîzin. Heke li gorî we be, em hevdîtineke şêwirmendiyê ya belaş saz dikin.",
+    btn_primary:"Niha 20 simulasyonan biceribîne",
+    btn_ghost:"Bi WhatsApp randevûyê bigire",
+    footer_loc:"Karlsruhe û derdor"
+  },
+  ar:{
+    eyebrow:"محاكاة الشعر بالذكاء الاصطناعي للصالونات",
+    h1:"مرحباً بفريق [اسم الصالون] العزيز! 👋",
+    lead:"نحن نبني شيئاً يناسبكم تماماً — ويسعدنا أن نعرضه عليكم مجاناً.",
+    s1_kicker:"ما هذا؟",
+    s1_h2:"يرى زبائنكم الإطلالة الجديدة قبل أن يلمس المقص شعرة",
+    s1_p1:"لوجيك ستايل منصة ذكاء اصطناعي لصالونات الحلاقة والباربر. يرفع الضيف صورة، ويختار قصة شعر أو لوناً أو لحية — ويرى خلال ثوانٍ كيف تبدو النتيجة عليه.",
+    s1_p2:"كل شيء يعمل مباشرة في المتصفح، بدون تطبيق، باللغة الألمانية. بالنسبة لكم يعني ذلك: أقل من «لست متأكداً إن كان يناسبني»، وأكثر من القرارات الواضحة على الكرسي.",
+    s2_kicker:"محاكاة 360° بالذكاء الاصطناعي",
+    s2_h2:"بهذه البساطة",
+    step1_b:"ارفع صورة",step1_p:"صورة سيلفي عادية تكفي تماماً.",
+    step2_b:"اختر الإطلالة",step2_p:"قصة شعر، لون، لحية أو علاج — للنساء والرجال.",
+    step3_b:"شاهد النتيجة",step3_p:"معاينة واقعية من عدة زوايا، خلال ثوانٍ.",
+    offer_sub:"محاكاة مجانية",
+    offer_note:"لتجربة مشروعنا — مجاناً تماماً، بدون بطاقة ائتمان وبدون أي التزام.",
+    badge1:"✔ بدون بطاقة ائتمان",badge2:"✔ بدون حاجة لتطبيق",badge3:"✔ باللغة الألمانية",badge4:"✔ جاهز فوراً",
+    privacy_h2:"خصوصيتكم تهمّنا",
+    privacy_p:"نحن مشروع ألماني ونعمل بالتوافق الكامل مع لائحة DSGVO (GDPR). تُستخدم الصور المرفوعة للمحاكاة فقط — لا تُباع ولا تُستخدم للإعلانات. كل التفاصيل موضحة بشفافية في سياسة الخصوصية لدينا.",
+    privacy_link:"← اطّلع على سياسة الخصوصية",
+    cta_kicker:"وإذا رغبتم",
+    cta_h2:"لنتحدث قليلاً — دون أي التزام",
+    cta_p:"خلال دقائق قليلة سنريكم كيف يعمل لوجيك ستايل في صالونكم، ويسعدنا سماع ملاحظاتكم. وإذا كان مناسباً، نحجز لكم موعد استشارة مجاني.",
+    btn_primary:"جرّب 20 محاكاة الآن",
+    btn_ghost:"احجز استشارة عبر واتساب",
+    footer_loc:"كارلسروه والمحيط"
+  },
+  tr:{
+    eyebrow:"Salonlar için Yapay Zekâ Saç Simülasyonu",
+    h1:"Merhaba sevgili [Salon adı] ekibi! 👋",
+    lead:"Tam size göre bir şey geliştiriyoruz — ve size ücretsiz göstermek isteriz.",
+    s1_kicker:"Bu nedir?",
+    s1_h2:"Müşterileriniz makas değmeden yeni görünümü görüyor",
+    s1_p1:"Logic Style, kuaför ve berber salonları için bir yapay zekâ platformudur. Misafir bir fotoğraf yükler, bir kesim, renk veya sakal seçer — ve sonucun kendisinde nasıl durduğunu saniyeler içinde görür.",
+    s1_p2:"Her şey doğrudan tarayıcıda, uygulama olmadan, Almanca çalışır. Sizin için bu şu demek: daha az «bana yakışır mı bilmiyorum», koltukta daha net kararlar.",
+    s2_kicker:"360° Yapay Zekâ Simülasyonu",
+    s2_h2:"İşte bu kadar basit",
+    step1_b:"Fotoğraf yükleyin",step1_p:"Sıradan bir selfie yeterli.",
+    step2_b:"Görünüm seçin",step2_p:"Saç kesimi, renk, sakal veya bakım — kadın ve erkek.",
+    step3_b:"Sonucu görün",step3_p:"Birkaç açıdan gerçekçi önizleme, saniyeler içinde.",
+    offer_sub:"ücretsiz simülasyon",
+    offer_note:"Projemizi denemek için — tamamen ücretsiz, kredi kartı gerekmez ve hiçbir yükümlülük yok.",
+    badge1:"✔ Kredi kartı yok",badge2:"✔ Uygulama gerekmez",badge3:"✔ Almanca",badge4:"✔ Hemen hazır",
+    privacy_h2:"Gizliliğiniz bizim için önemli",
+    privacy_p:"Biz bir Alman projesiyiz ve tamamen DSGVO (GDPR) uyumlu çalışıyoruz. Yüklenen fotoğraflar yalnızca simülasyon için kullanılır — satılmaz ve reklam için kullanılmaz. Tüm ayrıntılar gizlilik politikamızda şeffaf biçimde yer alır.",
+    privacy_link:"→ Gizlilik politikamıza göz atın",
+    cta_kicker:"Ve isterseniz",
+    cta_h2:"Kısaca konuşalım — hiçbir yükümlülük olmadan",
+    cta_p:"Birkaç dakikada Logic Style'ın salonunuzda nasıl çalıştığını gösteririz ve geri bildiriminizi almaktan memnuniyet duyarız. Uygun olursa ücretsiz bir danışma randevusu ayarlarız.",
+    btn_primary:"Hemen 20 simülasyon deneyin",
+    btn_ghost:"WhatsApp'tan danışma randevusu alın",
+    footer_loc:"Karlsruhe ve çevresi"
+  }
+};
+const RTL = ["fa","ar"];
+function setLang(l){
+  const d = I18N[l]; if(!d) return;
+  document.querySelectorAll("[data-i18n]").forEach(function(el){
+    const k = el.getAttribute("data-i18n");
+    if(d[k] != null) el.textContent = d[k];
+  });
+  const rtl = RTL.indexOf(l) !== -1;
+  document.documentElement.setAttribute("lang", l);
+  document.body.setAttribute("dir", rtl ? "rtl" : "ltr");
+  document.querySelectorAll(".langbtn").forEach(function(b){
+    b.classList.toggle("on", b.getAttribute("data-l") === l);
+  });
+  try{ localStorage.setItem("ls_lang", l); }catch(e){}
+}
+(function(){
+  var saved = "de";
+  try{ saved = localStorage.getItem("ls_lang") || "de"; }catch(e){}
+  if(!I18N[saved]) saved = "de";
+  setLang(saved);
+})();
+</script>
